@@ -1,0 +1,143 @@
+﻿@{
+    ViewBag.Title = "Итоги месяца";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int temp;
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int numMonths = 0;
+    int[] months = new int[50];
+    int isSaved = 0;
+    int hasMiss = 0;
+    <div class="content">
+        <h1>Итоги месяца</h1>
+        <table>
+            <tr>
+                <td>№</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Уважительных</td>
+                <td>Неуважительных</td>
+            </tr>
+            @foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+            {
+                if (item.Users.Group.ToString() != Session["NumGroup"].ToString() &&
+                    item.Users.Course.ToString() != Session["NumCourse"].ToString())
+                {
+                    continue;
+                }
+                hasMiss = 1;
+                temp = item.Date.Month;
+
+                foreach (int savedWeeks in months)
+                {
+                    if (savedWeeks == temp)
+                    {
+                        isSaved = 1;
+                        break;
+                    }
+                }
+                if (isSaved == 0)
+                {
+                    months[numMonths++] = temp;
+                }
+                else
+                {
+                    isSaved = 0;
+                }
+            }
+            @{
+                Dictionary<int, int>[] StudentsIsValidMiss = new Dictionary<int, int>[50]; //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
+                Dictionary<int, int>[] StudentsIsNotValidMiss = new Dictionary<int, int>[50];
+                foreach (HtmlInputs.Models.Users user in dc.Users)
+                {
+                    var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
+                    if (student != null)
+                    {
+                        for (int i = 0; i < numMonths; i++)
+                        {
+                            if (StudentsIsNotValidMiss[i] == null)
+                            {
+                                StudentsIsValidMiss[i] = new Dictionary<int, int>();
+                                StudentsIsNotValidMiss[i] = new Dictionary<int, int>();
+                            }
+                            StudentsIsValidMiss[i].Add(user.UserId, 0);
+                            StudentsIsNotValidMiss[i].Add(user.UserId, 0);
+                        }
+                    }
+                }
+                foreach (HtmlInputs.Models.Missings item in dc.Missings)
+                {
+                    int recMonth = item.Date.Month;
+
+                    for (int i = 0; i < numMonths; i++)
+                    {
+                        if (recMonth == months[i])
+                        {
+                            if (item.IsValid == 1)
+                            {
+                                StudentsIsValidMiss[i][item.StudentId] += 2;
+                                break;
+                            }
+                            else
+                            {
+                                StudentsIsNotValidMiss[i][item.StudentId] += 2;
+                                break;
+                            }
+                        }
+                    }
+                }
+                int numRows = 0;
+                for (int i = 0; i < numMonths; i++)
+                {
+                    string month = new DateTime(2000, i + 1, 1).ToString("MMMM");
+                    <tr>
+                        <td colspan="6" style="text-align:center;">@month</td>
+                    </tr>
+
+                    foreach (HtmlInputs.Models.Users user in dc.Users)
+                    {
+                        int num = 0;
+                        if (StudentsIsNotValidMiss[i].TryGetValue(user.UserId, out num))
+                        {
+                            if (num == 0 && StudentsIsValidMiss[i][user.UserId] == 0)
+                            {
+                                continue;
+                            }
+                            <tr>
+                                <td>@(++numRows)</td>
+                                <td>@user.Sirname</td>
+                                <td>@user.Name</td>
+                                <td>@user.Patername</td>
+                                <td>@StudentsIsValidMiss[i][user.UserId]</td>
+                                <td>@num</td>
+                            </tr>
+                        }
+                    }
+                    numRows = 0;
+                }
+                if (hasMiss == 0)
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center;">В этой группе нет пропусков</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+}
+<div class="miss-buttons">
+    @{
+        if (Session["NumGroup"].ToString().Equals("1"))
+        {
+            <a href="~/Profile/GroupOne"><input type="button" value="Назад" /></a>
+        }
+        else if (Session["NumGroup"].ToString().Equals("2"))
+        {
+            <a href="~/Profile/GroupTwo"><input type="button" value="Назад" /></a>
+        }
+        else if (Session["NumGroup"].ToString().Equals("3"))
+        {
+            <a href="~/Profile/GroupThree"><input type="button" value="Назад" /></a>
+        }
+}
+</div>

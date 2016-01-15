@@ -1,0 +1,93 @@
+﻿@model HtmlInputs.Models.AddMiss
+@{
+    ViewBag.Title = "Добавить пропуск";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SelectListItem> StudentList = new List<SelectListItem>();
+    List<SelectListItem> IsValidList = new List<SelectListItem>();
+    List<SelectListItem> listOfDays = new List<SelectListItem>();
+    for (int i = 0; i < 31; i++)
+    {
+        var newDay = new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString() };
+        listOfDays.Add(newDay);
+    }
+
+    List<SelectListItem> listOfMonth = new List<SelectListItem>();
+    for (int i = 0; i < 12; i++)
+    {
+        var newMonth = new SelectListItem { Text = new DateTime(2000, i + 1, 1).ToString("MMMM"), Value = (i + 1).ToString() };
+        listOfMonth.Add(newMonth);
+    }
+
+    List<SelectListItem> listOfYear = new List<SelectListItem>();
+    var isValid = new SelectListItem { Text = "Есть", Value = "1" };
+    var isNotValid = new SelectListItem { Text = "Отсутствует", Value = "0" };
+
+    var prevYear = new SelectListItem { Text = (DateTime.Now.Year - 1).ToString(), Value = (DateTime.Now.Year - 1).ToString() };
+    var nowYear = new SelectListItem { Text = (DateTime.Now.Year).ToString(), Value = (DateTime.Now.Year).ToString() };
+    listOfYear.Add(prevYear);
+    listOfYear.Add(nowYear);
+    
+    IsValidList.Add(isValid);
+    IsValidList.Add(isNotValid);
+
+    HtmlInputs.Models.DiplomEntities5 dc1 = new HtmlInputs.Models.DiplomEntities5();
+    int group = Convert.ToInt32(Session["LogedUserGroup"].ToString());
+    foreach (HtmlInputs.Models.Users item in dc1.Users)
+    {
+        if (item.Group.Equals(group) && item.RoleId.Equals(1))
+        {
+            var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
+            StudentList.Add(newReceiver);
+        }
+    }
+}
+
+    @using (Html.BeginForm("AddMiss", "Profile", FormMethod.Post, new { @id = "add-miss-form" }))
+    {
+        <div class="content">
+            <input type="hidden" name="isRead" value="0" />
+            @if (ViewBag.Message != null)
+            {
+            <div style="color:green;">
+                @ViewBag.Message
+            </div>
+            }
+            <table>
+                <tr>
+                    <td><lable>Студент:</lable></td>
+                    <td>@Html.DropDownListFor(a => a.StudentId, StudentList)</td>
+                    <td style="color:red;"></td>
+                </tr>
+                <tr>
+                    <td><lable>Форма занятий:</lable></td>
+                    <td>@Html.TextBoxFor(a => a.Form)</td>
+                    <td style="color:red;">@Html.ValidationMessageFor(a => a.Form)</td>
+                </tr>
+                <tr>
+                    <td><lable>Дисциплина:</lable></td>
+                    <td>@Html.TextBoxFor(a => a.Discipline)</td>
+                    <td style="color:red;">@Html.ValidationMessageFor(a => a.Discipline)</td>
+                </tr>
+                <tr>
+                    <td><lable>Причина:</lable></td>
+                    <td>@Html.DropDownListFor(a => a.IsValid, IsValidList)</td>
+                    <td style="color:red;"></td>
+                </tr>
+                <tr>
+                    <td>Дата:</td>
+                    <td colspan="2">
+                        @Html.DropDownListFor(a => a.Day, listOfDays)
+                        /
+                        @Html.DropDownListFor(a => a.Month, listOfMonth)
+                        /
+                        @Html.DropDownListFor(a => a.Year, listOfYear)
+                    </td>
+                </tr>
+            </table>
+        </div>
+    <div class="miss-buttons">
+        <input type="submit" value="Добавить" />
+        <a href="~/Profile/MissForPraepostor"><input type="button" value="Назад" /></a>
+    </div>
+    }
+        

@@ -1,0 +1,65 @@
+﻿@model HtmlInputs.Models.ApplicationView
+@{
+    ViewBag.Title = "Заявление";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<SelectListItem> items = new List<SelectListItem>();
+    var newitem = new SelectListItem { Text = "Студента", Value = "1" };
+    items.Add(newitem);
+    newitem = new SelectListItem { Text = "Студентки", Value = "0" };
+    items.Add(newitem);
+
+    List<SelectListItem> listOfDays = new List<SelectListItem>();
+    for (int i = 0; i < 31; i++)
+    {
+        var newDay = new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString() };
+        listOfDays.Add(newDay);
+    }
+
+    List<SelectListItem> listOfMonth = new List<SelectListItem>();
+    for (int i = 0; i < 12; i++)
+    {
+        var newMonth = new SelectListItem { Text = new DateTime(2000, i + 1, 1).ToString("MMMM"), Value = (i + 1).ToString() };
+        listOfMonth.Add(newMonth);
+    }
+
+    List<SelectListItem> listOfYear = new List<SelectListItem>();
+    var prevYear = new SelectListItem { Text = (DateTime.Now.Year - 1).ToString(), Value = (DateTime.Now.Year -1).ToString() };
+    var currYear = new SelectListItem { Text = (DateTime.Now.Year).ToString(), Value = (DateTime.Now.Year).ToString()};
+    listOfYear.Add(prevYear);
+    listOfYear.Add(currYear); 
+}
+
+
+    @using (Html.BeginForm())
+    {
+        <div class="content">
+            <h2>Заявление</h2>
+            <div class="application">
+                <div class="wrapp">
+                    <div class="app-head">
+                        <label>Декану факультета инновационной подготовки Зеневич А. М.</label>
+                        <label>@Html.DropDownListFor(a => a.isMale, items) @Session["LogedUserCourse"] курса дневной формы обучения</label>
+                        <label>Специальности управление информационными ресурсами</label>
+                        <label>Иститута управленческих кадров</label><br />
+                        <label>@Session["LogedUserSname"] @(Session["LogedUserName"].ToString().First()). @(Session["LogedUserPname"].ToString().First()).</label>
+                    </div>
+                </div>
+                <div class="app-title">Заявление</div>
+
+                <p>
+                    Прошу разрешить мне отсутствовать на занятиях @Html.DropDownListFor(a => a.DayOfMiss, listOfDays)/@Html.DropDownListFor(a => a.MonthOfMiss, listOfMonth)/@Html.DropDownListFor(a => a.YearOfMiss, listOfYear)
+                    @Html.TextBoxFor(a => a.Reason, new { @placeholder = "причина", @size = "75" })
+                </p>
+
+                <div class="app-date">@DateTime.Now.ToShortDateString()</div>
+            </div>
+        </div>
+        <div class="miss-buttons">
+            @if(ViewBag.Message != null)
+            {
+                <div style="color:green">@ViewBag.Message</div>
+            }
+            <input type="submit" value="Отправить"/>
+        </div>
+    }
+        

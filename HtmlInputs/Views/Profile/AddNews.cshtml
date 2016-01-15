@@ -1,0 +1,27 @@
+﻿@model HtmlInputs.Models.News
+@{
+    ViewBag.Title = "Добавить новость";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    @if(ViewBag.Message != null)
+    {
+        <label style="color:green">@ViewBag.Message</label>
+    }
+    @using (Html.BeginForm())
+    {
+        <label>Заголовок: </label>
+        @Html.TextBoxFor(a => a.Title)<br />
+        <label>Содержание</label><br />
+        @Html.TextAreaFor(a => a.Content, new { @cols = "52", @rows = "4" })<br />
+        
+        <input type="hidden" name="Date" value="@DateTime.Now.ToShortDateString()" />
+        <input type="submit" value="Опубликовать" />
+    }
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/Methodist">
+        <input type="button" value="Назад" />
+    </a>
+</div>

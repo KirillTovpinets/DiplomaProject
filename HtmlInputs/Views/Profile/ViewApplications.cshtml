@@ -1,0 +1,142 @@
+﻿@model List<HtmlInputs.Models.Applications>
+@{
+    ViewBag.Title = "Заявления";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    DateTime temp = new DateTime();
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int numWeeks = 0;
+    DateTime[] weeks = new DateTime[50];
+    int isSaved = 0;
+    int hasApp = 0;
+
+    List<SelectListItem> ConfirmList = new List<SelectListItem>();
+    var Conf = new SelectListItem { Text = "Не возражаю", Value = "1" };
+    var Disp = new SelectListItem { Text = "Отказать", Value = "0" };
+    ConfirmList.Add(Conf);
+    ConfirmList.Add(Disp);
+    }
+    @using(Html.BeginForm("SaveChangesApp","Profile"))
+    { 
+    <div class="content">
+    @{
+        foreach (HtmlInputs.Models.Applications item in dc.Applications) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+        {
+            if (item.Users.Group.ToString() != Session["GroupApp"].ToString() &&
+                item.Users.Course.ToString() != Session["CourseApp"].ToString())
+            {
+                continue;
+            }
+            hasApp = 1;
+            temp = item.DateOfCreation;
+            while (temp.Date.DayOfWeek != System.DayOfWeek.Monday)
+            {
+                temp = temp.Date.AddDays(-1);
+            }
+
+            foreach (DateTime savedWeeks in weeks)
+            {
+                if (savedWeeks == temp)
+                {
+                    isSaved = 1;
+                    break;
+                }
+            }
+            if (isSaved == 0)
+            {
+                weeks[numWeeks++] = temp;
+            }
+            else
+            {
+                isSaved = 0;
+            }
+        }
+        
+        for (int i = 0; i < numWeeks; i++)
+        {
+            int numApp = 0;
+            <div style="text-align:center; border-bottom:2px dashed black; margin-bottom: 10px;">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</div>
+            foreach (HtmlInputs.Models.Applications app in @Model)
+            {
+                
+                DateTime start = app.DateOfCreation;
+                while (start.DayOfWeek != System.DayOfWeek.Monday)
+                {
+                    start = start.AddDays(-1);
+                }
+                if (start == weeks[i])
+                {
+                    string read;
+                    if (app.isRead == 0)
+                    {
+                        read = "#b6d7b8";
+                    }
+                    else
+                    { 
+                        read = "#fff";
+                    }
+                    <div class="application" style="border-bottom:1px solid black; margin-bottom: 10px; background: @read;">
+                        <div class="wrapp">
+                            <div class="app-confirm">
+                                @Html.DropDownListFor(a => a[numApp].isConfirmed, ConfirmList)<br />
+                                @Html.LabelFor(a => a[numApp].DateOfRead, DateTime.Now.ToShortDateString())
+                                @{
+                                    numApp++;
+                                    }
+                            </div>
+                            <div class="app-head">
+                                <div>@app.Head</div>
+                                <label>@app.Users.Sirname @(app.Users.Name.ToString().First()). @(app.Users.Patername.ToString().First()).</label>
+                            </div>
+                        </div>
+                            <div class="app-title">Заявление</div>
+
+                            <p>
+                                Прошу разрешить мне отсутствовать на занятиях @app.DateOfMiss.ToShortDateString() @app.Reason
+                            </p>
+
+                            <div class="app-date">@app.DateOfCreation.ToShortDateString()</div>
+                    </div>
+                }
+            }
+        }
+        foreach(HtmlInputs.Models.Applications app in dc.Applications)
+        {
+            if(app.isRead == 0)
+            {
+                app.isRead = 1;
+            }
+        }
+        dc.SaveChanges();
+        if (hasApp == 0)
+        {
+            <div style="text-align:center;">В этой группе нет заявлений</div>
+        }
+    }
+</div>
+<div class="miss-buttons">
+    <a href="#"><input type="submit" value="Сохранить" /></a>
+    @if (Session["CourseApp"].ToString().Equals("1"))
+    {
+        <a href="~/Profile/CourseOneApp"><input type="button" value="Назад" /></a>
+    }
+    @if (Session["CourseApp"].ToString().Equals("2"))
+    {
+        <a href="~/Profile/CourseTwoApp"><input type="button" value="Назад" /></a>
+    }
+    @if (Session["CourseApp"].ToString().Equals("3"))
+    {
+        <a href="~/Profile/CourseThreeApp"><input type="button" value="Назад" /></a>
+    }
+    @if (Session["CourseApp"].ToString().Equals("4"))
+    {
+        <a href="~/Profile/CourseFourApp"><input type="button" value="Назад" /></a>
+    }
+    
+</div>
+    }
+
+
+
+
+

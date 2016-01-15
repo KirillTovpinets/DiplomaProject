@@ -1,0 +1,65 @@
+﻿@model HtmlInputs.Models.Users
+@{
+    ViewBag.Title = "GroupListEdit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<SelectListItem> RoleList = new List<SelectListItem>();
+    var Stud = new SelectListItem {Text = "Студент", Value = "1"};
+    var Praepost = new SelectListItem {Text = "Староста", Value = "2"};
+    var Deducted = new SelectListItem {Text = "Отчислен", Value = "0"};
+    RoleList.Add(Stud);
+    RoleList.Add(Praepost);
+    RoleList.Add(Deducted);
+}
+
+@using (Html.BeginForm())
+{
+    <div class="content">
+        <table>
+            <tr>
+                <td>№</td>
+                <td>Фамилия</td>
+                <td>Имя</td>
+                <td>Отчество</td>
+                <td>Должность</td>
+            </tr>
+            @{
+                int i = 1;
+                int hasStud = 0;
+                HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+                foreach (HtmlInputs.Models.Users item in dc.Users)
+                {
+                    if (item.Group.ToString().Equals(Session["NumGroup"].ToString()) &&
+                    item.Course.ToString().Equals(Session["NumCourse"].ToString()) &&
+                    item.RoleId != 3)
+                    {
+                        hasStud = 1;
+                        if (item.RoleId.Equals(3))
+                        {
+                            continue;
+                        }
+                        <tr>
+                            <td>@(i++)</td>
+                            <td>@item.Sirname</td>
+                            <td>@item.Name</td>
+                            <td>@item.Patername</td>
+                            <td>@Html.DropDownListFor(a => a.RoleId, RoleList)</td>
+                        </tr>
+                    }
+                }
+                if(hasStud == 0)
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center;">В этой группе нет студентов</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+    <div class="miss-buttons">
+        <a href="#"><input type="submit" value="Сохранить"/></a>
+        <a href="#"><input type="button" value="Отмена" /></a>
+    </div>
+}
+
+

@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Личный кабинет";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<div class="content">
+    @foreach (HtmlInputs.Models.News item in ViewBag.news)
+    {
+        <div class="news-item">
+            <h1>@item.Title</h1>
+            <p>@item.Content</p>
+            <p class="date">@item.Date.ToShortDateString()</p>
+        </div>
+    }
+</div>

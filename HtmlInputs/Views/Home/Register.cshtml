@@ -1,0 +1,123 @@
+﻿@model HtmlInputs.Models.RegUser
+@{
+    ViewBag.Title = "Регистрация";
+    Layout = "~/Views/Shared/Index_Layout.cshtml";
+}
+
+<nav class="header">
+    Регистрация
+</nav>
+@{
+    List<SelectListItem> listOfDays = new List<SelectListItem>();
+    for(int i = 0; i < 31; i++)
+    {
+        var newDay = new SelectListItem{Text=(i+1).ToString(), Value=(i+1).ToString()};
+        listOfDays.Add(newDay);
+    }
+    
+    List<SelectListItem> listOfMonth = new List<SelectListItem>();
+    for (int i = 0; i < 12; i++)
+    {
+        var newMonth = new SelectListItem { Text = new DateTime(2000, i+1, 1).ToString("MMMM"), Value = (i + 1).ToString() };
+        listOfMonth.Add(newMonth);
+    }
+
+    List<SelectListItem> listOfYear = new List<SelectListItem>();
+    
+    for (int i = 1950; i <= DateTime.Now.Year; i++)
+    {
+        var newYear = new SelectListItem { Text = i.ToString(), Value = i.ToString() };
+        listOfYear.Add(newYear);
+    }
+    List<SelectListItem> GroupList = new List<SelectListItem>();
+    
+    for (int i = 1; i <= 3; i++)
+    {
+        var newGroup = new SelectListItem { Text = i.ToString(), Value = i.ToString() };
+        GroupList.Add(newGroup);
+    }
+    
+    List<SelectListItem> CourseList = new List<SelectListItem>();
+    
+    for (int i = 1; i <= 4; i++)
+    {
+        var newCourse = new SelectListItem { Text = i.ToString(), Value = i.ToString() };
+        CourseList.Add(newCourse);
+    }
+}
+@using (Html.BeginForm("Register","Home",FormMethod.Post, new {id = "register-form", enctype="multipart/form-data"}))
+{
+    @Html.ValidationSummary(true)
+    if (ViewBag.Message != null)
+    {
+        <div style="color:green;">
+            @ViewBag.Message
+        </div>
+    }
+    <input type="hidden" name="RoleId" value="1" />
+    <table>
+        <tr>
+            <td><lable>Логин:</lable></td>
+            <td>@Html.TextBoxFor(a => a.Login)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.Login)</td>
+        </tr>
+        <tr>
+            <td><lable>Пароль:</lable></td>
+            <td>@Html.PasswordFor(a => a.Password)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.Password)</td>
+        </tr>
+        <tr>
+            <td><lable>Подтвеждение:</lable></td>
+            <td>@Html.PasswordFor(a => a.ConfirmPassword)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.ConfirmPassword)</td>
+        </tr>
+        <tr>
+            <td><lable>Email:</lable></td>
+            <td>@Html.TextBoxFor(a => a.Email)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.Email)</td>
+        </tr>
+        <tr>
+            <td><lable>Имя:</lable></td>
+            <td>@Html.TextBoxFor(a => a.Name)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.Name)</td>
+        </tr>
+        <tr>
+            <td><lable>Фамилия:</lable></td>
+            <td>@Html.TextBoxFor(a => a.Sirname)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.Sirname)</td>
+        </tr>
+        <tr>
+            <td><lable>Отчество:</lable></td>
+            <td>@Html.TextBoxFor(a => a.Patername)</td>
+            <td style="color:red;">@Html.ValidationMessageFor(a => a.Patername)</td>
+        </tr>
+        <tr>
+            <td>Группа:</td>
+            <td>@Html.DropDownListFor(a => a.Group, GroupList) </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Курс:</td>
+            <td>@Html.DropDownListFor(a => a.Course, CourseList) </td>
+            <td></td>
+        </tr>
+    </table>
+    <div>
+        <lable>Дата рождения:</lable>
+            @Html.DropDownListFor(a => a.DayOfBirth, listOfDays)
+            /
+            @Html.DropDownListFor(a => a.MonthOfBirth, listOfMonth)
+            /
+            @Html.DropDownListFor(a => a.YearOfBirth, listOfYear)
+    </div>
+    <label>Выберите аватар</label><input type="file" name="Avatar" /><br />
+    <div>
+        <img src="@Url.Action("Captcha","Home")" /><br />
+        @Html.TextBoxFor(a => a.Captcha, new { @placeholder = "Введите число с картинки" })
+        <label style="color:red;">@Html.ValidationMessageFor(a => a.Captcha)</label>
+    </div>
+    <div>
+        <input type="submit" value="Зарегистироваться" />
+        <a href="~/Home/Index"><input type="button" value="Назад" /></a>
+    </div>                       
+}

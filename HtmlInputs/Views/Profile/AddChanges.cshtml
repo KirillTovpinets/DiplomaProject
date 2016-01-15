@@ -1,0 +1,23 @@
+﻿@model HtmlInputs.Models.Changes
+@{
+    ViewBag.Title = "Добавить изменение";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    @if (ViewBag.Message != null)
+    {
+        <label style="color:green">@ViewBag.Message</label>
+    }
+    @using (Html.BeginForm())
+    {
+        <label>Содержание</label><br />
+        @Html.TextAreaFor(a => a.Content, new { @cols = "52", @rows = "4" })<br />
+        <input type="submit" value="Опубликовать" />
+    }
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/Methodist">
+        <input type="button" value="Назад" />
+    </a>
+</div>

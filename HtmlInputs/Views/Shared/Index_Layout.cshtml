@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Студенческий портал";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/Style.css")" type="text/css" />
+</head>
+<body>
+    <header>
+        <img class="logo" src="@Url.Content("~/Content/Logo.jpg")" />
+        <div class="title">
+            Факультет инновационной подготовки<br />
+            <div class="speciality">Управление информационными ресурсами</div>
+        </div>
+    </header>
+    @RenderBody()
+</body>
+</html>

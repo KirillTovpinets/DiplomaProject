@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Пропуски";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="content">
+    <h1>Пропуски</h1>
+    <table>
+        <tr>
+            <td>№</td>
+            <td>Дата</td>
+            <td>Форма</td>
+            <td>Дисциплина</td>
+            <td>Причина</td>
+        </tr>
+        @{
+            int i = 1;
+            int hasMiss = 0;
+            DateTime temp = new DateTime();
+            foreach (HtmlInputs.Models.Missings item in ViewBag.miss)
+            {
+                string style;
+                if (item.IsRead == 0)
+                {
+                    style = "background:#cdf5e3;";
+                }
+                else
+                {
+                    style = "background:#fff;";
+                }
+                if (item.StudentId.ToString().Equals(Session["LogedUserId"].ToString()))
+                {
+                    hasMiss = 1;
+                    DateTime startWeek = (DateTime)item.Date;
+                    DateTime endWeek = (DateTime)item.Date;
+                    while (startWeek.DayOfWeek != System.DayOfWeek.Monday)
+                    {
+                        startWeek = startWeek.AddDays(-1);
+                    }
+                    while (endWeek.DayOfWeek != System.DayOfWeek.Saturday)
+                    {
+                        endWeek = endWeek.AddDays(1);
+                    }
+                    if (startWeek.Date != temp.Date)
+                    {
+                        <tr>
+                            <td class="miss-week" colspan="5">@startWeek.Date.ToShortDateString() - @endWeek.Date.ToShortDateString()</td>
+                        </tr>
+                        temp = startWeek;
+                        i = 1;
+                    }
+                    <tr style="@style">
+                        <td>@(i++)</td>
+                        <td>@item.Date.ToShortDateString()</td>
+                        <td>@item.Form</td>
+                        <td>@item.Discipline</td>
+                        @{
+                    if (item.IsValid == 1)
+                    {
+                        <td>Есть</td>
+                    }
+                    else
+                    {
+                        <td>Отсутствует</td>
+                    }
+                        }
+                    </tr>
+                }
+            }
+            if (hasMiss == 0)
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">У вас нет пропусков</td>
+                </tr>
+            }
+            HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+            foreach (HtmlInputs.Models.Missings item in dc.Missings)
+            {
+                if (item.IsRead == 0 && item.StudentId.Equals(Convert.ToInt32(Session["LogedUserId"])))
+                {
+                    item.IsRead = 1;
+                }
+            }
+            dc.SaveChanges();
+        }
+    </table>
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/WeekReportForStudent"><input type="button" value="Итоги недели" /></a>
+    <a href="~/Profile/MonthReportForStudent"><input type="button" value="Итоги месяца" /></a>
+</div>
+<script type="text/javascript">
+    function isRead() {
+        $(".unread").addClass("read");
+    }
+    setTimeout(isRead, 3000);
+</script>

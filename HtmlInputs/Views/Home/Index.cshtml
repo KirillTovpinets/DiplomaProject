@@ -1,0 +1,34 @@
+﻿@model HtmlInputs.Models.LogedUser
+@{
+    Layout = "~/Views/Shared/Index_Layout.cshtml";
+    
+}
+    <nav class="header">
+        Кабинет пользователя
+    </nav>
+    @using (Html.BeginForm("Index","Home",FormMethod.Post, new {id = "login-form"}))
+    {
+        @Html.ValidationSummary(true)
+        if (ViewBag.Message != null)
+        {
+            <div style="color: red">
+                @ViewBag.Message
+            </div>
+        }
+        <table>
+            <tr>
+                <td><label for="login">Логин:</label></td>
+                <td>@Html.TextBoxFor(a => a.Login)</td>
+                <td style="color:red;">@Html.ValidationMessageFor(a => a.Login)</td>
+            </tr>
+            <tr>
+                <td><label for="password">Пароль:</label></td>
+                <td>@Html.PasswordFor(a => a.Password)</td>
+                <td style="color:red;">@Html.ValidationMessageFor(a => a.Password)</td>
+            </tr>
+        </table>
+        <div class="buttons">
+            <input type="submit" value="Вход" />
+            <a href="~/Home/Register"><input type="button" value="Регистрация" /></a>
+        </div>
+    }

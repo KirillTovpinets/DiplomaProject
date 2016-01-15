@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Заявления";
+
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int numCourseOne = 0;
+    int numCourseTwo = 0;
+    int numCourseThree = 0;
+    int numCourseFour = 0;
+}
+
+<div class="content">
+    <a class="courses" href="~/Profile/CourseOneApp">1 курс
+    @{
+        foreach(HtmlInputs.Models.Applications item in dc.Applications)
+        {
+            if(item.isRead == 0 && item.Users.Course == 1)
+            {
+                numCourseOne++;   
+            }
+        }
+        if(numCourseOne != 0)
+        {
+            <span>(@numCourseOne)</span>
+        }
+    }</a>
+    <a class="courses" href="~/Profile/CourseTwoApp">2 курс
+    @{
+        foreach (HtmlInputs.Models.Applications item in dc.Applications)
+        {
+            if (item.isRead == 0 && item.Users.Course == 2)
+            {
+                numCourseTwo++;
+            }
+        }
+        if (numCourseTwo != 0)
+        {
+            <span>(@numCourseTwo)</span>
+        }
+    }</a>
+    <a class="courses" href="~/Profile/CourseThreeApp">3 курс
+    @{
+        foreach (HtmlInputs.Models.Applications item in dc.Applications)
+        {
+            if (item.isRead == 0 && item.Users.Course == 3)
+            {
+                numCourseThree++;
+            }
+        }
+        if (numCourseThree != 0)
+        {
+            <span>(@numCourseThree)</span>
+        }
+    }</a>
+    <a class="courses" href="~/Profile/CourseFourApp">4 курс
+    @{
+        foreach (HtmlInputs.Models.Applications item in dc.Applications)
+        {
+            if (item.isRead == 0 && item.Users.Course == 4)
+            {
+                numCourseFour++;
+            }
+        }
+        if (numCourseFour != 0)
+        {
+            <span>(@numCourseFour)</span>
+        }
+    }</a>
+</div>

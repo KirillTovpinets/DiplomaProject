@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Группа";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    @{
+        
+    if(Session["LogedUserRole"].ToString().Equals("5"))
+    { 
+        <a href="~/Profile/GroupOne" class="groups">1-я группа</a>
+        <a href="~/Profile/GroupTwo" class="groups">2-я группа</a>
+        <a href="~/Profile/GroupThree" class="groups">3-я группа</a>
+    }
+    else
+    {
+        <a href="~/Profile/GroupOneMethodist" class="groups">1-я группа</a>
+        <a href="~/Profile/GroupTwoMethodist" class="groups">2-я группа</a>
+        <a href="~/Profile/GroupThreeMethodist" class="groups">3-я группа</a>
+    }
+}
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/MissForZDean"><input type="button" value="Назад" /></a>
+</div>

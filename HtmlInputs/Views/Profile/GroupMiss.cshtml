@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Пропуски";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    <h1>Пропуски группы</h1>
+    <table>
+        <tr>
+            <td>№</td>
+            <td>Фамилия</td>
+            <td>Имя</td>
+            <td>Дата</td>
+            <td>Форма</td>
+            <td>Дисциплина</td>
+            <td>Причина</td>
+        </tr>
+        @{
+            int i = 1;
+            int hasMiss = 0;
+            DateTime temp = new DateTime();
+            HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+
+            foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id))
+            {
+                if (item.Users.Group.ToString().Equals(Session["NumGroup"].ToString()) &&
+                    item.Users.Course.ToString().Equals(Session["NumCourse"].ToString()))
+                {
+                    hasMiss = 1;
+                    DateTime startWeek = item.Date;
+                    DateTime endWeek = item.Date;
+                    while (startWeek.DayOfWeek != System.DayOfWeek.Monday)
+                    {
+                        startWeek = startWeek.AddDays(-1);
+                    }
+                    while (endWeek.DayOfWeek != System.DayOfWeek.Saturday)
+                    {
+                        endWeek = endWeek.AddDays(1);
+                    }
+                    if (startWeek.Date != temp.Date)
+                    {
+                        <tr>
+                            <td class="miss-week" colspan="7">@startWeek.Date.ToShortDateString() - @endWeek.Date.ToShortDateString()</td>
+                        </tr>
+                        temp = startWeek;
+                        i = 1;
+                    }
+                    <tr>
+                        <td>@(i++)</td>
+                        <td>@item.Users.Sirname</td>
+                        <td>@item.Users.Name</td>
+                        <td>@item.Date.ToShortDateString()</td>
+                        <td>@item.Form</td>
+                        <td>@item.Discipline</td>
+                        @{
+                    if (item.IsValid == 1)
+                    {
+                        <td>Есть</td>
+                    }
+                    else
+                    {
+                        <td>Отсутствует</td>
+                    }
+                        }
+                    </tr>
+                }
+            }
+            if (hasMiss == 0)
+            {
+                <tr>
+                    <td colspan="7" style="text-align:center;">В этой группе нет пропусков</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/WeekReportForZDean"><input type="button" value="Итоги недели" /></a>
+    <a href="~/Profile/MonthReportForZDean"><input type="button" value="Итоги месяца" /></a>
+    @{
+        if (Session["NumCourse"].ToString().Equals("1"))
+        {
+            <a href="~/Profile/CourseOne"><input type="button" value="Назад" /></a>
+        }
+        if (Session["NumCourse"].ToString().Equals("2"))
+        {
+            <a href="~/Profile/CourseTwo"><input type="button" value="Назад" /></a>
+        }
+        if (Session["NumCourse"].ToString().Equals("3"))
+        {
+            <a href="~/Profile/CourseThree"><input type="button" value="Назад" /></a>
+        }
+        if (Session["NumCourse"].ToString().Equals("4"))
+        {
+            <a href="~/Profile/CourseFour"><input type="button" value="Назад" /></a>
+        }
+}
+</div>

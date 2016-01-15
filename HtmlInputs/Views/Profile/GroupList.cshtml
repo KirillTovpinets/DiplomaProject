@@ -1,0 +1,90 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    <h1>Список группы</h1>
+    <table>
+        <tr>
+            <td>№</td>
+            <td>Фамилия</td>
+            <td>Имя</td>
+            <td>Отчество</td>
+            <td>Должность</td>
+        </tr>
+        @{
+            int i = 1;
+            int hasStud= 0;
+            HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+
+            foreach (HtmlInputs.Models.Users item in dc.Users.OrderBy(a => a.Sirname))
+            {
+                if (item.Group.ToString().Equals(Session["NumGroup"].ToString()) &&
+                    item.Course.ToString().Equals(Session["NumCourse"].ToString()))
+                {
+                    hasStud = 1;
+                    if(item.RoleId.Equals(3))
+                    {
+                        continue;
+                    }
+                    <tr>
+                        <td>@(i++)</td>
+                        <td>@item.Sirname</td>
+                        <td>@item.Name</td>
+                        <td>@item.Patername</td>
+                        <td>@item.Roles.Name</td>
+                    </tr>
+                }
+            }
+            int group = Convert.ToInt32(Session["NumGroup"].ToString());
+            int course = Convert.ToInt32(Session["NumCourse"].ToString());
+            var Moderator = dc.Users.Where(a => a.RoleId.ToString().Equals("3") &&
+                                           a.Group.Equals(group) &&
+                                           a.Course.Equals(course)).FirstOrDefault();
+            <tr style="border:none;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            if(Moderator != null)
+            { 
+                <tr>
+                    <td></td>
+                    <td>@Moderator.Sirname</td>
+                    <td>@Moderator.Name</td>
+                    <td>@Moderator.Patername</td>
+                    <td>@Moderator.Roles.Name</td>
+                </tr>
+            }
+            if (hasStud == 0)
+            {
+                <tr>
+                    <td colspan="7" style="text-align:center;">В этой группе нет студентов</td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+<div class="miss-buttons">
+    @{
+        if (Session["NumCourse"].ToString().Equals("1"))
+        {
+            <a href="~/Profile/CourseOne"><input type="button" value="Назад" /></a>
+        }
+        else if (Session["NumCourse"].ToString().Equals("2"))
+        {
+            <a href="~/Profile/CourseTwo"><input type="button" value="Назад" /></a>
+        }
+        else if (Session["NumCourse"].ToString().Equals("3"))
+        {
+            <a href="~/Profile/CourseThree"><input type="button" value="Назад" /></a>
+        }
+        else if (Session["NumCourse"].ToString().Equals("4"))
+        {
+            <a href="~/Profile/CourseFour"><input type="button" value="Назад" /></a>
+        }
+            <a href="~/Profile/EditGroup"><input type="button" value="Редактировать" /></a>
+}
+</div>

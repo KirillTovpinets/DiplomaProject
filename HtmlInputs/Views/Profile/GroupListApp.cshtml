@@ -1,0 +1,54 @@
+﻿@{
+    ViewBag.Title = "Список групп";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int numGroupOne = 0;
+    int numGroupTwo = 0;
+    int numGroupThree = 0;
+}
+
+<div class="content">
+            <a href="~/Profile/GroupOneApp" class="groups">1-я группа
+                @{foreach (HtmlInputs.Models.Applications item in dc.Applications)
+                {
+                    if (item.isRead == 0 && item.Users.Group == 1)
+                    {
+                        numGroupOne++;
+                    }
+                }
+                if (numGroupOne != 0)
+                {
+                    <span>(@numGroupOne)</span>
+                }
+                }</a>
+            <a href="~/Profile/GroupTwoApp" class="groups">2-я группа
+                @{foreach (HtmlInputs.Models.Applications item in dc.Applications)
+                {
+                    if (item.isRead == 0 && item.Users.Group == 2)
+                    {
+                        numGroupTwo++;
+                    }
+                }
+                if (numGroupTwo != 0)
+                {
+                    <span>(@numGroupTwo)</span>
+                }
+                }</a>
+            <a href="~/Profile/GroupThreeApp" class="groups">3-я группа
+                @{foreach (HtmlInputs.Models.Applications item in dc.Applications)
+                {
+                    if (item.isRead == 0 && item.Users.Group == 3)
+                    {
+                        numGroupThree++;
+                    }
+                }
+                if (numGroupThree != 0)
+                {
+                    <span>(@numGroupThree)</span>
+                }
+                }</a>
+                
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/ApplianceForZDean"><input type="button" value="Назад" /></a>
+</div>

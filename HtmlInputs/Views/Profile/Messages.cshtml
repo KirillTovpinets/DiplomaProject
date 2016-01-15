@@ -1,0 +1,112 @@
+﻿@model HtmlInputs.Models.Messages
+<div class="content">
+    @{
+        ViewBag.Title = "Сообщения";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+        List<SelectListItem> receiversList = new List<SelectListItem>();
+        foreach (HtmlInputs.Models.Users item in dc.Users)
+        {
+            var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
+            receiversList.Add(newReceiver);
+        }
+        int hasMess = 0;
+        foreach (HtmlInputs.Models.Messages item in dc.Messages.OrderByDescending(a => a.Id))
+        {
+            if (item.ReceiverId.ToString().Equals(Session["LogedUserId"].ToString()))
+            {
+                hasMess = 1;
+                string style;
+                if (item.isRead == 0)
+                {
+                    style = "background:#cdf5e3;";
+                }
+                else
+                {
+                    style = "background:#fff;";
+                }
+                    <div class="message" style="@style">
+                        <div class="avatar-mini">
+                            <img src="@Url.Content(item.Users.AvatarPath)" />
+                        </div>
+                        <span style="color:#203939;">@item.Users.Sirname @item.Users.Name @item.Users.Patername</span><br />
+                        @{
+                if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+                {
+                    <span style="color:#ccc; font-size:12px;">Сегодня</span><br />
+                }
+
+                else if (item.Date.ToShortDateString().Equals(DateTime.Now.AddDays(-1).ToShortDateString()))
+                {
+                    <span style="color:#ccc; font-size:12px;">Вчера</span><br />
+                }
+                else
+                {
+                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString()</span><br />
+                }
+                        }
+                        <span>@item.Content</span>
+                        <div class="in-out">
+                            <img src="@Url.Content("~/Content/green-arrow.png")" />
+                        </div>
+                    </div>
+            }
+            else if (item.SenderId.ToString().Equals(Session["LogedUserId"].ToString()))
+            {
+                hasMess = 1;
+                var receiver = dc.Users.Where(a => a.UserId.Equals(item.ReceiverId)).FirstOrDefault();
+                <div class="message">
+                    <div class="avatar-mini">
+                        <img src="@Url.Content(receiver.AvatarPath)" />
+                    </div>
+                    <span style="color:#203939;">@receiver.Sirname @receiver.Name @receiver.Patername</span><br />
+                    @{
+                if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+                {
+                    <span style="color:#ccc; font-size:12px;">Сегодня</span><br />
+                }
+
+                else if (item.Date.ToShortDateString().Equals(DateTime.Now.AddDays(-1).ToShortDateString()))
+                {
+                    <span style="color:#ccc; font-size:12px;">Вчера</span><br />
+                }
+                else
+                {
+                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString()</span><br />
+                }
+                    }
+                    <span style="color:#000;">@item.Content</span>
+                    <div class="in-out">
+                        <img src="@Url.Content("~/Content/red-arrow.png")" />
+                    </div>
+                </div>
+            }
+        }
+        if (hasMess == 0)
+        {
+            <p>У Вас нет сообщений</p>
+        }
+        else
+        {
+            foreach (HtmlInputs.Models.Messages item in dc.Messages)
+            {
+                if (item.isRead == 0 && item.ReceiverId.Equals(Convert.ToInt32(Session["LogedUserId"])))
+                {
+                    item.isRead = 1;
+                }
+            }
+            dc.SaveChanges();
+        }
+    }
+</div>
+    @using (Html.BeginForm("Messages", "Profile", FormMethod.Post, new { @id = "form-message" }))
+    {
+        <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
+        <input type="hidden" name="isRead" value="0" />
+        <input type="hidden" name="Date" value="@DateTime.Now.ToShortDateString()" />
+        <span>Получатель</span><br />
+        @Html.DropDownListFor(a => a.ReceiverId, receiversList)<br />
+        <textarea cols="52" rows="4" name="Content"></textarea><br />
+        <input type="submit" value="Отправить" />
+    }
+

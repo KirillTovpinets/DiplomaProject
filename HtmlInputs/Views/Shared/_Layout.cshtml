@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/Style.css")" type="text/css" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    @{
+        HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+        int numNewMis = 0;
+        int numNewMes = 0;
+        int numNewChan = 0;
+
+        var misses = dc.Missings;
+        foreach (HtmlInputs.Models.Missings item in misses)
+        {
+            if (item.StudentId.ToString().Equals(Session["LogedUserId"].ToString()))
+            {
+                if (item.IsRead == 0)
+                {
+                    numNewMis++;
+                }
+            }
+        }
+        if (numNewMis != 0)
+        {
+            ViewBag.numMis = numNewMis;
+        }
+
+        var messages = dc.Messages;
+        foreach (HtmlInputs.Models.Messages item in messages)
+        {
+            if (item.ReceiverId.ToString().Equals(Session["LogedUserId"].ToString()))
+            {
+                if (item.isRead == 0)
+                {
+                    numNewMes++;
+                }
+            }
+        }
+        if (numNewMes != 0)
+        {
+            ViewBag.numMes = numNewMes;
+        }
+
+        var changes = dc.Changes;
+        foreach (HtmlInputs.Models.Changes item in changes)
+        {
+            if (item.UserId.ToString().Equals(Session["LogedUserId"].ToString()))
+            {
+                if (item.isRead == 0)
+                {
+                    numNewChan++;
+                }
+            }
+        }
+        if (numNewChan != 0)
+        {
+            ViewBag.numChan = numNewChan;
+        }
+
+        var applications = dc.Applications;
+        int numNewApp = 0;
+        foreach(HtmlInputs.Models.Applications item in applications )
+        {
+            if(item.isRead == 0)
+            {
+                numNewApp++;
+            }
+        }
+        if(numNewApp != 0)
+        {
+            ViewBag.numApp = numNewApp;
+        }
+    }
+    <header>
+        <img class="logo" src="@Url.Content("~/Content/Logo.jpg")" />
+        <div class="title">
+            Факультет инновационной подготовки<br />
+            <div class="speciality">Управление информационными ресурсами</div>
+        </div>
+    </header>
+    <nav class="header">
+        <div class="avatar">
+            <a><img class="wrapper" src="~/Content/wrapper.png" /></a>
+            <img src="@Url.Content(Session["LogedUserAvatar"].ToString())">
+
+        </div>
+        <div class="name-user">
+            @Session["LogedUserSname"] @Session["LogedUserName"] @Session["LogedUserPname"]
+        </div>
+    </nav>
+    <div class="main">
+        <ul class="menu">
+            <li><a href="~/Profile/Index">Главная</a></li>
+            @if (Session["LogedUserId"].ToString().Equals("4"))
+            {
+                <li>
+                    <a href="~/Profile/MethodistStudents">Студенты</a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="~/Profile/WhoIsUserMiss">
+                        Пропуски
+                        @if (ViewBag.numMis != null)
+                        {
+                            <span>(@ViewBag.numMis)</span>
+                        }
+                    </a>
+                </li>
+            }
+            <li>
+                <a href="~/Profile/Messages">
+                    Сообщения
+                    @if (ViewBag.numMes != null)
+                    {
+                        <span>(@ViewBag.numMes)</span>
+                    }
+                </a>
+            </li>
+            @if (Session["LogedUserRole"].ToString().Equals("1") ||
+                Session["LogedUserRole"].ToString().Equals("2") ||
+                Session["LogedUserRole"].ToString().Equals("4"))
+            {
+            
+            <li>
+                <a href="~/Profile/Changes">
+                    Изменения
+                    @if (ViewBag.numChan != null)
+                    {
+                        <span>(@ViewBag.numChan)</span>
+                    }
+                </a>
+            </li>
+            }
+            @if (Session["LogedUserRole"].ToString().Equals("1") || 
+                 Session["LogedUserRole"].ToString().Equals("2") || 
+                 Session["LogedUserRole"].ToString().Equals("5"))
+            {
+                <li>
+                    <a href="~/Profile/WhoIsUserApp">Заявление
+                    @if(Session["LogedUserId"].ToString().Equals("5") && ViewBag.numApp != null)
+                    {
+                        <span>(@ViewBag.numApp)</span>   
+                    }
+                    </a>
+                </li>
+            }
+            <li><a href="~/Home/Index">Выйти</a></li>
+        </ul>
+        @RenderBody()
+    </div>
+</body>
+</html>
