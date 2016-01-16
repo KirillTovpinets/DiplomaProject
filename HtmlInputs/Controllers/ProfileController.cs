@@ -170,13 +170,21 @@ namespace HtmlInputs.Controllers
             if(Session["LogedUserRole"].ToString().Equals("1") ||
                 Session["LogedUserRole"].ToString().Equals("2"))
             {
-                return Redirect("~/Profile/Appliance");
+                return Redirect("~/Profile/ShowOrWriteApp");
             }
             else if(Session["LogedUserRole"].ToString().Equals("5"))
             {
                 return Redirect("~/Profile/ApplianceForZDean");
             }
             return null;
+        }
+        public ActionResult ShowOrWriteApp()
+        {
+            return View();
+        }
+        public ActionResult ShowAnsApp()
+        {
+            return View();
         }
         public ActionResult Appliance()
         {
@@ -265,7 +273,14 @@ namespace HtmlInputs.Controllers
         public ActionResult SaveChangesApp(List<Applications> getChanges)
         {
             DiplomEntities5 dc = new DiplomEntities5();
-            return View("ViewApplications");
+            foreach(Applications app in getChanges)
+            {
+                var appToChange = dc.Applications.Where(a => a.Id.Equals(app.Id)).FirstOrDefault();
+                appToChange.isConfirmed = app.isConfirmed;
+                appToChange.DateOfRead = DateTime.Now;
+                dc.SaveChanges();
+            }
+            return View(getChanges);
         }
         public ActionResult Messages()
         {

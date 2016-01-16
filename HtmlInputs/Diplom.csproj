@@ -325,6 +325,12 @@
   <ItemGroup>
     <Content Include="Views\Profile\ViewApplications.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Profile\ShowOrWriteApp.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Profile\ShowAnsApp.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

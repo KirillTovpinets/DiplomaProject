@@ -1,0 +1,99 @@
+﻿@{
+    ViewBag.Title = "Отвеченные заявления";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DateTime temp = new DateTime();
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int StudId = Convert.ToInt32(Session["LogedUserId"]);
+    var zDean = dc.Users.Where(a => a.RoleId.Equals(5)).FirstOrDefault();
+    List<HtmlInputs.Models.Applications> myApp = dc.Applications.Where(a => a.StudentId
+                                                                        .Equals(StudId)).OrderByDescending(a => a.Id)
+                                                                        .ToList<HtmlInputs.Models.Applications>();
+    int numWeeks = 0;
+    DateTime[] weeks = new DateTime[50];
+    int isSaved = 0;
+    int hasMiss = 0;
+    <div class="content">
+
+            @foreach (HtmlInputs.Models.Applications item in dc.Applications) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+            {
+                if (!item.Users.UserId.ToString().Equals(Session["LogedUserId"].ToString()))
+                {
+                    continue;
+                }
+                hasMiss = 1;
+                temp = item.DateOfCreation;
+                while (temp.Date.DayOfWeek != System.DayOfWeek.Monday)
+                {
+                    temp = temp.Date.AddDays(-1);
+                }
+
+                foreach (DateTime savedWeeks in weeks)
+                {
+                    if (savedWeeks == temp)
+                    {
+                        isSaved = 1;
+                        break;
+                    }
+                }
+                if (isSaved == 0)
+                {
+                    weeks[numWeeks++] = temp;
+                }
+                else
+                {
+                    isSaved = 0;
+                }
+            }
+            @{
+                DateTime startWeekItem = new DateTime();
+                for (int i = 0; i < numWeeks; i++)
+                {
+                    <div style="text-align:center; border-bottom:2px dashed black; margin-bottom: 10px;">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</div>
+
+                    foreach (HtmlInputs.Models.Applications item in myApp)
+                    {
+                        startWeekItem = item.DateOfCreation;
+                        while (startWeekItem.DayOfWeek != System.DayOfWeek.Monday)
+                        {
+                            startWeekItem = startWeekItem.AddDays(-1);
+                        }
+                        if (startWeekItem == weeks[i])
+                        {
+                            string ans;
+                            if (item.isConfirmed == 1)
+                            {
+                                ans = "Не возражаю";
+                            }
+                            else
+                            {
+                                ans = "Отказать";
+                            }
+                            <div class="application" style="border-bottom:1px solid black; margin-bottom: 10px;">
+                                <div class="wrapp">
+                                    <div class="app-confirm">
+                                        @ans <br />
+                                        @zDean.Sirname @(zDean.Name.First()). @(zDean.Patername.First()).
+                                    </div>
+                                    <div class="app-head">
+                                        @item.Head <br />
+                                        @item.Users.Sirname @(item.Users.Name.First()). @(item.Users.Patername.First()).
+                                    </div>
+                                </div>
+                                <div class="app-title">Заявление</div>
+
+                                <p>
+                                    Прошу разрешить мне отсутствовать на занятиях @item.DateOfMiss.ToShortDateString() @item.Reason
+                                </p>
+
+                                <div class="app-date">@item.DateOfCreation.ToShortDateString()</div>
+                            </div>
+                        }
+                    }
+                }
+                if (hasMiss == 0)
+                {
+                        <div colspan="6" style="text-align:center;">У Вас нет подписанных заявлений</div>
+                }
+            }
+    </div>
+}

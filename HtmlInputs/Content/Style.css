@@ -251,7 +251,9 @@ textarea{
 }
 
 body .main .content .courses,
-body .main .content .groups{
+body .main .content .groups,
+body .main .content .ans-app,
+body .main .content .write-app{
     text-decoration:none;
     color:white;
     text-align:center;
@@ -264,7 +266,9 @@ body .main .content .groups{
 }
 
 body .main .content .courses:hover,
-body .main .content .groups:hover{
+body .main .content .groups:hover,
+body .main .content .ans-app:hover,
+body .main .content .write-app:hover{
     background:#514128;
 }
 

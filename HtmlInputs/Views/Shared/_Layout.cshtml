@@ -63,16 +63,25 @@
 
         var applications = dc.Applications;
         int numNewApp = 0;
+        int numAnswApp = 0;
         foreach(HtmlInputs.Models.Applications item in applications )
         {
             if(item.isRead == 0)
             {
                 numNewApp++;
             }
+            else if(item.isRead == 1 && item.StudentId.ToString().Equals(Session["LogedUserId"].ToString()))
+            {
+                numAnswApp++;
+            }
         }
         if(numNewApp != 0)
         {
             ViewBag.numApp = numNewApp;
+        }
+        if(numAnswApp != 0)
+        {
+            ViewBag.numAnsApp = numAnswApp;
         }
     }
     <header>
@@ -143,9 +152,15 @@
             {
                 <li>
                     <a href="~/Profile/WhoIsUserApp">Заявление
-                    @if(Session["LogedUserId"].ToString().Equals("5") && ViewBag.numApp != null)
+                    @if(Session["LogedUserRole"].ToString().Equals("5") && ViewBag.numApp != null)
                     {
                         <span>(@ViewBag.numApp)</span>   
+                    }
+                    @if ((Session["LogedUserRole"].ToString().Equals("1") || 
+                          Session["LogedUserRole"].ToString().Equals("2")) &&
+                          ViewBag.numAnsApp != null)
+                    {
+                        <span>(@ViewBag.numAnsApp)</span>
                     }
                     </a>
                 </li>

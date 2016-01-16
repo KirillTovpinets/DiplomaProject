@@ -79,10 +79,11 @@
                         <div class="wrapp">
                             <div class="app-confirm">
                                 @Html.DropDownListFor(a => a[numApp].isConfirmed, ConfirmList)<br />
-                                @Html.LabelFor(a => a[numApp].DateOfRead, DateTime.Now.ToShortDateString())
+                                @Session["LogedUserSname"] @(Session["LogedUserName"].ToString().First()). @(Session["LogedUserPname"].ToString().First()).
+                                @Html.HiddenFor(a => a[numApp].Id)
                                 @{
                                     numApp++;
-                                    }
+                                }
                             </div>
                             <div class="app-head">
                                 <div>@app.Head</div>

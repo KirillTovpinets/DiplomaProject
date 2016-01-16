@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "ShowOrWriteApp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int numAnsApp = 0;
+}
+
+<div class="content">
+    <a class="ans-app" href="~/Profile/ShowAnsApp">
+        Ответы
+        @{
+            foreach (HtmlInputs.Models.Applications item in dc.Applications)
+            {
+                if(item.isRead == 1 && item.StudentId.ToString().Equals(Session["LogedUserId"].ToString()))
+                {
+                    numAnsApp++;
+                }
+            }
+            if (numAnsApp != 0)
+            {
+                <span>(@numAnsApp)</span>
+            }
+        }
+    </a>
+    <a class="write-app" href="~/Profile/Appliance">Написать</a>
+</div>
