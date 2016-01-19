@@ -4,19 +4,20 @@
 }
 
 <div class="content">
+    <h2>@Session["NumCourse"].ToString()-й курс</h2>
     @{
         
     if(Session["LogedUserRole"].ToString().Equals("5"))
     { 
-        <a href="~/Profile/GroupOne" class="groups">1-я группа</a>
-        <a href="~/Profile/GroupTwo" class="groups">2-я группа</a>
-        <a href="~/Profile/GroupThree" class="groups">3-я группа</a>
+        <a href="~/Profile/GroupOne" class="choose-buttons">1-я группа</a>
+        <a href="~/Profile/GroupTwo" class="choose-buttons">2-я группа</a>
+        <a href="~/Profile/GroupThree" class="choose-buttons">3-я группа</a>
     }
     else
     {
-        <a href="~/Profile/GroupOneMethodist" class="groups">1-я группа</a>
-        <a href="~/Profile/GroupTwoMethodist" class="groups">2-я группа</a>
-        <a href="~/Profile/GroupThreeMethodist" class="groups">3-я группа</a>
+        <a href="~/Profile/GroupOneMethodist" class="choose-buttons">1-я группа</a>
+        <a href="~/Profile/GroupTwoMethodist" class="choose-buttons">2-я группа</a>
+        <a href="~/Profile/GroupThreeMethodist" class="choose-buttons">3-я группа</a>
     }
 }
 </div>

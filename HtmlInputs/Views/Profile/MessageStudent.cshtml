@@ -1,7 +1,6 @@
 ﻿@{
+    ViewBag.Title = "Курс";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Заявления";
-
     HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
     int numCourseOne = 0;
     int numCourseTwo = 0;
@@ -10,25 +9,27 @@
 }
 
 <div class="content">
-    <h2>Заявления</h2>
-    <a class="choose-buttons" href="~/Profile/CourseOneApp">1 курс
-    @{
-        foreach(HtmlInputs.Models.Applications item in dc.Applications)
-        {
-            if(item.isRead == 0 && item.Users.Course == 1)
+    <h2>Студенты</h2>
+    <a class="choose-buttons" href="~/Profile/CourseOneMess">
+        1 курс
+        @{
+            foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
-                numCourseOne++;   
+                if (item.isRead == 0 && item.Users.Course == 1)
+                {
+                    numCourseOne++;
+                }
+            }
+            if (numCourseOne != 0)
+            {
+                <span>(@numCourseOne)</span>
             }
         }
-        if(numCourseOne != 0)
-        {
-            <span>(@numCourseOne)</span>
-        }
-    }</a>
-    <a class="choose-buttons" href="~/Profile/CourseTwoApp">
+    </a>
+    <a class="choose-buttons" href="~/Profile/CourseTwoMess">
         2 курс
         @{
-            foreach (HtmlInputs.Models.Applications item in dc.Applications)
+            foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
                 if (item.isRead == 0 && item.Users.Course == 2)
                 {
@@ -41,10 +42,10 @@
             }
         }
     </a>
-    <a class="choose-buttons" href="~/Profile/CourseThreeApp">
+    <a class="choose-buttons" href="~/Profile/CourseThreeMess">
         3 курс
         @{
-            foreach (HtmlInputs.Models.Applications item in dc.Applications)
+            foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
                 if (item.isRead == 0 && item.Users.Course == 3)
                 {
@@ -57,10 +58,10 @@
             }
         }
     </a>
-    <a class="choose-buttons" href="~/Profile/CourseFourApp">
+    <a class="choose-buttons" href="~/Profile/CourseFourMess">
         4 курс
         @{
-            foreach (HtmlInputs.Models.Applications item in dc.Applications)
+            foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
                 if (item.isRead == 0 && item.Users.Course == 4)
                 {
@@ -73,4 +74,7 @@
             }
         }
     </a>
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/WhomToMessage"><input type="button" value="Назад" /></a>
 </div>

@@ -4,7 +4,7 @@
     
 }
     <nav class="header">
-        Кабинет пользователя
+        <div class="header-content"> Кабинет пользователя</div>
     </nav>
     @using (Html.BeginForm("Index","Home",FormMethod.Post, new {id = "login-form"}))
     {
@@ -29,6 +29,6 @@
         </table>
         <div class="buttons">
             <input type="submit" value="Вход" />
-            <a href="~/Home/Register"><input type="button" value="Регистрация" /></a>
+            <a href="~/Home/HowToRegister"><input type="button" value="Регистрация" /></a>
         </div>
     }

@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Группа";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    int numGroupOne = 0;
+    int numGroupTwo = 0;
+    int numGroupThree = 0;
+}
+
+<div class="content">
+    <h2>@Session["CourseMess"].ToString()-й курс</h2>
+    @{
+            <a href="~/Profile/GroupOneMess" class="choose-buttons">1-я группа
+            @{
+                foreach (HtmlInputs.Models.Messages item in dc.Messages)
+                {
+                    if (item.isRead == 0 &&
+                        item.Users.Group == 1 && 
+                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                    {
+                        numGroupOne++;
+                    }
+                }
+                if (numGroupOne != 0)
+                {
+                    <span>(@numGroupOne)</span>
+                }
+            }</a>
+            <a href="~/Profile/GroupTwoMess" class="choose-buttons">2-я группа
+            @{
+                foreach (HtmlInputs.Models.Messages item in dc.Messages)
+                {
+                    if (item.isRead == 0 &&
+                        item.Users.Group == 2 &&
+                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                    {
+                        numGroupTwo++;
+                    }
+                }
+                if (numGroupTwo != 0)
+                {
+                    <span>(@numGroupTwo)</span>
+                }
+            }</a>
+            <a href="~/Profile/GroupThreeMess" class="choose-buttons">3-я группа
+            @{
+                foreach (HtmlInputs.Models.Messages item in dc.Messages)
+                {
+                    if (item.isRead == 0 &&
+                        item.Users.Group == 3 &&
+                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                    {
+                        numGroupThree++;
+                    }
+                }
+                if (numGroupThree != 0)
+                {
+                    <span>(@numGroupThree)</span>
+                }
+            }</a>
+    }
+</div>
+<div class="miss-buttons">
+    <a href="~/Profile/MessageStudent"><input type="button" value="Назад" /></a>
+</div>

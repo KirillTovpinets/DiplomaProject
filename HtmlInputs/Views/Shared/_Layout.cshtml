@@ -93,11 +93,10 @@
     </header>
     <nav class="header">
         <div class="avatar">
-            <a><img class="wrapper" src="~/Content/wrapper.png" /></a>
             <img src="@Url.Content(Session["LogedUserAvatar"].ToString())">
 
         </div>
-        <div class="name-user">
+        <div class="header-content">
             @Session["LogedUserSname"] @Session["LogedUserName"] @Session["LogedUserPname"]
         </div>
     </nav>
@@ -123,13 +122,27 @@
                 </li>
             }
             <li>
-                <a href="~/Profile/Messages">
-                    Сообщения
-                    @if (ViewBag.numMes != null)
-                    {
-                        <span>(@ViewBag.numMes)</span>
-                    }
-                </a>
+                @if(!Session["LogedUserRole"].ToString().Equals("1") &&
+                    !Session["LogedUserRole"].ToString().Equals("2"))
+                { 
+                    <a href="~/Profile/WhomToMessage">
+                        Сообщения
+                        @if (ViewBag.numMes != null)
+                        {
+                            <span>(@ViewBag.numMes)</span>
+                        }
+                    </a>
+                }
+                else
+                {
+                    <a href="~/Profile/Messages">
+                        Сообщения
+                        @if (ViewBag.numMes != null)
+                        {
+                            <span>(@ViewBag.numMes)</span>
+                        }
+                    </a>
+                }
             </li>
             @if (Session["LogedUserRole"].ToString().Equals("1") ||
                 Session["LogedUserRole"].ToString().Equals("2") ||

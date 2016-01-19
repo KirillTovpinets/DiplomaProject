@@ -27,6 +27,7 @@ namespace HtmlInputs.Models
         public int YearOfBirth { get; set; }
         public int RoleId { get; set; }
         [Required(ErrorMessage = "Введите email", AllowEmptyStrings = false)]
+        [EmailAddress(ErrorMessage = "Введены не правильные данные")]
         public string Email { get; set; }
         public string AvatarPath { get; set; }
         public int Group { get; set; }

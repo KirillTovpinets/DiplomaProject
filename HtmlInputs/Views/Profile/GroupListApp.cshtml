@@ -8,7 +8,8 @@
 }
 
 <div class="content">
-            <a href="~/Profile/GroupOneApp" class="groups">1-я группа
+    <h2>@Session["CourseApp"].ToString()-й курс</h2>
+            <a href="~/Profile/GroupOneApp" class="choose-buttons">1-я группа
                 @{foreach (HtmlInputs.Models.Applications item in dc.Applications)
                 {
                     if (item.isRead == 0 && item.Users.Group == 1)
@@ -21,7 +22,7 @@
                     <span>(@numGroupOne)</span>
                 }
                 }</a>
-            <a href="~/Profile/GroupTwoApp" class="groups">2-я группа
+            <a href="~/Profile/GroupTwoApp" class="choose-buttons">2-я группа
                 @{foreach (HtmlInputs.Models.Applications item in dc.Applications)
                 {
                     if (item.isRead == 0 && item.Users.Group == 2)
@@ -34,7 +35,7 @@
                     <span>(@numGroupTwo)</span>
                 }
                 }</a>
-            <a href="~/Profile/GroupThreeApp" class="groups">3-я группа
+            <a href="~/Profile/GroupThreeApp" class="choose-buttons">3-я группа
                 @{foreach (HtmlInputs.Models.Applications item in dc.Applications)
                 {
                     if (item.isRead == 0 && item.Users.Group == 3)

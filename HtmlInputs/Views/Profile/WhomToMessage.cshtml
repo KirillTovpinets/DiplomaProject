@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Написать";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    <h2>Сообщения</h2>
+    <a href="~/Profile/MessageStudent" class="choose-buttons">Студенты
+        @{
+            HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+            int numMessFromStud = 0;
+            foreach (HtmlInputs.Models.Messages mess in dc.Messages)
+            {
+                if ((mess.Users.RoleId == 1 ||
+                    mess.Users.RoleId == 2) &&
+                    mess.ReceiverId.ToString().Equals(Session["LogedUserId"].ToString()) &&
+                    mess.isRead == 0)
+                {
+                    numMessFromStud++;
+                }
+            }
+            if (numMessFromStud != 0)
+            {
+                <span>(@numMessFromStud)</span>
+            }
+        }
+    </a>
+    <a href="~/Profile/MessageDeans" class="choose-buttons">Деканат
+        @{
+            int numMessFromDeans = 0;
+            foreach (HtmlInputs.Models.Messages mess in dc.Messages)
+            {
+                if ((mess.Users.RoleId == 3 ||
+                    mess.Users.RoleId == 4 ||
+                    mess.Users.RoleId == 5 ||
+                    mess.Users.RoleId == 6) &&
+                    mess.ReceiverId.ToString().Equals(Session["LogedUserId"].ToString()) &&
+                    mess.isRead == 0)
+                {
+                    numMessFromDeans++;
+                }
+            }
+            if (numMessFromDeans != 0)
+            {
+                <span>(@numMessFromDeans)</span>
+            }
+        }
+    </a>
+</div>
+

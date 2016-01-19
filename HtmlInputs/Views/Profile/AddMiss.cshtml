@@ -32,7 +32,7 @@
 
     HtmlInputs.Models.DiplomEntities5 dc1 = new HtmlInputs.Models.DiplomEntities5();
     int group = Convert.ToInt32(Session["LogedUserGroup"].ToString());
-    foreach (HtmlInputs.Models.Users item in dc1.Users)
+    foreach (HtmlInputs.Models.Users item in dc1.Users.OrderBy(a => a.Sirname))
     {
         if (item.Group.Equals(group) && item.RoleId.Equals(1))
         {
@@ -48,9 +48,16 @@
             <input type="hidden" name="isRead" value="0" />
             @if (ViewBag.Message != null)
             {
-            <div style="color:green;">
+            <div style="color:green;" id="ToHide">
                 @ViewBag.Message
             </div>
+            <script type="text/javascript">
+            var timer = setTimeout(function () {
+                    var element = document.getElementById("ToHide");
+                    element.classList.add("Hidden");
+                    clearTimeout(timer);
+                }, 1500);
+            </script>
             }
             <table>
                 <tr>
@@ -82,12 +89,12 @@
                         /
                         @Html.DropDownListFor(a => a.Year, listOfYear)
                     </td>
-                </tr>
             </table>
         </div>
     <div class="miss-buttons">
-        <input type="submit" value="Добавить" />
+        <input type="submit" value="Добавить"/>
         <a href="~/Profile/MissForPraepostor"><input type="button" value="Назад" /></a>
     </div>
     }
+
         

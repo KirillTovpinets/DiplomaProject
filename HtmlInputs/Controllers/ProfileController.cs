@@ -232,7 +232,7 @@ namespace HtmlInputs.Controllers
             Session["CourseApp"] = 2;
             return View("GroupListApp");
         }
-        public ActionResult CourseTreeApp()
+        public ActionResult CourseThreeApp()
         {
             Session["CourseApp"] = 3;
             return View("GroupListApp");
@@ -280,7 +280,63 @@ namespace HtmlInputs.Controllers
                 appToChange.DateOfRead = DateTime.Now;
                 dc.SaveChanges();
             }
+            ViewBag.Message = "Изменения успешно сохранены";
             return View(getChanges);
+        }
+        public ActionResult WhomToMessage()
+        {
+            return View();
+        }
+        public ActionResult MessageStudent()
+        {
+            Session["WhomToMess"] = 1;
+            return View();
+        }
+        public ActionResult CourseOneMess()
+        {
+            Session["CourseMess"] = 1;
+            return View("ChooseGroupMess");
+        }
+        public ActionResult CourseTwoMess()
+        {
+            Session["CourseMess"] = 2;
+            return View("ChooseGroupMess");
+        }
+        public ActionResult CourseThreeMess()
+        {
+            Session["CourseMess"] = 3;
+            return View("ChooseGroupMess");
+        }
+        public ActionResult CourseFourMess()
+        {
+            Session["CourseMess"] = 4;
+            return View("ChooseGroupMess");
+        }
+        public ActionResult GroupOneMess()
+        {
+            Session["GroupMess"] = 1;
+            return Redirect("~/Profile/MessagesStaff");
+        }
+        public ActionResult GroupTwoMess()
+        {
+            Session["GroupMess"] = 2;
+            return Redirect("~/Profile/MessagesStaff");
+        }
+        public ActionResult GroupThreeMess()
+        {
+            Session["GroupMess"] = 3;
+            return Redirect("~/Profile/MessagesStaff");
+        }
+        public ActionResult MessageDeans()
+        {
+            Session["WhomToMess"] = 2;
+            Session["CourseMess"] = null;
+            Session["GroupMess"] = null;
+            return Redirect("~/Profile/MessagesStaff");
+        }
+        public ActionResult MessagesStaff()
+        {
+            return View();
         }
         public ActionResult Messages()
         {

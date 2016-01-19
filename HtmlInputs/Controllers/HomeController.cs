@@ -55,11 +55,15 @@ namespace HtmlInputs.Controllers
             }
             return View(user);
         }
+        public ActionResult HowToRegister()
+        {
+            return View();
+        }
         public ActionResult Register()
         {
             return View();
         }
-
+        
         [HttpPost]
         public ActionResult Register(RegUser FormRegUser, HttpPostedFileBase Avatar)
         {
@@ -114,7 +118,22 @@ namespace HtmlInputs.Controllers
             }
             return View(FormRegUser);
         }
-
+        public ActionResult RegisterModerator()
+        {
+            return View();
+        }
+        public ActionResult RegisterMethodist()
+        {
+            return View();
+        }
+        public ActionResult RegisterZDean()
+        {
+            return View();
+        }
+        public ActionResult RegisterDean()
+        {
+            return View();
+        }
         public ActionResult Captcha()
         {
             Session[CaptchaImage.CaptchaValueKey] = new Random(DateTime.Now.Millisecond).Next(1111, 9999).ToString();

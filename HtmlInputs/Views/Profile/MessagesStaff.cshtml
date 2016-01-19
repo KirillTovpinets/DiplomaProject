@@ -7,46 +7,65 @@
         List<SelectListItem> receiversList = new List<SelectListItem>();
         foreach (HtmlInputs.Models.Users item in dc.Users.OrderBy(a => a.Sirname))
         {
-            if((Session["LogedUserRole"].ToString().Equals("1") ||
+            if ((Session["LogedUserRole"].ToString().Equals("1") ||
                 Session["LogedUserRole"].ToString().Equals("2")) &&
                 (item.RoleId != 1 && item.RoleId != 2))
             {
                 var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
                 receiversList.Add(newReceiver);
             }
-            else if(!Session["LogedUserRole"].ToString().Equals("1") &&
+            else if (!Session["LogedUserRole"].ToString().Equals("1") &&
                 !Session["LogedUserRole"].ToString().Equals("2"))
             {
-                if(Session["WhomToMess"].ToString().Equals("1"))
+                if (Session["WhomToMess"].ToString().Equals("1"))
                 {
-                    if(item.RoleId == 1  || item.RoleId == 2)
+                    if (item.RoleId == 1 || item.RoleId == 2)
                     {
-                        if(item.Course.ToString().Equals(Session["CourseMess"].ToString()) &&
+                        if (item.Course.ToString().Equals(Session["CourseMess"].ToString()) &&
                             item.Group.ToString().Equals(Session["GroupMess"].ToString()))
-                        { 
-                            var newReceiver = new SelectListItem { Text = item.Sirname + " " +
-                                                                    item.Name + " " + item.Patername,
-                                                                    Value = item.UserId.ToString() };
+                        {
+                            var newReceiver = new SelectListItem
+                            {
+                                Text = item.Sirname + " " +
+                                 item.Name + " " + item.Patername,
+                                Value = item.UserId.ToString()
+                            };
                             receiversList.Add(newReceiver);
                         }
                     }
                 }
-                else if(Session["WhomToMess"].ToString().Equals("2")){
-                    if(item.RoleId != 1 && item.RoleId != 2)
-                    { 
+                else if (Session["WhomToMess"].ToString().Equals("2"))
+                {
+                    if (item.RoleId != 1 &&
+                        item.RoleId != 2 &&
+                        item.UserId != Convert.ToInt32(Session["LogedUserId"]))
+                    {
                         var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
                         receiversList.Add(newReceiver);
                     }
                 }
             }
-            
+
         }
         int hasMess = 0;
         foreach (HtmlInputs.Models.Messages item in dc.Messages.OrderByDescending(a => a.Id))
         {
             if (item.ReceiverId.ToString().Equals(Session["LogedUserId"].ToString()))
             {
-                
+                if(Session["WhomToMess"].ToString().Equals("1"))
+                {
+                    if(item.Users.RoleId != 1 || item.Users.RoleId != 2)
+                    {
+                        continue;
+                    }
+                }
+                else if(Session["WhomToMess"].ToString().Equals("2"))
+                {
+                    if(item.Users.RoleId == 1 || item.Users.RoleId == 2)
+                    {
+                        continue;
+                    }
+                }
                 hasMess = 1;
                 string style;
                 if (item.isRead == 0)
@@ -57,12 +76,12 @@
                 {
                     style = "background:#fff;";
                 }
-                    <div class="message" style="@style">
-                        <div class="avatar-mini">
-                            <img src="@Url.Content(item.Users.AvatarPath)" />
-                        </div>
-                        <span style="color:#203939;">@item.Users.Sirname @item.Users.Name @item.Users.Patername</span><br />
-                        @{
+                <div class="message" style="@style">
+                    <div class="avatar-mini">
+                        <img src="@Url.Content(item.Users.AvatarPath)" />
+                    </div>
+                    <span style="color:#203939;">@item.Users.Sirname @item.Users.Name @item.Users.Patername</span><br />
+                    @{
                 if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
                     <span style="color:#ccc; font-size:12px;">Сегодня</span><br />
@@ -76,15 +95,31 @@
                 {
                     <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString()</span><br />
                 }
-                        }
-                        <span>@item.Content</span>
-                        <div class="in-out">
-                            <img src="@Url.Content("~/Content/green-arrow.png")" />
-                        </div>
+                    }
+                    <span>@item.Content</span>
+                    <div class="in-out">
+                        <img src="@Url.Content("~/Content/green-arrow.png")" />
                     </div>
+                </div>
             }
             else if (item.SenderId.ToString().Equals(Session["LogedUserId"].ToString()))
             {
+                var student = dc.Users.Where(a => a.UserId.Equals(item.ReceiverId)).FirstOrDefault();
+                if (Session["WhomToMess"].ToString().Equals("1"))
+                {
+                    
+                    if (student.RoleId != 1 || student.RoleId != 2)
+                    {
+                        continue;
+                    }
+                }
+                else if (Session["WhomToMess"].ToString().Equals("2"))
+                {
+                    if (student.RoleId == 1 || student.RoleId == 2)
+                    {
+                        continue;
+                    }
+                }
                 hasMess = 1;
                 var receiver = dc.Users.Where(a => a.UserId.Equals(item.ReceiverId)).FirstOrDefault();
                 <div class="message">
@@ -131,14 +166,34 @@
         }
     }
 </div>
-    @using (Html.BeginForm("Messages", "Profile", FormMethod.Post, new { @id = "form-message" }))
+@using (Html.BeginForm("Messages", "Profile", FormMethod.Post, new { @id = "form-message" }))
+{
+    <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
+    <input type="hidden" name="isRead" value="0" />
+    <input type="hidden" name="Date" value="@DateTime.Now.ToShortDateString()" />
+    <span>Получатель</span><br />
+    @Html.DropDownListFor(a => a.ReceiverId, receiversList)<br />
+    <textarea cols="52" rows="4" name="Content"></textarea><br />
+    <input type="submit" value="Отправить" />
+    if(Session["CourseMess"] == null)
     {
-        <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
-        <input type="hidden" name="isRead" value="0" />
-        <input type="hidden" name="Date" value="@DateTime.Now.ToShortDateString()" />
-        <span>Получатель</span><br />
-        @Html.DropDownListFor(a => a.ReceiverId, receiversList)<br />
-        <textarea cols="52" rows="4" name="Content"></textarea><br />
-        <input type="submit" value="Отправить" />
+        <a href="~/Profile/WhomToMessage"><input type="button" value="Назад" /></a>
     }
+    else if(Session["CourseMess"].ToString().Equals("1"))
+    { 
+        <a href="~/Profile/CourseOneMess"><input type="button" value="Назад" /></a>
+    }
+    else if (Session["CourseMess"].ToString().Equals("2"))
+    {
+        <a href="~/Profile/CourseTwoMess"><input type="button" value="Назад" /></a>
+    }
+    else if (Session["CourseMess"].ToString().Equals("3"))
+    {
+        <a href="~/Profile/CourseThreeMess"><input type="button" value="Назад" /></a>
+    }
+    else if (Session["CourseMess"].ToString().Equals("4"))
+    {
+        <a href="~/Profile/CourseFourMess"><input type="button" value="Назад" /></a>
+    }
+}
 

@@ -6,12 +6,12 @@
 }
 
 <div class="content">
-    <a class="ans-app" href="~/Profile/ShowAnsApp">
+    <a class="choose-buttons" href="~/Profile/ShowAnsApp">
         Ответы
         @{
             foreach (HtmlInputs.Models.Applications item in dc.Applications)
             {
-                if(item.isRead == 1 && item.StudentId.ToString().Equals(Session["LogedUserId"].ToString()))
+                if (item.isRead == 1 && item.StudentId.ToString().Equals(Session["LogedUserId"].ToString()))
                 {
                     numAnsApp++;
                 }
@@ -22,5 +22,5 @@
             }
         }
     </a>
-    <a class="write-app" href="~/Profile/Appliance">Написать</a>
+    <a class="choose-buttons" href="~/Profile/Appliance">Написать</a>
 </div>
