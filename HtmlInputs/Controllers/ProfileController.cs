@@ -155,8 +155,48 @@ namespace HtmlInputs.Controllers
         }
         public ActionResult EditGroup()
         {
-            return View("GroupListEdit");
+            List<Users> GroupList = new List<Users>();
+                HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+                foreach (HtmlInputs.Models.Users item in dc.Users.OrderBy(a => a.Sirname))
+                {
+                    if (item.Group.ToString().Equals(Session["NumGroup"].ToString()) &&
+                    item.Course.ToString().Equals(Session["NumCourse"].ToString()) &&
+                    item.RoleId != 3)
+                    {
+                        GroupList.Add(item);
+                    }
+                }
+            return View("GroupListEdit",GroupList);
         }
+        [HttpPost]
+        public ActionResult EditGroup(List<Users> getStudent)
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            foreach (Users stud in getStudent)
+            {
+                var DbStud = dc.Users.Where(a => a.UserId.Equals(stud.UserId)).FirstOrDefault();
+                if (!DbStud.RoleId.Equals(stud.RoleId))
+                {
+                    DbStud.RoleId = stud.RoleId;
+                }
+            }
+            ViewBag.Message = "Изменения успешно сохранены";
+            dc.SaveChanges();
+            if(Session["NumGroup"].ToString().Equals("1"))
+            {
+                return Redirect("~/Profile/GroupOneMethodist");
+            }
+            else if (Session["NumGroup"].ToString().Equals("2"))
+            {
+                return Redirect("~/Profile/GroupTwoMethodist");
+            }
+            else if (Session["NumGroup"].ToString().Equals("3"))
+            {
+                return Redirect("~/Profile/GroupThreeMethodist");
+            }
+            return null;
+        }
+
         public ActionResult WeekReportForZDean()
         {
             return View();
@@ -248,7 +288,7 @@ namespace HtmlInputs.Controllers
             DiplomEntities5 dc = new DiplomEntities5();
             int course = Convert.ToInt32(Session["CourseApp"]);
             var GroupOne = dc.Applications.Where(a => a.Users.Group == 1 &&
-                                                a.Users.Course == course).ToList<Applications>();
+                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
             return View("ViewApplications",GroupOne);
         }
         public ActionResult GroupTwoApp()
@@ -257,7 +297,7 @@ namespace HtmlInputs.Controllers
             DiplomEntities5 dc = new DiplomEntities5();
             int course = Convert.ToInt32(Session["CourseApp"]);
             var GroupTwo = dc.Applications.Where(a => a.Users.Group == 2 &&
-                                                a.Users.Course == course).ToList<Applications>();
+                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
             return View("ViewApplications", GroupTwo);
         }
         public ActionResult GroupThreeApp()
@@ -266,7 +306,7 @@ namespace HtmlInputs.Controllers
             DiplomEntities5 dc = new DiplomEntities5();
             int course = Convert.ToInt32(Session["CourseApp"]);
             var GroupThree = dc.Applications.Where(a => a.Users.Group == 3 &&
-                                                a.Users.Course == course).ToList<Applications>();
+                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
             return View("ViewApplications", GroupThree);
         }
         [HttpPost]
@@ -278,10 +318,11 @@ namespace HtmlInputs.Controllers
                 var appToChange = dc.Applications.Where(a => a.Id.Equals(app.Id)).FirstOrDefault();
                 appToChange.isConfirmed = app.isConfirmed;
                 appToChange.DateOfRead = DateTime.Now;
+                appToChange.isRead = 1;
                 dc.SaveChanges();
             }
             ViewBag.Message = "Изменения успешно сохранены";
-            return View(getChanges);
+            return View("ViewApplications", getChanges);
         }
         public ActionResult WhomToMessage()
         {
@@ -422,7 +463,7 @@ namespace HtmlInputs.Controllers
                 }
             }
             dc.SaveChanges();
-            ViewBag.chan = dc.Changes;
+            ViewBag.chan = dc.Changes.OrderByDescending(a => a.Id);
             return View();
         }
         public ActionResult ChangesForMethodist()
@@ -447,7 +488,14 @@ namespace HtmlInputs.Controllers
                 {
                     var obj = new Changes();
                     obj.UserId = item.UserId;
-                    obj.isRead = 0;
+                    if(item.RoleId != 4)
+                    { 
+                        obj.isRead = 0;
+                    }
+                    else
+                    {
+                        obj.isRead = 1;
+                    }
                     obj.Date = DateTime.Now;
                     obj.Content = getChanges.Content;
                     RecordSet.Add(obj);

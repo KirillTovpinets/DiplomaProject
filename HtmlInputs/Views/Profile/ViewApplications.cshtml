@@ -20,7 +20,7 @@
     { 
     <div class="content">
     @{
-        foreach (HtmlInputs.Models.Applications item in dc.Applications) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+        foreach (HtmlInputs.Models.Applications item in dc.Applications.OrderByDescending(a => a.DateOfCreation)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
         {
             if (item.Users.Group.ToString() != Session["GroupApp"].ToString() ||
                 item.Users.Course.ToString() != Session["CourseApp"].ToString())
@@ -101,14 +101,6 @@
                 }
             }
         }
-        foreach(HtmlInputs.Models.Applications app in dc.Applications)
-        {
-            if(app.isRead == 0)
-            {
-                app.isRead = 1;
-            }
-        }
-        dc.SaveChanges();
         if (hasApp == 0)
         {
             <div style="text-align:center;">В этой группе нет заявлений</div>

@@ -22,5 +22,12 @@
 }
 </div>
 <div class="miss-buttons">
-    <a href="~/Profile/MissForZDean"><input type="button" value="Назад" /></a>
+    @if(Session["LogedUserRole"].ToString().Equals("5"))
+    { 
+        <a href="~/Profile/MissForZDean"><input type="button" value="Назад" /></a>
+    }
+    else
+    {
+        <a href="~/Profile/MethodistStudents"><input type="button" value="Назад" /></a>
+    }
 </div>

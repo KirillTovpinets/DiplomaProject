@@ -28,6 +28,12 @@ namespace HtmlInputs.Controllers
                     var v = dc.Users.Where(a => a.Login.Equals(user.Login) && a.Password.Equals(user.Password)).FirstOrDefault();
                     if(v != null)
                     {
+                        if (v.RoleId == 7)
+                        {
+                            MvcHtmlString str = new MvcHtmlString("<script>alert('Вы отчислены из университета. Доступ закрыт')</script>");
+                            ViewBag.Message = str;
+                            return View(user);
+                        }
                         Session["LogedUserId"] = v.UserId.ToString();
                         Session["LogedUserName"] = v.Name.ToString();
                         Session["LogedUserSname"] = v.Sirname.ToString();

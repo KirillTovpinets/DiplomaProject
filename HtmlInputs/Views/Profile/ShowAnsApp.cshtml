@@ -14,7 +14,7 @@
     int hasMiss = 0;
     <div class="content">
 
-            @foreach (HtmlInputs.Models.Applications item in dc.Applications) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+            @foreach (HtmlInputs.Models.Applications item in dc.Applications.OrderByDescending(a => a.DateOfCreation)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
             {
                 if (!item.Users.UserId.ToString().Equals(Session["LogedUserId"].ToString()))
                 {

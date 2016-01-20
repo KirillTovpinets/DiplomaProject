@@ -69,6 +69,7 @@
 </div>
 <div class="miss-buttons">
     @{
+        <a href="~/Profile/EditGroup"><input type="button" value="Редактировать" /></a>
         if (Session["NumCourse"].ToString().Equals("1"))
         {
             <a href="~/Profile/CourseOne"><input type="button" value="Назад" /></a>
@@ -85,6 +86,6 @@
         {
             <a href="~/Profile/CourseFour"><input type="button" value="Назад" /></a>
         }
-            <a href="~/Profile/EditGroup"><input type="button" value="Редактировать" /></a>
+            
 }
 </div>

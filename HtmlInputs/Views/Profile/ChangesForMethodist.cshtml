@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="content">
-    <h1>Изменения</h1>
+    <h2>Изменения</h2>
     @{
         int hasChan = 0;
         foreach (HtmlInputs.Models.Changes item in ViewBag.chan)
@@ -11,9 +11,9 @@
             if (item.UserId.ToString().Equals(Session["LogedUserId"].ToString()))
             {
                 hasChan = 1;
-                <div>
+                <div class="news-item">
                     <p>@item.Content</p>
-                    <p>@item.Date.ToShortDateString()</p>
+                    <p class="date">@item.Date.ToShortDateString()</p>
                 </div>
             }
         }
