@@ -7,16 +7,6 @@
         List<SelectListItem> receiversList = new List<SelectListItem>();
         foreach (HtmlInputs.Models.Users item in dc.Users.OrderBy(a => a.Sirname))
         {
-            if ((Session["LogedUserRole"].ToString().Equals("1") ||
-                Session["LogedUserRole"].ToString().Equals("2")) &&
-                (item.RoleId != 1 && item.RoleId != 2))
-            {
-                var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
-                receiversList.Add(newReceiver);
-            }
-            else if (!Session["LogedUserRole"].ToString().Equals("1") &&
-                !Session["LogedUserRole"].ToString().Equals("2"))
-            {
                 if (Session["WhomToMess"].ToString().Equals("1"))
                 {
                     if (item.RoleId == 1 || item.RoleId == 2)
@@ -38,14 +28,13 @@
                 {
                     if (item.RoleId != 1 &&
                         item.RoleId != 2 &&
-                        item.UserId != Convert.ToInt32(Session["LogedUserId"]))
+                        item.UserId != Convert.ToInt32(Session["LogedUserId"]) &&
+                        item.RoleId != 7)
                     {
                         var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
                         receiversList.Add(newReceiver);
                     }
                 }
-            }
-
         }
         int hasMess = 0;
         foreach (HtmlInputs.Models.Messages item in dc.Messages.OrderByDescending(a => a.Id))
@@ -54,7 +43,7 @@
             {
                 if(Session["WhomToMess"].ToString().Equals("1"))
                 {
-                    if(item.Users.RoleId != 1 || item.Users.RoleId != 2)
+                    if(item.Users.RoleId != 1 && item.Users.RoleId != 2)
                     {
                         continue;
                     }
@@ -62,6 +51,17 @@
                 else if(Session["WhomToMess"].ToString().Equals("2"))
                 {
                     if(item.Users.RoleId == 1 || item.Users.RoleId == 2)
+                    {
+                        continue;
+                    }
+                }
+                if (Session["CourseMess"] != null && Session["GroupMess"] != null)
+                { 
+                    if(!item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                    {
+                        continue;
+                    }
+                    if(!item.Users.Group.ToString().Equals(Session["GroupMess"].ToString()))
                     {
                         continue;
                     }
@@ -84,16 +84,16 @@
                     @{
                 if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Сегодня</span><br />
+                    <span style="color:#ccc; font-size:12px;">Сегодня @item.Date.ToShortTimeString()</span><br />
                 }
 
                 else if (item.Date.ToShortDateString().Equals(DateTime.Now.AddDays(-1).ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Вчера</span><br />
+                    <span style="color:#ccc; font-size:12px;">Вчера @item.Date.ToShortTimeString()</span><br />
                 }
                 else
                 {
-                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString()</span><br />
+                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString() @item.Date.ToShortTimeString()</span><br />
                 }
                     }
                     <span>@item.Content</span>
@@ -107,8 +107,7 @@
                 var student = dc.Users.Where(a => a.UserId.Equals(item.ReceiverId)).FirstOrDefault();
                 if (Session["WhomToMess"].ToString().Equals("1"))
                 {
-                    
-                    if (student.RoleId != 1 || student.RoleId != 2)
+                    if (student.RoleId != 1 && student.RoleId != 2)
                     {
                         continue;
                     }
@@ -116,6 +115,17 @@
                 else if (Session["WhomToMess"].ToString().Equals("2"))
                 {
                     if (student.RoleId == 1 || student.RoleId == 2)
+                    {
+                        continue;
+                    }
+                }
+                if(Session["CourseMess"] != null && Session["GroupMess"] != null)
+                { 
+                    if (!student.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                    {
+                        continue;
+                    }
+                    if (!student.Group.ToString().Equals(Session["GroupMess"].ToString()))
                     {
                         continue;
                     }
@@ -171,6 +181,7 @@
     <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
     <input type="hidden" name="isRead" value="0" />
     <input type="hidden" name="Date" value="@DateTime.Now.ToShortDateString()" />
+    <input type="hidden" name="Time" value="@DateTime.Now.ToShortTimeString()" />
     <span>Получатель</span><br />
     @Html.DropDownListFor(a => a.ReceiverId, receiversList)<br />
     <textarea cols="52" rows="4" name="Content"></textarea><br />

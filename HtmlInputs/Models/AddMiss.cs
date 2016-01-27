@@ -15,9 +15,7 @@ namespace HtmlInputs.Models
         public string Discipline { get; set; }
         public int IsValid { get; set; }
         public int IsRead { get; set; }
-        public int Day { get; set; }
-        public int Month{ get; set; }
-        public int Year { get; set; }
+        public DateTime Date { get; set; }
         public virtual Users Users { get; set; }
     }
 }

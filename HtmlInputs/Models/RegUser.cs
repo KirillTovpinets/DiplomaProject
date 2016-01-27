@@ -9,8 +9,9 @@ namespace HtmlInputs.Models
     {
         public int UserId { get; set; }
         [Required(ErrorMessage="Введите логин",AllowEmptyStrings=false)]
+        [RegularExpression("[0-9]{2}[a-z]{3}[0-4]{1}[a-z]{3,6}", ErrorMessage = "Неверный формат логина.")]
         public string Login { get; set; }
-        [Required(ErrorMessage = "Введите логин", AllowEmptyStrings = false)]
+        [Required(ErrorMessage = "Введите пароль", AllowEmptyStrings = false)]
         public string Password { get; set; }
         [Compare("Password",ErrorMessage="Пароли не совпадают")]
         public string ConfirmPassword { get; set; }

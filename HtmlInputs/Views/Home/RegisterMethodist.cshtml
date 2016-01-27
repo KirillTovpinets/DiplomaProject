@@ -1,4 +1,4 @@
-﻿@model HtmlInputs.Models.RegUser
+﻿@model HtmlInputs.Models.RegMethodist
 @{
     ViewBag.Title = "Регистрация";
     Layout = "~/Views/Shared/Index_Layout.cshtml";
@@ -30,7 +30,7 @@
         listOfYear.Add(newYear);
     }
 }
-@using (Html.BeginForm("Register", "Home", FormMethod.Post, new { id = "register-form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("RegisterMethodist", "Home", FormMethod.Post, new { id = "register-form", enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary(true)
     if (ViewBag.Message != null)

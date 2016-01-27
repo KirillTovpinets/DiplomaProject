@@ -1,0 +1,202 @@
+﻿@model List<HtmlInputs.Models.Missings>
+@{
+    ViewBag.Title = "Редактировать";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using(Html.BeginForm("EditMiss","Profile"))
+{ 
+<div class="content">
+    <div id="ToHide" style="color:green;">
+        @if(ViewBag.Message != null)
+        {
+            @ViewBag.Message
+        }
+        <script>
+            var timerId = setTimeout(function () {
+                var element = document.getElementById("ToHide");
+                element.classList.add("Hidden");
+                clearTimeout(timerId);
+            }, 1500)
+        </script>
+    </div>
+    <h1>Пропуски группы</h1>
+    <table>
+        <tr>
+            <td>№</td>
+            <td>Фамилия</td>
+            <td>Имя</td>
+            <td>Дата</td>
+            <td>Форма</td>
+            <td>Дисциплина</td>
+            <td>Причина</td>
+            <td style="background:#00ff90;"></td>
+        </tr>
+        @{
+            List<SelectListItem> Validation = new List<SelectListItem>();
+            var isValid = new SelectListItem { Text = "Есть", Value = "1" };
+            var isNotValid = new SelectListItem { Text = "Отсутствует", Value = "0" };
+            Validation.Add(isValid);
+            Validation.Add(isNotValid);
+            
+            int numRow = 1;
+            int amountOfRow = 1;
+            DateTime temp = new DateTime();
+            HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+
+            for (int i = 0; i < Model.Count; i++ )
+            {
+                DateTime startWeek = Model[i].Date;
+                DateTime endWeek = Model[i].Date;
+                while (startWeek.DayOfWeek != System.DayOfWeek.Monday)
+                {
+                    startWeek = startWeek.AddDays(-1);
+                }
+                while (endWeek.DayOfWeek != System.DayOfWeek.Saturday)
+                {
+                    endWeek = endWeek.AddDays(1);
+                }
+                if (startWeek.Date != temp.Date)
+                {
+                        <tr>
+                            <td class="miss-week" colspan="8">@startWeek.Date.ToShortDateString() - @endWeek.Date.ToShortDateString()</td>
+                        </tr>
+                    temp = startWeek;
+                    numRow = 1;
+                }
+                    <tr id="Row-@(amountOfRow)">
+                        <td>@(numRow++)</td>
+                        <td>@Model[i].Users.Sirname</td>
+                        <td>@Model[i].Users.Name</td>
+                        <td>@Model[i].Date.ToShortDateString()</td>
+                        <td>@Model[i].Form</td>
+                        <td>@Model[i].Discipline</td>
+                        @{
+                if (Model[i].IsValid == 1)
+                {
+                    Validation[0].Selected = true;
+                    Validation[1].Selected = false;
+                }
+                else
+                {
+                    Validation[0].Selected = false;
+                    Validation[1].Selected = true;
+                }
+                        }
+                        <td>@Html.DropDownListFor(a => a[i].IsValid, Validation)</td>
+                        <td style="background:#00ff90;">@Html.HiddenFor(a => a[i].Id)</td>
+                    </tr>
+            }
+        }
+    </table>
+</div>
+<div id="miss-buttons">
+    <input type="button" value="Поиск" onclick="ShowSearch()"/>
+    <input type="submit" value="Сохранить" />
+    <a href="~/Profile/MissForPraepostor"><input type="button" value="Назад" /></a>
+</div>
+}
+<script>
+    function Delete(id) {
+        var element = document.getElementById("Row-"+id);
+        element.style.background = "#aaa";
+    }
+    function Show(id){
+        var element = document.getElementById(id);
+        element.style.display = "block";
+    }
+    function Hide(id) {
+        var element = document.getElementById(id);
+        element.style.display = "none";
+    }
+    function ShowSearch() {
+        Show("search");
+        var element = document.getElementById("miss-buttons");
+        element.style.display = "none";
+    }
+    function ShowName() {
+        Show("Name-form");
+        Hide("Sirname-form");
+        Hide("Date-form");
+        Hide("Form-form");
+        Hide("Dis-form");
+    }
+    function ShowSirname() {
+        Show("Sirname-form");
+        Hide("Name-form");
+        Hide("Date-form");
+        Hide("Form-form");
+        Hide("Dis-form");
+    }
+    function ShowDate() {
+        Show("Date-form");
+        Hide("Sirname-form");
+        Hide("Name-form");
+        Hide("Form-form");
+        Hide("Dis-form");
+    }
+    function ShowForm() {
+        Show("Form-form");
+        Hide("Sirname-form");
+        Hide("Date-form");
+        Hide("Name-form");
+        Hide("Dis-form");
+    }
+    function ShowDisc() {
+        Show("Dis-form");
+        Hide("Sirname-form");
+        Hide("Date-form");
+        Hide("Form-form");
+        Hide("Name-form");
+    }
+</script>
+<div id="search">
+    <input type="button" value="По имени" onclick="ShowName()"/>
+    <input type="button" value="По фамилии" onclick="ShowSirname()"/>
+    <input type="button" value="По дате" onclick="ShowDate()"/>
+    <input type="button" value="По форме" onclick="ShowForm()"/>
+    <input type="button" value="По дисциплине" onclick="ShowDisc()"/>
+</div>
+@using (Html.BeginForm("SearchSirname", "Profile", FormMethod.Get, new { @id = "Sirname-form" }))
+{
+    <input type="text" placeholder="Фамилия" name="Sirname"  />
+    <input type="submit" value="Найти" /><br />
+}
+@using (Html.BeginForm("SearchName", "Profile", FormMethod.Get, new { @id = "Name-form" }))
+{
+    <input type="text" placeholder="Имя" name="Name"  />
+    <input type="submit" value="Найти" /><br />
+}
+
+@using (Html.BeginForm("SearchDate", "Profile", FormMethod.Get, new { @id = "Date-form" }))
+{
+    <select name="day">
+        @for (int i = 1; i <= 31; i++)
+        {
+            <option>@i</option>
+        }
+    </select>
+    <select name="month">
+        @for(int i = 1; i < 10; i++)
+        {
+            <option>0@(i)</option>
+        }
+        <option>10</option>
+        <option>11</option>
+        <option>12</option>
+    </select>
+    <select name="year">
+        <option>@(DateTime.Now.Year - 1)</option>
+        <option>@(DateTime.Now.Year)</option>
+    </select>
+    <input type="submit" value="Найти" /><br />
+}
+@using (Html.BeginForm("SearchForm", "Profile", FormMethod.Get, new { @id = "Form-form" }))
+{
+    <input type="text" placeholder="Форма" name="Form"  />
+    <input type="submit" value="Найти" /><br />
+}
+@using (Html.BeginForm("SearchDis", "Profile", FormMethod.Get, new { @id = "Dis-form" }))
+{
+    <input type="text" placeholder="Дисциплина" name="Dis"  />
+    <input type="submit" value="Найти" /><br />
+}

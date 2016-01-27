@@ -5,6 +5,9 @@
     List<SelectListItem> StudentList = new List<SelectListItem>();
     List<SelectListItem> IsValidList = new List<SelectListItem>();
     List<SelectListItem> listOfDays = new List<SelectListItem>();
+    List<SelectListItem> listOfForms = new List<SelectListItem>();
+    List<SelectListItem> listOfDiss = new List<SelectListItem>();
+    
     for (int i = 0; i < 31; i++)
     {
         var newDay = new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString() };
@@ -83,11 +86,7 @@
                 <tr>
                     <td>Дата:</td>
                     <td colspan="2">
-                        @Html.DropDownListFor(a => a.Day, listOfDays)
-                        /
-                        @Html.DropDownListFor(a => a.Month, listOfMonth)
-                        /
-                        @Html.DropDownListFor(a => a.Year, listOfYear)
+                        @Html.TextBoxFor(a => a.Date, new {@class = "datefield", type = "date" })
                     </td>
             </table>
         </div>

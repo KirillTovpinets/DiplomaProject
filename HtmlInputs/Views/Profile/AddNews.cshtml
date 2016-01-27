@@ -5,10 +5,19 @@
 }
 
 <div class="content">
-    @if(ViewBag.Message != null)
-    {
-        <label style="color:green">@ViewBag.Message</label>
-    }
+    @if (ViewBag.Message != null)
+            {
+            <div style="color:green;" id="ToHide">
+                @ViewBag.Message
+            </div>
+            <script type="text/javascript">
+            var timer = setTimeout(function () {
+                    var element = document.getElementById("ToHide");
+                    element.classList.add("Hidden");
+                    clearTimeout(timer);
+                }, 1500);
+            </script>
+            }
     @using (Html.BeginForm())
     {
         <label>Заголовок: </label>

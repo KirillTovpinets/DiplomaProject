@@ -9,7 +9,7 @@
         {
             if((Session["LogedUserRole"].ToString().Equals("1") ||
                 Session["LogedUserRole"].ToString().Equals("2")) &&
-                (item.RoleId != 1 && item.RoleId != 2))
+                (item.RoleId != 1 && item.RoleId != 2 && item.RoleId != 7))
             {
                 var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
                 receiversList.Add(newReceiver);
@@ -95,16 +95,16 @@
                     @{
                 if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Сегодня</span><br />
+                    <span style="color:#ccc; font-size:12px;">Сегодня @item.Date.ToShortTimeString()</span><br />
                 }
 
                 else if (item.Date.ToShortDateString().Equals(DateTime.Now.AddDays(-1).ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Вчера</span><br />
+                    <span style="color:#ccc; font-size:12px;">Вчера @item.Date.ToShortTimeString()</span><br />
                 }
                 else
                 {
-                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString()</span><br />
+                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString() @item.Date.ToShortTimeString()</span><br />
                 }
                     }
                     <span style="color:#000;">@item.Content</span>
@@ -135,7 +135,7 @@
     {
         <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
         <input type="hidden" name="isRead" value="0" />
-        <input type="hidden" name="Date" value="@DateTime.Now.ToShortDateString()" />
+        <input type="hidden" name="Date" value="@DateTime.Now" />
         <span>Получатель</span><br />
         @Html.DropDownListFor(a => a.ReceiverId, receiversList)<br />
         <textarea cols="52" rows="4" name="Content"></textarea><br />

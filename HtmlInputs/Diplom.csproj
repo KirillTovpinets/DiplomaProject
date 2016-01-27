@@ -157,7 +157,11 @@
     <Compile Include="Models\News.cs">
       <DependentUpon>Diplom.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RegDean.cs" />
+    <Compile Include="Models\RegMethodist.cs" />
+    <Compile Include="Models\RegModerator.cs" />
     <Compile Include="Models\RegUser.cs" />
+    <Compile Include="Models\RegZDean.cs" />
     <Compile Include="Models\Roles.cs">
       <DependentUpon>Diplom.tt</DependentUpon>
     </Compile>
@@ -183,6 +187,7 @@
     <Content Include="Content\Avatars\Dasha.jpg" />
     <Content Include="Content\Avatars\default_avatar.gif" />
     <Content Include="Content\Avatars\Irina.jpg" />
+    <Content Include="Content\delete.png" />
     <Content Include="Content\green-arrow.png" />
     <Content Include="Content\Avatars\Kirill.jpg" />
     <Content Include="Content\Logo.jpg" />
@@ -190,6 +195,34 @@
     <Content Include="Content\Style.css" />
     <Content Include="Content\wrapper.png" />
     <Content Include="Global.asax" />
+    <None Include="Scripts\jquery-1.4.4-vsdoc.js" />
+    <Content Include="Scripts\DatePickerReady.js" />
+    <Content Include="Scripts\jquery-1.4.4.js" />
+    <Content Include="Scripts\jquery-1.4.4.min.js" />
+    <Content Include="Scripts\jquery.ui.accordion.js" />
+    <Content Include="Scripts\jquery.ui.accordion.min.js" />
+    <Content Include="Scripts\jquery.ui.autocomplete.js" />
+    <Content Include="Scripts\jquery.ui.autocomplete.min.js" />
+    <Content Include="Scripts\jquery.ui.button.js" />
+    <Content Include="Scripts\jquery.ui.button.min.js" />
+    <Content Include="Scripts\jquery.ui.core.js" />
+    <Content Include="Scripts\jquery.ui.core.min.js" />
+    <Content Include="Scripts\jquery.ui.datepicker.js" />
+    <Content Include="Scripts\jquery.ui.datepicker.min.js" />
+    <Content Include="Scripts\jquery.ui.dialog.js" />
+    <Content Include="Scripts\jquery.ui.dialog.min.js" />
+    <Content Include="Scripts\jquery.ui.mouse.js" />
+    <Content Include="Scripts\jquery.ui.mouse.min.js" />
+    <Content Include="Scripts\jquery.ui.position.js" />
+    <Content Include="Scripts\jquery.ui.position.min.js" />
+    <Content Include="Scripts\jquery.ui.progressbar.js" />
+    <Content Include="Scripts\jquery.ui.progressbar.min.js" />
+    <Content Include="Scripts\jquery.ui.slider.js" />
+    <Content Include="Scripts\jquery.ui.slider.min.js" />
+    <Content Include="Scripts\jquery.ui.tabs.js" />
+    <Content Include="Scripts\jquery.ui.tabs.min.js" />
+    <Content Include="Scripts\jquery.ui.widget.js" />
+    <Content Include="Scripts\jquery.ui.widget.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -198,6 +231,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
+    <Content Include="Views\Profile\EditNews.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -357,6 +391,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\RegisterDean.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Profile\EditMiss.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -15,6 +15,7 @@
         @{
             int i = 1;
             int hasStud= 0;
+            string PraepostorStyle = "#fff";
             HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
 
             foreach (HtmlInputs.Models.Users item in dc.Users.OrderBy(a => a.Sirname))
@@ -27,7 +28,19 @@
                     {
                         continue;
                     }
-                    <tr>
+                    if(item.RoleId.Equals(2))
+                    {
+                        PraepostorStyle = "#94d5a2";
+                    }
+                    else if(item.RoleId.Equals(1))
+                    {
+                        PraepostorStyle = "#fff";
+                    }
+                    else if(item.RoleId.Equals(7))
+                    {
+                        PraepostorStyle = "#666";
+                    }
+                    <tr style="background: @PraepostorStyle">
                         <td>@(i++)</td>
                         <td>@item.Sirname</td>
                         <td>@item.Name</td>
@@ -38,10 +51,11 @@
             }
             int group = Convert.ToInt32(Session["NumGroup"].ToString());
             int course = Convert.ToInt32(Session["NumCourse"].ToString());
-            var Moderator = dc.Users.Where(a => a.RoleId.ToString().Equals("3") &&
-                                           a.Group.Equals(group) &&
-                                           a.Course.Equals(course)).FirstOrDefault();
-            <tr style="border:none;">
+            int Role = 3;
+            var Moderator = dc.Users.Where(a => a.RoleId == Role &&
+                                            a.Group == group && 
+                                            a.Course == course).FirstOrDefault();
+            <tr>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -49,8 +63,8 @@
                 <td></td>
             </tr>
             if(Moderator != null)
-            { 
-                <tr>
+            {
+                <tr style="background: #eeedb6;">
                     <td></td>
                     <td>@Moderator.Sirname</td>
                     <td>@Moderator.Name</td>
@@ -58,10 +72,16 @@
                     <td>@Moderator.Roles.Name</td>
                 </tr>
             }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;">В этой группе нет куратора</td>
+                </tr>
+            }
             if (hasStud == 0)
             {
                 <tr>
-                    <td colspan="7" style="text-align:center;">В этой группе нет студентов</td>
+                    <td colspan="5" style="text-align:center;">В этой группе нет студентов</td>
                 </tr>
             }
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using HtmlInputs.Models;
+
 namespace HtmlInputs.Controllers
 {
     public class ProfileController : Controller
@@ -40,6 +41,34 @@ namespace HtmlInputs.Controllers
             }
             return View(getNews);
         }
+
+        public ActionResult EditNews()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            List<News> ListNews = new List<News>();
+            ListNews = dc.News.OrderByDescending(a => a.Id).ToList();
+            return View(ListNews);
+        }
+
+        [HttpPost]
+        public ActionResult EditNews(List<News> getChanges)
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            foreach(News item in getChanges)
+            {
+                var DbItem = dc.News.Where(a => a.Id.Equals(item.Id)).FirstOrDefault();
+                if(DbItem != item)
+                {
+                    DbItem.Title = item.Title;
+                    DbItem.Content = item.Content;
+                    DbItem.Date = item.Date;
+                    dc.SaveChanges();
+                }
+            }
+            string mess = "Изменения успешно сохранены";
+            return Redirect("~/Profile/Methodist?Message=" + mess);
+        }
+
         public ActionResult WhoIsUserMiss()
         {
             DiplomEntities5 dc = new DiplomEntities5();
@@ -66,6 +95,10 @@ namespace HtmlInputs.Controllers
         }
         public ActionResult Methodist()
         {
+            if(Request["Message"] != null)
+            {
+                ViewBag.Message = Request["Message"].ToString();
+            }
             DiplomEntities5 dc = new DiplomEntities5();
             ViewBag.news = dc.News.OrderByDescending(a => a.Id);
             return View();
@@ -101,6 +134,84 @@ namespace HtmlInputs.Controllers
         public ActionResult MissForPraepostor()
         {
             return View();
+        }
+        public ActionResult EditMiss()
+        {
+            
+            List<Missings> MissingDb = new List<Missings>();
+            DiplomEntities5 dc = new DiplomEntities5();
+            foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id))
+            {
+                if (item.Users.Group.ToString().Equals(Session["LogedUserGroup"].ToString()) && item.Users.Course.ToString().Equals(Session["LogedUserCourse"].ToString()))
+                {
+                    MissingDb.Add(item);
+                }
+            }
+            return View(MissingDb);
+        }
+        [HttpPost]
+        public ActionResult EditMiss(List<Missings> getChanges)
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            foreach (Missings miss in getChanges)
+            {
+                var DbMiss = dc.Missings.Where(a => a.Id.Equals(miss.Id)).FirstOrDefault();
+                //var element = 
+                if (!DbMiss.IsValid.Equals(miss.IsValid))
+                {
+                    DbMiss.IsValid = miss.IsValid;
+                }
+            }
+            ViewBag.Message = "Изменения успешно сохранены";
+            dc.SaveChanges();
+            List<Missings> MissingDb = new List<Missings>();
+            foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id))
+            {
+                if (item.Users.Group.ToString().Equals(Session["LogedUserGroup"].ToString()) && item.Users.Course.ToString().Equals(Session["LogedUserCourse"].ToString()))
+                {
+                    MissingDb.Add(item);
+                }
+            }
+            return View(MissingDb);
+        }
+        [HttpGet]
+        public ActionResult SearchSirname()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            string sirname = Request["Sirname"].ToString();
+            var Db = dc.Missings.Where(a => a.Users.Sirname.Equals(sirname)).ToList();
+            return View("EditMiss",Db);
+        }
+        public ActionResult SearchName()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            string name = Request["Name"].ToString();
+            var Db = dc.Missings.Where(a => a.Users.Name.Equals(name)).ToList();
+            return View("EditMiss", Db);
+        }
+        public ActionResult SearchDate()
+        {
+            int year = Convert.ToInt32(Request["year"].ToString());
+            int month = Convert.ToInt32(Request["month"].ToString());
+            int day = Convert.ToInt32(Request["day"].ToString());
+            DateTime date = new DateTime(year, month, day);
+            DiplomEntities5 dc = new DiplomEntities5();
+            var Db = dc.Missings.Where(a => a.Date.Equals(date)).ToList();
+            return View("EditMiss", Db);
+        }
+        public ActionResult SearchForm()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            string form = Request["Form"].ToString();
+            var Db = dc.Missings.Where(a => a.Form.Equals(form)).ToList();
+            return View("EditMiss", Db);
+        }
+        public ActionResult SearchDis()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            string dis = Request["Dis"].ToString();
+            var Db = dc.Missings.Where(a => a.Discipline.Equals(dis)).ToList();
+            return View("EditMiss", Db);
         }
         public ActionResult CourseOne()
         {
@@ -155,7 +266,7 @@ namespace HtmlInputs.Controllers
         }
         public ActionResult EditGroup()
         {
-            List<Users> GroupList = new List<Users>();
+            List<Users> GroupDb = new List<Users>();
                 HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
                 foreach (HtmlInputs.Models.Users item in dc.Users.OrderBy(a => a.Sirname))
                 {
@@ -163,10 +274,10 @@ namespace HtmlInputs.Controllers
                     item.Course.ToString().Equals(Session["NumCourse"].ToString()) &&
                     item.RoleId != 3)
                     {
-                        GroupList.Add(item);
+                        GroupDb.Add(item);
                     }
                 }
-            return View("GroupListEdit",GroupList);
+            return View("GroupListEdit",GroupDb);
         }
         [HttpPost]
         public ActionResult EditGroup(List<Users> getStudent)
@@ -315,14 +426,21 @@ namespace HtmlInputs.Controllers
             DiplomEntities5 dc = new DiplomEntities5();
             foreach(Applications app in getChanges)
             {
-                var appToChange = dc.Applications.Where(a => a.Id.Equals(app.Id)).FirstOrDefault();
-                appToChange.isConfirmed = app.isConfirmed;
-                appToChange.DateOfRead = DateTime.Now;
-                appToChange.isRead = 1;
-                dc.SaveChanges();
+                if(app.isRead == 0)
+                { 
+                    var appToChange = dc.Applications.Where(a => a.Id.Equals(app.Id)).FirstOrDefault();
+                    appToChange.isConfirmed = app.isConfirmed;
+                    appToChange.DateOfRead = DateTime.Now;
+                    appToChange.isRead = 1;
+                    dc.SaveChanges();
+                }
             }
             ViewBag.Message = "Изменения успешно сохранены";
-            return View("ViewApplications", getChanges);
+            int course = Convert.ToInt32(Session["CourseApp"]);
+            int group = Convert.ToInt32(Session["GroupApp"]);
+            var Group = dc.Applications.Where(a => a.Users.Group == group &&
+                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
+            return View("ViewApplications", Group);
         }
         public ActionResult WhomToMessage()
         {
@@ -415,7 +533,7 @@ namespace HtmlInputs.Controllers
                 newRow.Discipline = getMiss.Discipline;
                 newRow.IsRead = getMiss.IsRead;
                 newRow.IsValid = getMiss.IsValid;
-                newRow.Date = new DateTime(getMiss.Year, getMiss.Month, getMiss.Day);
+                newRow.Date = getMiss.Date;
                 dc.Missings.Add(newRow);
                 dc.SaveChanges();
                 ViewBag.Message = "Запись добавлена";

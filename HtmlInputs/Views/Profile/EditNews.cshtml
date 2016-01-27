@@ -1,0 +1,24 @@
+﻿@model List<HtmlInputs.Models.News> 
+@{
+    ViewBag.Title = "Изменить новости";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+@using(Html.BeginForm())
+{ 
+<div class="content">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        <div class="news-item">
+            <h1>@Html.TextBoxFor(a => a[i].Title, new { @value = Model[i].Title, @size = "70" })</h1>
+            <p>@Html.TextAreaFor(a => a[i].Content, new { @value = Model[i].Content, @cols = "80", rows = "4"})</p>
+            <p class="date">@Model[i].Date.ToShortDateString()</p>
+            @Html.HiddenFor(a => a[i].Id)
+            @Html.HiddenFor(a => a[i].Date)
+        </div>
+    }
+</div>
+<div class="miss-buttons">
+    <input type="submit" value="Сохранить" />
+    <a href="~/Profile/Methodist"><input type="button" value="Назад" /></a>
+</div>
+}

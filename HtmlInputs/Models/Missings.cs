@@ -19,8 +19,8 @@ namespace HtmlInputs.Models
         public string Form { get; set; }
         public string Discipline { get; set; }
         public int IsValid { get; set; }
-        public int IsRead { get; set; }
-        public System.DateTime Date { get; set; }
+        public Nullable<int> IsRead { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     
         public virtual Users Users { get; set; }
     }

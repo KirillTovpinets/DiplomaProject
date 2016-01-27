@@ -30,6 +30,25 @@
                 HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
                 for (int i = 0; i < Model.Count; i++ )
                 {
+                    if(Model[i].RoleId.Equals(1))
+                    {
+                        RoleList[0].Selected = true;
+                        RoleList[1].Selected = false;
+                        RoleList[2].Selected = false;
+                    }
+                    else if(Model[i].RoleId.Equals(2))
+                    {
+                        RoleList[1].Selected = true;
+                        RoleList[0].Selected = false;
+                        RoleList[2].Selected = false;
+                    }
+                    else if(Model[i].RoleId.Equals(7))
+                    {
+                        RoleList[2].Selected = true;
+                        RoleList[0].Selected = false;
+                        RoleList[1].Selected = false;
+                    }
+                    
                         <tr>
                             <td>@(numStud++)</td>
                             <td>@Html.DisplayTextFor(a => a[i].Sirname)</td>

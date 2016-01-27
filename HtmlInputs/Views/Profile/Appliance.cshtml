@@ -36,6 +36,17 @@
             <h2>Заявление</h2>
             <div class="application">
                 <div class="wrapp">
+                    @if (ViewBag.Message != null)
+                    {
+                        <div style="color:green" id="ToHide">@ViewBag.Message</div>
+                        <script type="text/javascript">
+                            var timer = setTimeout(function () {
+                                var element = document.getElementById("ToHide");
+                                element.classList.add("Hidden");
+                                clearTimeout(timer);
+                            }, 1500);
+                        </script>
+                    }
                     <div class="app-head">
                         <label>Декану факультета инновационной подготовки Зеневич А. М.</label>
                         <label>@Html.DropDownListFor(a => a.isMale, items) @Session["LogedUserCourse"] курса дневной формы обучения</label>
@@ -55,17 +66,6 @@
             </div>
         </div>
         <div class="miss-buttons">
-            @if(ViewBag.Message != null)
-            {
-                <div style="color:green">@ViewBag.Message</div>
-    <script type="text/javascript">
-            var timer = setTimeout(function () {
-                    var element = document.getElementById("ToHide");
-                    element.classList.add("Hidden");
-                    clearTimeout(timer);
-                }, 1500);
-    </script>
-            }
             <input type="submit" value="Отправить"/>
             <a href="~/Profile/ShowOrWriteApp"><input type="button" value="Назад" /></a>
         </div>

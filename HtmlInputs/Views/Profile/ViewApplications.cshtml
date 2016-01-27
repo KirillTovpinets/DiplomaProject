@@ -19,6 +19,19 @@
     @using(Html.BeginForm("SaveChangesApp","Profile"))
     { 
     <div class="content">
+        @if (ViewBag.Message != null)
+        {
+            <div style="color:green;" id="ToHide">
+                @ViewBag.Message
+            </div>
+            <script type="text/javascript">
+                var timer = setTimeout(function () {
+                    var element = document.getElementById("ToHide");
+                    element.classList.add("Hidden");
+                    clearTimeout(timer);
+                }, 1500);
+            </script>
+        }
     @{
         foreach (HtmlInputs.Models.Applications item in dc.Applications.OrderByDescending(a => a.DateOfCreation)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
         {
@@ -75,6 +88,16 @@
                     { 
                         read = "#fff";
                     }
+                    if(app.isConfirmed == 1)
+                    {
+                        ConfirmList[0].Selected = true;
+                        ConfirmList[1].Selected = false;
+                    }
+                    else
+                    {
+                        ConfirmList[0].Selected = false;
+                        ConfirmList[1].Selected = true;
+                    }
                     <div class="application" style="border-bottom:1px solid black; margin-bottom: 10px; background: @read;">
                         <div class="wrapp">
                             <div class="app-confirm">
@@ -108,19 +131,6 @@
     }
 </div>
 <div class="miss-buttons">
-    @if (ViewBag.Message != null)
-    {
-        <div style="color:green;" id="ToHide">
-            @ViewBag.Message
-        </div>
-            <script type="text/javascript">
-                    var timer = setTimeout(function () {
-                            var element = document.getElementById("ToHide");
-                            element.classList.add("Hidden");
-                            clearTimeout(timer);
-                        }, 1500);
-            </script>
-    }
     <a href="#"><input type="submit" value="Сохранить" /></a>
     @if (Session["CourseApp"].ToString().Equals("1"))
     {

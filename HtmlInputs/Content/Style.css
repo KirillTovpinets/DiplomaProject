@@ -19,11 +19,9 @@
     box-shadow: 0 20px 20px -10px rgba(128,128,128, 0.8);
     border-radius: 15px;
 }
-
-.choose-form input[type="button"]{
-    display:block;
-    margin:10px auto;
-    
+.choose-form a{
+    text-align:center;
+    margin:auto;
 }
 #register-form{
     width: 550px;
@@ -202,7 +200,8 @@ textarea{
     background:#232323;
 }
 
-.content{
+.content,
+#search{
     background: #fff;
     width:70%;
     min-width:422px;
@@ -213,6 +212,17 @@ textarea{
     margin-left: 30px;
     padding:20px;
     box-sizing:border-box;
+}
+#search{
+    display:none;
+    height:50px;
+    max-height:100px;
+    margin-left:170px;
+    overflow-y:initial;
+    padding: 0px;
+    padding-top:10px;
+    background-color:transparent;
+    border:none;
 }
 .news-item{
     border-bottom:1px solid black;
@@ -232,7 +242,14 @@ textarea{
     text-decoration:none;
     color:black;
 }
-.miss-buttons{
+.miss-buttons,
+#miss-buttons,
+#Name-form,
+#Sirname-form,
+#Patername-form,
+#Date-form,
+#Form-form,
+#Dis-form{
     margin-top:10px;
     margin-left:170px;
 }
@@ -300,4 +317,20 @@ body .choose-form .choose-buttons:hover{
 
 .Hidden{
     display: none;
+}
+
+#Dis-form,
+#Name-form,
+#Sirname-form,
+#Patername-form,
+#Date-form,
+#Form-form{
+    display:none;
+}
+
+.show{
+    display:block;
+}
+.delete{
+    background-color: #aaa;
 }

@@ -1,4 +1,4 @@
-﻿@model HtmlInputs.Models.RegUser
+﻿@model HtmlInputs.Models.RegZDean
 @{
     ViewBag.Title = "Регистрация";
     Layout = "~/Views/Shared/Index_Layout.cshtml";
@@ -45,7 +45,7 @@
         CourseList.Add(newCourse);
     }
 }
-@using (Html.BeginForm("Register", "Home", FormMethod.Post, new { id = "register-form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("RegisterZDean", "Home", FormMethod.Post, new { id = "register-form", enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary(true)
     if (ViewBag.Message != null)

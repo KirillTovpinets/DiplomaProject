@@ -1,4 +1,4 @@
-﻿// Создание кода T4 для модели "\\psf\Home\Documents\Visual Studio 2013\Projects\HtmlInputs\HtmlInputs\Models\Diplom.edmx" включено. 
+﻿// Создание кода T4 для модели "C:\Users\kiryla\Documents\Visual Studio 2013\HtmlInputs\HtmlInputs\Models\Diplom.edmx" включено. 
 // Чтобы включить формирование кода прежних версий, измените значение свойства "Стратегия создания кода" конструктора
 // на "Legacy ObjectContext". Это свойство доступно в окне "Свойства", если модель
 // открыта в конструкторе.

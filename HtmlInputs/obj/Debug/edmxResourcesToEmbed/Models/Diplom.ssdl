@@ -54,7 +54,7 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Date" Type="date" Nullable="false" />
-    <Property Name="Title" Type="nvarchar" MaxLength="50" />
+    <Property Name="Title" Type="nvarchar(max)" />
   </EntityType>
   <EntityType Name="Roles">
     <Key>

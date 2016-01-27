@@ -10,6 +10,17 @@ using System.Drawing.Imaging;
 
 namespace HtmlInputs.Controllers
 {
+    //Формат логинов для пользователей разных категорий
+    //Студент:
+    //  Год поступления (2 цифры)|uir|№ группы|фио (строчными)
+    //Куратор:
+    //  фио (строчными)|№ группы курирования|K(прописная латинская буква)|Год рождения (2 цифры)
+    //Методист:
+    //  M(прописная латинская буква)|Год рождения (2 цифры)|фио (строчными)
+    //Зам. декана:
+    //  фио (строчными)|Год рождения (2 цифры)|Z(прописная латинская буква)
+    //Декан:
+    //  uir2003|фио (строчными)|Год рождения (2 цифры)
     public class HomeController : Controller
     {
         //
@@ -128,17 +139,233 @@ namespace HtmlInputs.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult RegisterModerator(RegModerator FormRegUser, HttpPostedFileBase Avatar)
+        {
+            using (DiplomEntities5 dc = new DiplomEntities5())
+            {
+                var anyUserEmail = dc.Users.Any(a => a.Email.Equals(FormRegUser.Email));
+                if (anyUserEmail)
+                {
+                    ModelState.AddModelError("Email", "Пользователь с таким email уже зарегистрирован");
+                }
+
+                var anyUserLogin = dc.Users.Any(a => a.Login.Equals(FormRegUser.Login));
+                if (anyUserLogin)
+                {
+                    ModelState.AddModelError("Login", "Пользователь с таким логином уже зарегистрирован");
+                }
+                if (FormRegUser.Captcha != (string)Session[CaptchaImage.CaptchaValueKey])
+                {
+                    ModelState.AddModelError("Captcha", "Текст с картинки введён не верно");
+                    return View(FormRegUser);
+                }
+                if (ModelState.IsValid == true)
+                {
+                    //if(Avatar == null)
+                    //{
+                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    //}
+                    //else
+                    //{
+                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
+                    //}
+                    Users UserToSave = new Users();
+                    UserToSave.Name = FormRegUser.Name;
+                    UserToSave.Sirname = FormRegUser.Sirname;
+                    UserToSave.Patername = FormRegUser.Patername;
+                    UserToSave.Password = FormRegUser.Password;
+                    UserToSave.RoleId = FormRegUser.RoleId;
+                    UserToSave.Group = FormRegUser.Group;
+                    UserToSave.Login = FormRegUser.Login;
+                    UserToSave.Course = FormRegUser.Course;
+                    UserToSave.Email = FormRegUser.Email;
+                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    dc.Users.Add(UserToSave);
+                    dc.SaveChanges();
+                    ModelState.Clear();
+                    FormRegUser = null;
+                    ViewBag.Message = "Регистрация прошла успешно";
+                }
+            }
+            return View(FormRegUser);   
+        }
         public ActionResult RegisterMethodist()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult RegisterMethodist(RegMethodist FormRegUser, HttpPostedFileBase Avatar)
+        {
+            using (DiplomEntities5 dc = new DiplomEntities5())
+            {
+                var anyUserEmail = dc.Users.Any(a => a.Email.Equals(FormRegUser.Email));
+                if (anyUserEmail)
+                {
+                    ModelState.AddModelError("Email", "Пользователь с таким email уже зарегистрирован");
+                }
+
+                var anyUserLogin = dc.Users.Any(a => a.Login.Equals(FormRegUser.Login));
+                if (anyUserLogin)
+                {
+                    ModelState.AddModelError("Login", "Пользователь с таким логином уже зарегистрирован");
+                }
+                if (FormRegUser.Captcha != (string)Session[CaptchaImage.CaptchaValueKey])
+                {
+                    ModelState.AddModelError("Captcha", "Текст с картинки введён не верно");
+                    return View(FormRegUser);
+                }
+                if (ModelState.IsValid == true)
+                {
+                    //if(Avatar == null)
+                    //{
+                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    //}
+                    //else
+                    //{
+                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
+                    //}
+                    Users UserToSave = new Users();
+                    UserToSave.Name = FormRegUser.Name;
+                    UserToSave.Sirname = FormRegUser.Sirname;
+                    UserToSave.Patername = FormRegUser.Patername;
+                    UserToSave.Password = FormRegUser.Password;
+                    UserToSave.RoleId = FormRegUser.RoleId;
+                    UserToSave.Group = FormRegUser.Group;
+                    UserToSave.Login = FormRegUser.Login;
+                    UserToSave.Course = FormRegUser.Course;
+                    UserToSave.Email = FormRegUser.Email;
+                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    dc.Users.Add(UserToSave);
+                    dc.SaveChanges();
+                    ModelState.Clear();
+                    FormRegUser = null;
+                    ViewBag.Message = "Регистрация прошла успешно";
+                }
+            }
+            return View(FormRegUser);
         }
         public ActionResult RegisterZDean()
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult RegisterZDean(RegZDean FormRegUser, HttpPostedFileBase Avatar)
+        {
+            using (DiplomEntities5 dc = new DiplomEntities5())
+            {
+                var anyUserEmail = dc.Users.Any(a => a.Email.Equals(FormRegUser.Email));
+                if (anyUserEmail)
+                {
+                    ModelState.AddModelError("Email", "Пользователь с таким email уже зарегистрирован");
+                }
+
+                var anyUserLogin = dc.Users.Any(a => a.Login.Equals(FormRegUser.Login));
+                if (anyUserLogin)
+                {
+                    ModelState.AddModelError("Login", "Пользователь с таким логином уже зарегистрирован");
+                }
+                if (FormRegUser.Captcha != (string)Session[CaptchaImage.CaptchaValueKey])
+                {
+                    ModelState.AddModelError("Captcha", "Текст с картинки введён не верно");
+                    return View(FormRegUser);
+                }
+                if (ModelState.IsValid == true)
+                {
+                    //if(Avatar == null)
+                    //{
+                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    //}
+                    //else
+                    //{
+                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
+                    //}
+                    Users UserToSave = new Users();
+                    UserToSave.Name = FormRegUser.Name;
+                    UserToSave.Sirname = FormRegUser.Sirname;
+                    UserToSave.Patername = FormRegUser.Patername;
+                    UserToSave.Password = FormRegUser.Password;
+                    UserToSave.RoleId = FormRegUser.RoleId;
+                    UserToSave.Group = FormRegUser.Group;
+                    UserToSave.Login = FormRegUser.Login;
+                    UserToSave.Course = FormRegUser.Course;
+                    UserToSave.Email = FormRegUser.Email;
+                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    dc.Users.Add(UserToSave);
+                    dc.SaveChanges();
+                    ModelState.Clear();
+                    FormRegUser = null;
+                    ViewBag.Message = "Регистрация прошла успешно";
+                }
+            }
+            return View(FormRegUser);
+        }
         public ActionResult RegisterDean()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult RegisterDean(RegDean FormRegUser, HttpPostedFileBase Avatar)
+        {
+            using (DiplomEntities5 dc = new DiplomEntities5())
+            {
+                var anyUserEmail = dc.Users.Any(a => a.Email.Equals(FormRegUser.Email));
+                if (anyUserEmail)
+                {
+                    ModelState.AddModelError("Email", "Пользователь с таким email уже зарегистрирован");
+                }
+
+                var anyUserLogin = dc.Users.Any(a => a.Login.Equals(FormRegUser.Login));
+                if (anyUserLogin)
+                {
+                    ModelState.AddModelError("Login", "Пользователь с таким логином уже зарегистрирован");
+                }
+                if (FormRegUser.Captcha != (string)Session[CaptchaImage.CaptchaValueKey])
+                {
+                    ModelState.AddModelError("Captcha", "Текст с картинки введён не верно");
+                    return View(FormRegUser);
+                }
+                if (ModelState.IsValid == true)
+                {
+                    //if(Avatar == null)
+                    //{
+                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    //}
+                    //else
+                    //{
+                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
+                    //}
+                    Users UserToSave = new Users();
+                    UserToSave.Name = FormRegUser.Name;
+                    UserToSave.Sirname = FormRegUser.Sirname;
+                    UserToSave.Patername = FormRegUser.Patername;
+                    UserToSave.Password = FormRegUser.Password;
+                    UserToSave.RoleId = FormRegUser.RoleId;
+                    UserToSave.Group = FormRegUser.Group;
+                    UserToSave.Login = FormRegUser.Login;
+                    UserToSave.Course = FormRegUser.Course;
+                    UserToSave.Email = FormRegUser.Email;
+                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    dc.Users.Add(UserToSave);
+                    dc.SaveChanges();
+                    ModelState.Clear();
+                    FormRegUser = null;
+                    ViewBag.Message = "Регистрация прошла успешно";
+                }
+            }
+            return View(FormRegUser);
         }
         public ActionResult Captcha()
         {
