@@ -53,6 +53,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -179,6 +180,7 @@
     <Content Include="App_Data\Diplom_log.ldf">
       <DependentUpon>Diplom.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\Warning.gif" />
     <Content Include="Content\Avatars\Alex.jpg" />
     <Content Include="Content\Avatars\Alina.jpg" />
     <Content Include="Content\Avatars\Andrey.jpg" />
@@ -232,6 +234,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\Profile\EditNews.cshtml" />
+    <Content Include="Views\Profile\MonthStatistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

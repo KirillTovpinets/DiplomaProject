@@ -29,7 +29,6 @@
             <td>Форма</td>
             <td>Дисциплина</td>
             <td>Причина</td>
-            <td style="background:#00ff90;"></td>
         </tr>
         @{
             List<SelectListItem> Validation = new List<SelectListItem>();
@@ -83,7 +82,6 @@
                 }
                         }
                         <td>@Html.DropDownListFor(a => a[i].IsValid, Validation)</td>
-                        <td style="background:#00ff90;">@Html.HiddenFor(a => a[i].Id)</td>
                     </tr>
             }
         }

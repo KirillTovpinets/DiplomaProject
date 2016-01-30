@@ -22,6 +22,7 @@
     <Property Name="isRead" Type="Int32" Nullable="false" />
     <NavigationProperty Name="Users" Relationship="DiplomModel.FK_Messages_Users" FromRole="Messages" ToRole="Users" />
     <Property Name="Date" Type="DateTime" Precision="0" />
+    <Property Name="Time" Type="Time" Precision="7" />
   </EntityType>
   <EntityType Name="Missings">
     <Key>

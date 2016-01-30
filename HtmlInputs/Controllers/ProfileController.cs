@@ -4,7 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using HtmlInputs.Models;
-
+using System.Web.UI.DataVisualization;
+using System.Web.UI.DataVisualization.Charting;
+using System.Drawing;
+using System.IO;
 namespace HtmlInputs.Controllers
 {
     public class ProfileController : Controller
@@ -134,6 +137,15 @@ namespace HtmlInputs.Controllers
         public ActionResult MissForPraepostor()
         {
             return View();
+        }
+        public ActionResult DeleteMiss()
+        {
+            int Id = Convert.ToInt32(Request["id"]);
+            DiplomEntities5 dc = new DiplomEntities5();
+            Missings RowToDel = dc.Missings.Where(a => a.Id.Equals(Id)).FirstOrDefault();
+            dc.Missings.Remove(RowToDel);
+            dc.SaveChanges();
+            return View("MissForPraepostor");
         }
         public ActionResult EditMiss()
         {
@@ -339,6 +351,37 @@ namespace HtmlInputs.Controllers
         }
         public ActionResult Appliance()
         {
+            DiplomEntities5 dc = new DiplomEntities5();
+            DateTime date = DateTime.Now;
+            DateTime startWeek = date;
+            DateTime endWeek = date;
+            int numApp = 0;
+            int AllowAmountApp = 0;
+            while(startWeek.DayOfWeek != System.DayOfWeek.Monday)
+            {
+                startWeek = startWeek.AddDays(-1);
+            }
+            foreach(Applications item in dc.Applications)
+            {
+                DateTime temp = item.DateOfCreation;
+                while(temp.DayOfWeek != System.DayOfWeek.Monday)
+                {
+                    temp = temp.AddDays(-1);
+                }
+                if(temp == startWeek)
+                {
+                    numApp++;
+                }
+            }
+            AllowAmountApp = 5 - numApp;
+            if(AllowAmountApp < 0)
+            {
+                ViewBag.NumAllowApp = 0;
+            }
+            else
+            {
+                ViewBag.NumAllowApp = numApp;
+            }
             return View();
         }
         [HttpPost]
@@ -362,7 +405,7 @@ namespace HtmlInputs.Controllers
             newApp.Reason = getApp.Reason;
             newApp.isRead = 0;
             newApp.DateOfCreation = DateTime.Now;
-            newApp.DateOfMiss = new DateTime(getApp.YearOfMiss, getApp.MonthOfMiss, getApp.DayOfMiss);
+            newApp.DateOfMiss = getApp.DateOfMiss;
             DiplomEntities5 dc = new DiplomEntities5();
             dc.Applications.Add(newApp);
             dc.SaveChanges();
@@ -627,6 +670,201 @@ namespace HtmlInputs.Controllers
             getChanges = null;
             ViewBag.Message = "Изменение успешно опубликовано";
             return View(getChanges);
+        }
+        public ActionResult MonthStatistics()
+        {
+            return View();
+        }
+        public FileContentResult getPersonalMonthStatistics()
+        {
+            var getFile = getMonthStatistics(1);
+            return getFile;
+        }
+        public FileContentResult getMonthStatistics(int isStudent = 0)
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            int[] months = new int[12];
+            int isSaved = 0;
+            int numMonths = 0;
+            foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+            {
+                if(isStudent == 0)
+                { 
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() &&
+                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString())
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    int student = Convert.ToInt32(Session["LogedUserId"]);
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() &&
+                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString() &&
+                        item.Users.UserId != student)
+                    {
+                        continue;
+                    }
+                }
+                int temp;
+                temp = item.Date.Month;
+
+                foreach (int savedWeeks in months)
+                {
+                    if (savedWeeks == temp)
+                    {
+                        isSaved = 1;
+                        break;
+                    }
+                }
+                if (isSaved == 0)
+                {
+                    months[numMonths++] = temp;
+                }
+                else
+                {
+                    isSaved = 0;
+                }
+            }
+                int[] IsValidGroupMiss = new int[50]; //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
+                int[] IsNotValidGroupMiss = new int[50];
+                List<string> ListMonth = new List<string>();
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                int StudentId = Convert.ToInt32(Session["LogedUserId"]);
+                foreach (HtmlInputs.Models.Missings item in dc.Missings)
+                {
+                    if(item.Users.Course.Equals(course) &&
+                        item.Users.Group.Equals(group))
+                    { 
+                        if(isStudent == 1 && item.Users.UserId != StudentId)
+                        {
+                            continue;
+                        }
+                        int recMonth = item.Date.Month;
+
+                        for (int i = 0; i < numMonths; i++)
+                        {
+                            if (recMonth == months[i])
+                            {
+                                if (item.IsValid == 1)
+                                {
+                                    IsValidGroupMiss[i] += 2;
+                                    break;
+                                }
+                                else
+                                {
+                                    IsNotValidGroupMiss[i] += 2;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < numMonths; i++)
+                {
+                    string month = new DateTime(2000, months[i], 1).ToString("MMMM");
+                    ListMonth.Add(month);
+                }
+                FileContentResult chart = CreateChart(IsValidGroupMiss, IsNotValidGroupMiss, ListMonth);
+                return chart;
+        }
+        public FileContentResult CreateChart(int[] isValid, int[] isNotValid, List<string> Months)
+        {
+            SeriesChartType chartType = SeriesChartType.Column;
+            List<Users> student = new List<Users>();
+            Chart statistic = new Chart();
+            statistic.Width = 650;
+            statistic.Height = 300;
+            statistic.BackColor = Color.FromArgb(211, 223, 240);
+            statistic.BorderlineDashStyle = ChartDashStyle.Solid;
+            statistic.BackSecondaryColor = Color.White;
+            statistic.BackGradientStyle = GradientStyle.TopBottom;
+            statistic.BorderlineWidth = 1;
+            statistic.Palette = ChartColorPalette.BrightPastel;
+            statistic.BorderlineColor = Color.FromArgb(26, 59, 105);
+            statistic.RenderType = RenderType.BinaryStreaming;
+            statistic.BorderSkin.SkinStyle = BorderSkinStyle.Emboss;
+            statistic.AntiAliasing = AntiAliasingStyles.All;
+            statistic.TextAntiAliasingQuality = TextAntiAliasingQuality.Normal;
+            statistic.Titles.Add(CreateTitle());
+            statistic.Legends.Add(CreateLegend());
+            statistic.Series.Add(CreateSeries(0, isNotValid, Months, chartType));
+            statistic.Series.Add(CreateSeries(1, isValid, Months, chartType));
+            statistic.ChartAreas.Add(CreateChartArea());
+            
+
+            MemoryStream ms = new MemoryStream();
+            statistic.SaveImage(ms);
+            return File(ms.GetBuffer(), @"image/png");
+        }
+        public Title CreateTitle()
+        {
+            Title title = new Title();
+            title.Text = "Статистика";
+            title.ShadowColor = Color.FromArgb(32, 0, 0, 0);
+            title.Font = new Font("Trebuchet MS", 14F, FontStyle.Bold);
+            title.ShadowOffset = 3;
+            title.ForeColor = Color.FromArgb(26, 59, 105);
+            return title;
+        }
+        public Legend CreateLegend()
+        {
+            Legend legend = new Legend();
+            legend.Alignment = StringAlignment.Center;
+            legend.Name = "Result Chart";
+            legend.Docking = Docking.Bottom;
+            legend.BackColor = Color.Transparent;
+            legend.Font = new Font(new FontFamily("Trebuchet MS"), 9);
+            legend.LegendStyle = LegendStyle.Row;
+            return legend;
+        }
+        public Series CreateSeries(int isValid, int[] numMiss, List<string> months, SeriesChartType chartType)
+        {
+            Series seriesDetail = new Series();
+            if(isValid == 1)
+            { 
+                seriesDetail.Name = "Уважительные";
+                seriesDetail.Color = Color.LightGreen;
+            }
+            else
+            {
+                seriesDetail.Name = "Неуважительные";
+                seriesDetail.Color = Color.OrangeRed;
+            }
+            seriesDetail.IsValueShownAsLabel = false;
+            seriesDetail.ChartType = chartType;
+            seriesDetail.BorderWidth = 2;
+            seriesDetail["DrawingStyle"] = "Cylinder";
+            seriesDetail["PieDrawingStyle"] = "SoftEdge";
+            DataPoint IsValidPoint;
+            int numOfmonth = 0;
+            foreach(string item in months)
+            {
+                IsValidPoint = new DataPoint();
+                IsValidPoint.AxisLabel = item;
+                IsValidPoint.YValues = new double[] { numMiss[numOfmonth] };
+                numOfmonth++;
+                seriesDetail.Points.Add(IsValidPoint);
+            }
+            seriesDetail.ChartArea = "Result";
+            return seriesDetail;
+        }
+        public ChartArea CreateChartArea()
+        {
+            ChartArea chartArea = new ChartArea();
+            chartArea.Name = "Result";
+            chartArea.BackColor = Color.Transparent;
+            chartArea.AxisX.IsLabelAutoFit = false;
+            chartArea.AxisY.IsLabelAutoFit = false;
+            chartArea.AxisX.LabelStyle.Font = new Font("Verdana, Arial, Helvetica, sans-serif", 8F, FontStyle.Regular);
+            chartArea.AxisY.LabelStyle.Font = new Font("Verdana, Arial, Helvetica, sans-serif", 8F, FontStyle.Regular);
+            chartArea.AxisY.LineColor = Color.FromArgb(64, 64, 64, 64);
+            chartArea.AxisX.LineColor = Color.FromArgb(64, 64, 64, 64);
+            chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64);
+            chartArea.AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64);
+            chartArea.AxisX.Interval = 1;
+            return chartArea;
         }
     }
 }

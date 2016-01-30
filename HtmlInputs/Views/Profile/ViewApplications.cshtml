@@ -6,10 +6,17 @@
     DateTime temp = new DateTime();
     HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
     int numWeeks = 0;
+    int[] numAppInWeek = new int[50];
     DateTime[] weeks = new DateTime[50];
+    Dictionary<int,int> TotalNumApp = new Dictionary<int, int>();
+    Dictionary<int,int> ConfNumApp = new Dictionary<int, int>();
+    Dictionary<int,int> RejectedNumApp = new Dictionary<int, int>();
     int isSaved = 0;
     int hasApp = 0;
-
+    int hasUnreadApp = 0;
+    int WeekLimit = 5;
+    int Overflow = 0;
+    
     List<SelectListItem> ConfirmList = new List<SelectListItem>();
     var Conf = new SelectListItem { Text = "Не возражаю", Value = "1" };
     var Disp = new SelectListItem { Text = "Отказать", Value = "0" };
@@ -40,21 +47,55 @@
             {
                 continue;
             }
+            int num = 0;
+            if(TotalNumApp.TryGetValue(item.Users.UserId, out num))
+            {
+                TotalNumApp[item.Users.UserId]++;
+                if(item.isConfirmed == 1)
+                {
+                    ConfNumApp[item.Users.UserId]++;
+                }
+                else
+                {
+                    RejectedNumApp[item.Users.UserId]++;
+                }
+            }
+            else
+            {
+                TotalNumApp.Add(item.Users.UserId, 1);
+                ConfNumApp.Add(item.Users.UserId, 0);
+                RejectedNumApp.Add(item.Users.UserId, 0);
+                if (item.isConfirmed == 1)
+                {
+                    ConfNumApp[item.Users.UserId]++;
+                }
+                else
+                {
+                    RejectedNumApp[item.Users.UserId]++;
+                }
+            }
             hasApp = 1;
             temp = item.DateOfCreation;
             while (temp.Date.DayOfWeek != System.DayOfWeek.Monday)
             {
                 temp = temp.Date.AddDays(-1);
             }
-
+            int numWeekToSave = 0;
             foreach (DateTime savedWeeks in weeks)
             {
                 if (savedWeeks == temp)
                 {
+                    
                     isSaved = 1;
                     break;
                 }
+                numWeekToSave++;
             }
+            if(numWeekToSave == 50)
+            {
+                numWeekToSave = 0;
+            }
+                numAppInWeek[numWeekToSave]++;
             if (isSaved == 0)
             {
                 weeks[numWeeks++] = temp;
@@ -68,10 +109,14 @@
         for (int i = 0; i < numWeeks; i++)
         {
             int numApp = 0;
-            <div style="text-align:center; border-bottom:2px dashed black; margin-bottom: 10px;">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</div>
+            if(numAppInWeek[i] > WeekLimit)
+            {
+                Overflow = numAppInWeek[i] - (WeekLimit +2);
+            }
+            <div class="week">
+        @weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</div>
             foreach (HtmlInputs.Models.Applications app in @Model)
             {
-                
                 DateTime start = app.DateOfCreation;
                 while (start.DayOfWeek != System.DayOfWeek.Monday)
                 {
@@ -80,13 +125,20 @@
                 if (start == weeks[i])
                 {
                     string read;
+                    int Overflowed = 0;
                     if (app.isRead == 0)
                     {
+                        hasUnreadApp = 1;
                         read = "#b6d7b8";
                     }
                     else
                     { 
                         read = "#fff";
+                    }
+                    if(Overflow != 0)
+                    {
+                        Overflowed = 1;
+                        Overflow--;
                     }
                     if(app.isConfirmed == 1)
                     {
@@ -98,19 +150,54 @@
                         ConfirmList[0].Selected = false;
                         ConfirmList[1].Selected = true;
                     }
-                    <div class="application" style="border-bottom:1px solid black; margin-bottom: 10px; background: @read;">
+                    <div class="application" style="; border-bottom:1px solid black; margin-bottom: 10px; background: @read;">
+                        @if(Overflowed != 0)
+                        { 
+                        <div class="Warning">
+                            <img src="~/Content/Warning.gif" width="30" height="30" />
+                        </div>
+                        <div class="Warning-info">
+                            Превышен лимит заявлений в неделю.
+                        </div>
+                        }
                         <div class="wrapp">
                             <div class="app-confirm">
-                                @Html.DropDownListFor(a => a[numApp].isConfirmed, ConfirmList)<br />
-                                @Session["LogedUserSname"] @(Session["LogedUserName"].ToString().First()). @(Session["LogedUserPname"].ToString().First()).
+                                @{ 
+                                    if(app.isRead == 0)
+                                    { 
+                                        @Html.DropDownListFor(a => a[numApp].isConfirmed, ConfirmList)<br />
+                                    }
+                                    else
+                                    {
+                                        if(app.isConfirmed == 1)
+                                        {
+                                            <span>Не возражаю</span><br />
+                                        }
+                                        else
+                                        {
+                                            <span>Отказать</span><br />
+                                        }
+                                    }
+                                }
+                                @if(app.isRead == 1)
+                                { 
+                                    @Session["LogedUserSname"]<span> </span> @(Session["LogedUserName"].ToString().First())<span>.</span> @(Session["LogedUserPname"].ToString().First())<span>.</span>
+                                    <br />@app.DateOfRead.ToShortDateString()
+                                }
                                 @Html.HiddenFor(a => a[numApp].Id)
                                 @{
                                     numApp++;
                                 }
+                                
                             </div>
                             <div class="app-head">
                                 <div>@app.Head</div>
-                                <label>@app.Users.Sirname @(app.Users.Name.ToString().First()). @(app.Users.Patername.ToString().First()).</label>
+                                <label class="student">@app.Users.Sirname @(app.Users.Name.ToString().First()). @(app.Users.Patername.ToString().First()).</label>
+                                <div class="info">
+                                    Всего заявлений: @TotalNumApp[app.Users.UserId]<br />
+                                    Одобрено: @ConfNumApp[app.Users.UserId]<br />
+                                    Отклонено: @RejectedNumApp[app.Users.UserId]
+                                </div>
                             </div>
                         </div>
                             <div class="app-title">Заявление</div>
@@ -131,7 +218,10 @@
     }
 </div>
 <div class="miss-buttons">
+    @if(hasUnreadApp == 1)
+    { 
     <a href="#"><input type="submit" value="Сохранить" /></a>
+    }
     @if (Session["CourseApp"].ToString().Equals("1"))
     {
         <a href="~/Profile/CourseOneApp"><input type="button" value="Назад" /></a>

@@ -65,16 +65,16 @@
                         @{
                 if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Сегодня</span><br />
+                    <span style="color:#ccc; font-size:12px;">Сегодня @item.Time.ToString(@"hh\:mm")</span><br />
                 }
 
                 else if (item.Date.ToShortDateString().Equals(DateTime.Now.AddDays(-1).ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Вчера</span><br />
+                    <span style="color:#ccc; font-size:12px;">Вчера @item.Time.ToString(@"hh\:mm")</span><br />
                 }
                 else
                 {
-                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString()</span><br />
+                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString() @item.Time.ToString(@"hh\:mm")</span><br />
                 }
                         }
                         <span>@item.Content</span>
@@ -95,16 +95,16 @@
                     @{
                 if (item.Date.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Сегодня @item.Date.ToShortTimeString()</span><br />
+                    <span style="color:#ccc; font-size:12px;">Сегодня @item.Time.ToString(@"hh\:mm")</span><br />
                 }
 
                 else if (item.Date.ToShortDateString().Equals(DateTime.Now.AddDays(-1).ToShortDateString()))
                 {
-                    <span style="color:#ccc; font-size:12px;">Вчера @item.Date.ToShortTimeString()</span><br />
+                    <span style="color:#ccc; font-size:12px;">Вчера @item.Time.ToString(@"hh\:mm")</span><br />
                 }
                 else
                 {
-                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString() @item.Date.ToShortTimeString()</span><br />
+                    <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString() @item.Time.ToString(@"hh\:mm")</span><br />
                 }
                     }
                     <span style="color:#000;">@item.Content</span>
@@ -136,6 +136,7 @@
         <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
         <input type="hidden" name="isRead" value="0" />
         <input type="hidden" name="Date" value="@DateTime.Now" />
+        <input type="hidden" name="Time" value="@DateTime.Now.TimeOfDay" />
         <span>Получатель</span><br />
         @Html.DropDownListFor(a => a.ReceiverId, receiversList)<br />
         <textarea cols="52" rows="4" name="Content"></textarea><br />

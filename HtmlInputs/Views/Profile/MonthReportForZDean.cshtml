@@ -91,7 +91,7 @@
                 {
                     string month = new DateTime(2000, i + 1, 1).ToString("MMMM");
                     <tr>
-                        <td colspan="6" style="text-align:center;">@month</td>
+                        <td colspan="6" class="miss-month">@month</td>
                     </tr>
 
                     foreach (HtmlInputs.Models.Users user in dc.Users)

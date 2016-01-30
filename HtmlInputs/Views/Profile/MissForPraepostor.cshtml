@@ -15,6 +15,7 @@
             <td>Форма</td>
             <td>Дисциплина</td>
             <td>Причина</td>
+            <td></td>
         </tr>
         @{
             int i = 1;
@@ -40,7 +41,7 @@
                     if (startWeek.Date != temp.Date)
                     {
                         <tr>
-                            <td class="miss-week" colspan="7">@startWeek.Date.ToShortDateString() - @endWeek.Date.ToShortDateString()</td>
+                            <td class="miss-week" colspan="8">@startWeek.Date.ToShortDateString() - @endWeek.Date.ToShortDateString()</td>
                         </tr>
                         temp = startWeek;
                         i = 1;
@@ -62,6 +63,11 @@
                         <td>Отсутствует</td>
                     }
                         }
+                        <td>
+                            <a href="~/Profile/DeleteMiss?id=@item.Id">
+                                <img src="~/Content/delete.png" width="20" height="20"/>
+                            </a>
+                        </td>
                     </tr>
                 }
             }
@@ -73,6 +79,16 @@
             }
         }
     </table>
+    @*@if(ViewBag.Message != null)
+    { 
+    <script>
+        var timerId = setTimeout(function () {
+            var element = document.getElementById("ToHide");
+            element.classList.add("hidden");
+            clearTimeout(timerId);
+        }, 1500);
+    </script>
+    }*@
 </div>
 <div class="miss-buttons">
     <a href="~/Profile/AddMiss"><input type="button" value="Добавить" /></a>

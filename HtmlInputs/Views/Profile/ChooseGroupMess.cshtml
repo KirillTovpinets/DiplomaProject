@@ -15,8 +15,9 @@
                 foreach (HtmlInputs.Models.Messages item in dc.Messages)
                 {
                     if (item.isRead == 0 &&
-                        item.Users.Group == 1 && 
-                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                        item.Users.Group == 1 &&
+                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()) &&
+                        item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                     {
                         numGroupOne++;
                     }
@@ -32,7 +33,8 @@
                 {
                     if (item.isRead == 0 &&
                         item.Users.Group == 2 &&
-                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()) &&
+                        item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                     {
                         numGroupTwo++;
                     }
@@ -48,7 +50,8 @@
                 {
                     if (item.isRead == 0 &&
                         item.Users.Group == 3 &&
-                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()))
+                        item.Users.Course.ToString().Equals(Session["CourseMess"].ToString()) &&
+                        item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                     {
                         numGroupThree++;
                     }

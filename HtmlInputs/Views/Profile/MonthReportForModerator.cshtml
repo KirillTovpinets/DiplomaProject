@@ -48,9 +48,13 @@
             @{
                 Dictionary<int, int>[] StudentsIsValidMiss = new Dictionary<int, int>[50]; //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
                 Dictionary<int, int>[] StudentsIsNotValidMiss = new Dictionary<int, int>[50];
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
                 foreach (HtmlInputs.Models.Users user in dc.Users)
                 {
-                    var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
+                    var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId) &&
+                                                    a.Users.Course.Equals(course) &&
+                                                    a.Users.Group.Equals(group)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
                     if (student != null)
                     {
                         for (int i = 0; i < numMonths; i++)
@@ -89,9 +93,9 @@
                 int numRows = 0;
                 for (int i = 0; i < numMonths; i++)
                 {
-                    string month = new DateTime(2000, i + 1, 1).ToString("MMMM");
+                    string month = new DateTime(2000, months[i], 1).ToString("MMMM");
                     <tr>
-                        <td colspan="6" style="text-align:center;">@month</td>
+                        <td colspan="6" class="miss-month">@month</td>
                     </tr>
 
                     foreach (HtmlInputs.Models.Users user in dc.Users)
@@ -127,5 +131,9 @@
 }
 
 <div class="miss-buttons">
+    @if(hasMiss != 0)
+    {
+        <a href="~/Profile/MonthStatistics"><input type="button" value="Статистика" /></a>
+    }
     <a href="~/Profile/MissForModerator"><input type="button" value="Назад" /></a>
 </div>

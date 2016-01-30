@@ -99,7 +99,7 @@
                 for (int i = 0; i < numWeeks; i++)
                 {
                     <tr>
-                        <td colspan="6" style="text-align:center;">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</td>
+                        <td colspan="6" class="miss-week">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</td>
                     </tr>
 
                     foreach (HtmlInputs.Models.Users user in dc.Users)
@@ -126,7 +126,7 @@
                 if (hasMiss == 0)
                 {
                     <tr>
-                        <td colspan="6" style="text-align:center;">У вашей группы нет пропусков</td>
+                        <td class="miss-week" colspan="6" >У вашей группы нет пропусков</td>
                     </tr>
                 }
 }

@@ -39,6 +39,7 @@
           <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
           <Property Name="isRead" Type="int" Nullable="false" />
           <Property Name="Date" Type="date" />
+          <Property Name="Time" Type="time" Precision="7" />
         </EntityType>
         <EntityType Name="Missings">
           <Key>
@@ -200,6 +201,7 @@
           <Property Name="isRead" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Users" Relationship="DiplomModel.FK_Messages_Users" FromRole="Messages" ToRole="Users" />
           <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="Time" Type="Time" Precision="7" />
         </EntityType>
         <EntityType Name="Missings">
           <Key>
@@ -377,6 +379,7 @@
           <EntitySetMapping Name="Messages">
             <EntityTypeMapping TypeName="DiplomModel.Messages">
               <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="Time" ColumnName="Time" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="SenderId" ColumnName="SenderId" />

@@ -33,7 +33,20 @@
     @using (Html.BeginForm())
     {
         <div class="content">
-            <h2>Заявление</h2>
+            <h2>Заявление (доступно @ViewBag.NumAllowApp @{
+                if(ViewBag.NumAllowApp == 0 || ViewBag.NumAllowApp == 5)
+                {
+                    <span>заявлений</span>
+                }
+                else if(ViewBag.NumAllowApp == 1)
+                {
+                    <span>заявление</span>
+                }
+                else if(ViewBag.NumAllowApp >= 2 && ViewBag.NumAllowApp <= 4)
+                {
+                    <span>заявления</span>
+                }
+                })</h2>
             <div class="application">
                 <div class="wrapp">
                     @if (ViewBag.Message != null)
@@ -58,7 +71,7 @@
                 <div class="app-title">Заявление</div>
 
                 <p>
-                    Прошу разрешить мне отсутствовать на занятиях @Html.DropDownListFor(a => a.DayOfMiss, listOfDays)/@Html.DropDownListFor(a => a.MonthOfMiss, listOfMonth)/@Html.DropDownListFor(a => a.YearOfMiss, listOfYear)
+                    Прошу разрешить мне отсутствовать на занятиях @Html.TextBoxFor(a => a.DateOfMiss, new { @class= "datefield", @type="date"})
                     @Html.TextBoxFor(a => a.Reason, new { @placeholder = "причина", @size = "75" })
                 </p>
 

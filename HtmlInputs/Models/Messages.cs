@@ -20,6 +20,7 @@ namespace HtmlInputs.Models
         public string Content { get; set; }
         public int isRead { get; set; }
         public System.DateTime Date { get; set; }
+        public System.TimeSpan Time { get; set; }
     
         public virtual Users Users { get; set; }
     }

@@ -91,9 +91,9 @@
                     numRows = 0;
                     string month = new DateTime(2000, months[i], 1).ToString("MMMM");
                     <tr>
-                        <td colspan="6" style="text-align:center;">@month</td>
+                        <td colspan="6" class="miss-month">@month</td>
                     </tr>
-                    
+
                     <tr>
                         <td>@(++numRows)</td>
                         <td>@Session["LogedUserSname"].ToString()</td>
@@ -116,5 +116,9 @@
 }
 
 <div class="miss-buttons">
+    @if (hasMiss != 0)
+    {
+        <a href="~/Profile/MonthStatistics"><input type="button" value="Статистика" /></a>
+    }
     <a href="~/Profile/MissForStudents"><input type="button" value="Назад" /></a>
 </div>

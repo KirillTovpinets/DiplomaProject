@@ -15,7 +15,9 @@
         @{
             foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
-                if (item.isRead == 0 && item.Users.Course == 1)
+                if (item.isRead == 0 && 
+                    item.Users.Course == 1 &&
+                    item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                 {
                     numCourseOne++;
                 }
@@ -31,7 +33,9 @@
         @{
             foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
-                if (item.isRead == 0 && item.Users.Course == 2)
+                if (item.isRead == 0 && 
+                    item.Users.Course == 2 &&
+                    item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                 {
                     numCourseTwo++;
                 }
@@ -47,7 +51,9 @@
         @{
             foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
-                if (item.isRead == 0 && item.Users.Course == 3)
+                if (item.isRead == 0 &&
+                    item.Users.Course == 3 &&
+                    item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                 {
                     numCourseThree++;
                 }
@@ -63,7 +69,9 @@
         @{
             foreach (HtmlInputs.Models.Messages item in dc.Messages)
             {
-                if (item.isRead == 0 && item.Users.Course == 4)
+                if (item.isRead == 0 &&
+                    item.Users.Course == 4 &&
+                    item.ReceiverId == Convert.ToInt32(Session["LogedUserId"]))
                 {
                     numCourseFour++;
                 }
