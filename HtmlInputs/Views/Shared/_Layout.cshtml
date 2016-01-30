@@ -96,9 +96,10 @@
         </div>
     </header>
     <nav class="header">
-        <div class="avatar">
-            <img src="@Url.Content(Session["LogedUserAvatar"].ToString())">
-
+        <div class="avatar" onclick="Display()">
+                <div class="Wrapper-avatar">+</div>
+            <img src="@Url.Action("ShowAvatar", "Profile")" />
+            
         </div>
         <div class="header-content">
             @Session["LogedUserSname"] @Session["LogedUserName"] @Session["LogedUserPname"]
@@ -186,5 +187,26 @@
         </ul>
         @RenderBody()
     </div>
+    @using (Html.BeginForm("ChangeAvatar", "Profile", FormMethod.Post, new { id = "change-form", enctype = "multipart/form-data" }))
+    {
+        <div class="container">
+            <div class="avatar-change">
+                <img src="@Url.Action("ShowAvatar", "Profile")" />
+            </div>
+            <div class="action">
+                <label>Выберите аватар</label><input type="file" name="NewAvatar" /><br />
+                <input type="submit" class="change-submit" value="Сохранить" />
+                <a href="~/Profile/Index">
+                    <input type="button" value="Назад" />
+                </a>
+            </div>
+        </div>
+    }
+    <script>
+        function Display() {
+            var element = document.getElementById("change-form");
+            element.style.display = "block";
+        }
+    </script>
 </body>
 </html>

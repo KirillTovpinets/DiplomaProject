@@ -66,7 +66,6 @@
     <Property Name="Patername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="RoleId" Type="Int32" Nullable="false" />
     <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="AvatarPath" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Changes" Relationship="Self.FK_Changes_Users" FromRole="Users" ToRole="Changes" />
     <NavigationProperty Name="Missings" Relationship="Self.FK_Missings_Users" FromRole="Users" ToRole="Missings" />
     <NavigationProperty Name="Roles" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
@@ -75,6 +74,7 @@
     <Property Name="Course" Type="Int32" />
     <Property Name="Birthday" Type="DateTime" Precision="0" />
     <NavigationProperty Name="Applications" Relationship="DiplomModel.FK_Applications_Users" FromRole="Users" ToRole="Applications" />
+    <Property Name="Avatar" Type="Binary" MaxLength="Max" FixedLength="false" />
   </EntityType>
   <Association Name="FK_Changes_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />

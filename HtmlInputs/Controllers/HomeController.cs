@@ -7,6 +7,8 @@ using System.Data.Entity;
 using HtmlInputs.Models;
 using HtmlInputs.Tools;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Drawing;
 
 namespace HtmlInputs.Controllers
 {
@@ -52,15 +54,6 @@ namespace HtmlInputs.Controllers
                         Session["LogedUserRole"] = v.RoleId.ToString();
                         Session["LogedUserGroup"] = v.Group.ToString();
                         Session["LogedUserCourse"] = v.Course.ToString();
-                        if(v.AvatarPath == null)
-                        {
-                            Session["LogedUserAvatar"] = "~/Content/Avatars/default_avatar.gif";
-                        }
-                        else
-                        {
-                            Session["LogedUserAvatar"] = v.AvatarPath.ToString();
-                        }
-                                
                         return RedirectPermanent("Profile/Index");
                     }
                     else
@@ -104,16 +97,18 @@ namespace HtmlInputs.Controllers
                 }
                 if(ModelState.IsValid == true)
                 {
-                        //if(Avatar == null)
-                        //{
-                        //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
-                        //}
-                        //else
-                        //{
-                        //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
-                        //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
-                        //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
-                        //}
+                    MemoryStream memory = new MemoryStream();
+                    if (Avatar == null)
+                    {
+                        Bitmap avatar = new Bitmap(Server.MapPath("~/Content/Avatars/default_avatar.gif"));
+                        avatar.Save(memory, ImageFormat.Gif);
+                    }
+                    else
+                    {
+                        string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                        Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                        Avatar.InputStream.CopyTo(memory);
+                    }
                     Users UserToSave = new Users();
                     UserToSave.Name = FormRegUser.Name;
                     UserToSave.Sirname = FormRegUser.Sirname;
@@ -124,7 +119,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Login = FormRegUser.Login;
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
-                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Avatar = memory.GetBuffer();
                     UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
                         dc.Users.Add(UserToSave);
                         dc.SaveChanges();
@@ -162,16 +157,18 @@ namespace HtmlInputs.Controllers
                 }
                 if (ModelState.IsValid == true)
                 {
-                    //if(Avatar == null)
-                    //{
-                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
-                    //}
-                    //else
-                    //{
-                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
-                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
-                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
-                    //}
+                    MemoryStream memory = new MemoryStream();
+                    if (Avatar == null)
+                    {
+                        Bitmap avatar = new Bitmap(Server.MapPath("~/Content/Avatars/default_avatar.gif"));
+                        avatar.Save(memory, ImageFormat.Gif);
+                    }
+                    else
+                    {
+                        string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                        Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                        Avatar.InputStream.CopyTo(memory);
+                    }
                     Users UserToSave = new Users();
                     UserToSave.Name = FormRegUser.Name;
                     UserToSave.Sirname = FormRegUser.Sirname;
@@ -182,7 +179,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Login = FormRegUser.Login;
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
-                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Avatar = memory.GetBuffer();
                     UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
@@ -220,16 +217,18 @@ namespace HtmlInputs.Controllers
                 }
                 if (ModelState.IsValid == true)
                 {
-                    //if(Avatar == null)
-                    //{
-                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
-                    //}
-                    //else
-                    //{
-                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
-                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
-                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
-                    //}
+                    MemoryStream memory = new MemoryStream();
+                    if (Avatar == null)
+                    {
+                        Bitmap avatar = new Bitmap(Server.MapPath("~/Content/Avatars/default_avatar.gif"));
+                        avatar.Save(memory, ImageFormat.Gif);
+                    }
+                    else
+                    {
+                        string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                        Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                        Avatar.InputStream.CopyTo(memory);
+                    }
                     Users UserToSave = new Users();
                     UserToSave.Name = FormRegUser.Name;
                     UserToSave.Sirname = FormRegUser.Sirname;
@@ -240,7 +239,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Login = FormRegUser.Login;
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
-                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Avatar = memory.GetBuffer();
                     UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
@@ -278,16 +277,18 @@ namespace HtmlInputs.Controllers
                 }
                 if (ModelState.IsValid == true)
                 {
-                    //if(Avatar == null)
-                    //{
-                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
-                    //}
-                    //else
-                    //{
-                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
-                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
-                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
-                    //}
+                    MemoryStream memory = new MemoryStream();
+                    if (Avatar == null)
+                    {
+                        Bitmap avatar = new Bitmap(Server.MapPath("~/Content/Avatars/default_avatar.gif"));
+                        avatar.Save(memory, ImageFormat.Gif);
+                    }
+                    else
+                    {
+                        string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                        Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                        Avatar.InputStream.CopyTo(memory);
+                    }
                     Users UserToSave = new Users();
                     UserToSave.Name = FormRegUser.Name;
                     UserToSave.Sirname = FormRegUser.Sirname;
@@ -298,7 +299,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Login = FormRegUser.Login;
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
-                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Avatar = memory.GetBuffer();
                     UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
@@ -336,16 +337,18 @@ namespace HtmlInputs.Controllers
                 }
                 if (ModelState.IsValid == true)
                 {
-                    //if(Avatar == null)
-                    //{
-                    //    RegUser.AvatarPath = "~/Content/Avatars/default_avatar.gif";
-                    //}
-                    //else
-                    //{
-                    //    string fileName = System.IO.Path.GetFileName(Avatar.FileName);
-                    //    Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
-                    //    RegUser.AvatarPath = Server.MapPath("~/Content/Avatars/" + fileName);
-                    //}
+                    MemoryStream memory = new MemoryStream();
+                    if (Avatar == null)
+                    {
+                        Bitmap avatar = new Bitmap(Server.MapPath("~/Content/Avatars/default_avatar.gif"));
+                        avatar.Save(memory, ImageFormat.Gif);
+                    }
+                    else
+                    {
+                        string fileName = System.IO.Path.GetFileName(Avatar.FileName);
+                        Avatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                        Avatar.InputStream.CopyTo(memory);
+                    }
                     Users UserToSave = new Users();
                     UserToSave.Name = FormRegUser.Name;
                     UserToSave.Sirname = FormRegUser.Sirname;
@@ -356,7 +359,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Login = FormRegUser.Login;
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
-                    UserToSave.AvatarPath = "~/Content/Avatars/default_avatar.gif";
+                    UserToSave.Avatar = memory.GetBuffer();
                     UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();

@@ -59,6 +59,7 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="DiplomModel.Users">
         <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="Avatar" ColumnName="Avatar" />
           <ScalarProperty Name="Birthday" ColumnName="Birthday" />
           <ScalarProperty Name="Course" ColumnName="Course" />
           <ScalarProperty Name="Group" ColumnName="Group" />
@@ -70,7 +71,6 @@
           <ScalarProperty Name="Patername" ColumnName="Patername" />
           <ScalarProperty Name="RoleId" ColumnName="RoleId" />
           <ScalarProperty Name="Email" ColumnName="Email" />
-          <ScalarProperty Name="AvatarPath" ColumnName="AvatarPath" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

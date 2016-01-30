@@ -125,7 +125,9 @@ header .title .speciality{
     border-radius:50%;
     margin-right: 10px;
     overflow:hidden;
+    position:relative;
 }
+
 
 .header .header-content{
     margin-top:5px;
@@ -137,11 +139,27 @@ header .title .speciality{
     min-width:740px;
     padding-right:0;
 }
+
+.avatar .Wrapper-avatar{
+    opacity:0;
+    background: #000;
+    position:absolute;
+    text-decoration:none;
+    color:#fff;
+    width:40px;
+    height:40px;
+    text-align:center;
+    font-size:35px;
+    transition:opacity 0.5s ease;
+}
 .avatar img,
 .avatar-mini img{
     max-width:100%;
 }
-
+.Wrapper-avatar:hover{
+    opacity:1;
+    cursor:pointer;
+}
 .message{
     border-top:1px solid #ccc;
     padding:10px;
@@ -276,19 +294,29 @@ textarea{
     background: #fff;
 }
 
-body .main .content .choose-buttons,
-body .choose-form .choose-buttons{
-    text-decoration:none;
-    color:white;
-    text-align:center;
-    display:block;
-    background: #e8ba73;
-    padding: 10px;
-    width:110px;
-    border-radius:8px;
-    margin-bottom:10px;
+#change-form{
+    display:none;
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0px;
+    left:0px;
+    background:rgba(0,0,0,.8);
+    padding:20px;
+    color:#fff;
 }
 
+.container{
+    width:500px;
+    height:350px;
+    margin:150px auto;
+}
+.avatar-change img{
+    display:block;
+    max-width:50%;
+    border:5px solid #fff;
+    margin:0 auto;
+}
 body .main .content .choose-buttons:hover,
 body .choose-form .choose-buttons:hover{
     background:#514128;
@@ -429,4 +457,37 @@ body .choose-form .choose-buttons:hover{
 }
 .delete{
     background-color: #aaa;
+}
+
+.change-submit{
+    background:#e8ba73;
+}
+.action{
+    background:#fff;
+    margin-top:10px;
+    color:#000;
+    padding:10px;
+    border-radius:10px;
+}
+.action:after{
+    content:'';
+    display:table;
+    clear:both;
+}
+.action input[type="submit"]{
+    background:#3d0404;
+    float:right;
+}
+
+body .main .content .choose-buttons,
+body .choose-form .choose-buttons{
+    display:block;
+    text-decoration:none;
+    color:white;
+    text-align:center;
+    background: #e8ba73;
+    padding: 10px;
+    width:110px;
+    border-radius:8px;
+    margin-bottom:10px;
 }

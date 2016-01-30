@@ -8,6 +8,7 @@ using System.Web.UI.DataVisualization;
 using System.Web.UI.DataVisualization.Charting;
 using System.Drawing;
 using System.IO;
+using System.Drawing.Imaging;
 namespace HtmlInputs.Controllers
 {
     public class ProfileController : Controller
@@ -25,6 +26,27 @@ namespace HtmlInputs.Controllers
             ViewBag.news = dc.News.OrderByDescending(a => a.Id);
             
             return View();
+        }
+        public ActionResult ShowAvatar()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            int Login;
+            if(Request["id"] != null)
+            {
+                Login = Convert.ToInt32(Request["id"]);
+            }
+            else
+            {
+                Login = Convert.ToInt32(Session["LogedUserId"]);
+            }
+            var v = dc.Users.Where(a => a.UserId.Equals(Login)).FirstOrDefault();
+            byte[] AvatarBytes = v.Avatar;
+            Stream mc = new MemoryStream(AvatarBytes);
+            Image avka = Image.FromStream(mc);
+
+            avka.Save(this.Response.OutputStream, ImageFormat.Jpeg);
+            avka.Dispose();
+            return null;
         }
         public ActionResult AddNews()
         {
@@ -865,6 +887,24 @@ namespace HtmlInputs.Controllers
             chartArea.AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64);
             chartArea.AxisX.Interval = 1;
             return chartArea;
+        }
+        [HttpPost]
+        public ActionResult ChangeAvatar(HttpPostedFileBase NewAvatar)
+        {
+            if(NewAvatar != null)
+            {
+                DiplomEntities5 dc = new DiplomEntities5();
+                MemoryStream memory = new MemoryStream();
+                
+                string fileName = System.IO.Path.GetFileName(NewAvatar.FileName);
+                NewAvatar.SaveAs(Server.MapPath("~/Content/Avatars/" + fileName));
+                NewAvatar.InputStream.CopyTo(memory);
+                int userId = Convert.ToInt32(Session["LogedUserId"]);
+                var UserToSave = dc.Users.Where(a => a.UserId.Equals(userId)).FirstOrDefault();
+                UserToSave.Avatar = memory.GetBuffer();
+                dc.SaveChanges();
+            }
+            return Redirect("~/Profile/Index");
         }
     }
 }

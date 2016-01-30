@@ -31,10 +31,10 @@ namespace HtmlInputs.Models
         public string Patername { get; set; }
         public int RoleId { get; set; }
         public string Email { get; set; }
-        public string AvatarPath { get; set; }
         public int Group { get; set; }
         public int Course { get; set; }
         public System.DateTime Birthday { get; set; }
+        public byte[] Avatar { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Changes> Changes { get; set; }

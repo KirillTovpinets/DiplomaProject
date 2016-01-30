@@ -78,7 +78,7 @@
                 }
                 <div class="message" style="@style">
                     <div class="avatar-mini">
-                        <img src="@Url.Content(item.Users.AvatarPath)" />
+                        <img src="~/Profile/ShowAvatar?id=@item.Users.UserId" />
                     </div>
                     <span style="color:#203939;">@item.Users.Sirname @item.Users.Name @item.Users.Patername</span><br />
                     @{
@@ -134,7 +134,7 @@
                 var receiver = dc.Users.Where(a => a.UserId.Equals(item.ReceiverId)).FirstOrDefault();
                 <div class="message">
                     <div class="avatar-mini">
-                        <img src="@Url.Content(receiver.AvatarPath)" />
+                        <img src="~/Profile/ShowAvatar?id=@receiver.UserId" />
                     </div>
                     <span style="color:#203939;">@receiver.Sirname @receiver.Name @receiver.Patername</span><br />
                     @{
