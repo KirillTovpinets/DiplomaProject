@@ -9,7 +9,7 @@
     int hasMiss = 0;
     <div class="content">
         <h1>Итоги недели</h1>
-        <table>
+        <table id="miss-table">
             <tr>
                 <td>№</td>
                 <td>Фамилия</td>
@@ -55,6 +55,11 @@
                 Dictionary<int, int>[] StudentsIsNotValidMiss = new Dictionary<int, int>[50];
                 foreach (HtmlInputs.Models.Users user in dc.Users)
                 {
+                    if (user.Group.ToString() != Session["NumGroup"].ToString() &&
+                        user.Course.ToString() != Session["NumCourse"].ToString())
+                    {
+                        continue;
+                    }
                     var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
                     if (student != null)
                     {
@@ -72,6 +77,11 @@
                 }
                 foreach (HtmlInputs.Models.Missings item in dc.Missings)
                 {
+                    if (item.Users.Group.ToString() != Session["NumGroup"].ToString() &&
+                        item.Users.Course.ToString() != Session["NumCourse"].ToString())
+                    {
+                        continue;
+                    }
                     startWeekItem = item.Date;
                     while (startWeekItem.DayOfWeek != System.DayOfWeek.Monday)
                     {
@@ -99,7 +109,7 @@
                 for (int i = 0; i < numWeeks; i++)
                 {
                     <tr>
-                        <td colspan="6" class="miss-week" >@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</td>
+                        <td colspan="6" class="miss-week">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</td>
                     </tr>
 
                     foreach (HtmlInputs.Models.Users user in dc.Users)
@@ -134,6 +144,10 @@
     </div>
 }
 <div class="miss-buttons">
+    @if (hasMiss != 0)
+    {
+        <a href="~/Profile/WeekStatistics"><input type="button" value="Статистика" /></a>
+    }
     @{
         if (Session["NumGroup"].ToString().Equals("1"))
         {

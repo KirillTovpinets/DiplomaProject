@@ -28,7 +28,15 @@
     listOfYear.Add(prevYear);
     listOfYear.Add(currYear); 
 }
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#datep').datepicker({
+            showOtherMonth: true,
+            dateFormat: "dd.mm.yy"
 
+        })
+    });
+</script>
 
     @using (Html.BeginForm())
     {
@@ -71,7 +79,7 @@
                 <div class="app-title">Заявление</div>
 
                 <p>
-                    Прошу разрешить мне отсутствовать на занятиях @Html.TextBoxFor(a => a.DateOfMiss, new { @class= "datefield", @type="date"})
+                    Прошу разрешить мне отсутствовать на занятиях @Html.TextBoxFor(a => a.DateOfMiss, new { @id= "datep"})
                     @Html.TextBoxFor(a => a.Reason, new { @placeholder = "причина", @size = "75" })
                 </p>
 

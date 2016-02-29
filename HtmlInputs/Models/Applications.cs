@@ -21,8 +21,9 @@ namespace HtmlInputs.Models
         public System.DateTime DateOfCreation { get; set; }
         public int isRead { get; set; }
         public string Head { get; set; }
-        public int isConfirmed { get; set; }
-        public System.DateTime DateOfRead { get; set; }
+        public Nullable<int> isConfirmed { get; set; }
+        public Nullable<System.DateTime> DateOfRead { get; set; }
+        public string Reader { get; set; }
     
         public virtual Users Users { get; set; }
     }

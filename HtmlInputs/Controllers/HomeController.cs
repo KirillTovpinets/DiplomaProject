@@ -41,11 +41,67 @@ namespace HtmlInputs.Controllers
                     var v = dc.Users.Where(a => a.Login.Equals(user.Login) && a.Password.Equals(user.Password)).FirstOrDefault();
                     if(v != null)
                     {
+                        
+                        if ((v.RoleId == 1 || v.RoleId == 2) && v.RoleId != 7
+                            ) { 
+                            //Itterate number of user course
+                            DateTime now = DateTime.Now;
+                            int CountCourseInDb = now.Year - (Convert.ToInt32(v.Login.ToString().Substring(0, 2)) + 2000);
+                            int CourseValueDb = Convert.ToInt32(v.Course);
+
+                            if (now.Month >= 9)
+                            {
+                                CountCourseInDb++;
+                            }
+                            if (CountCourseInDb != CourseValueDb)
+                            {
+                                v.Course = CountCourseInDb;
+                                if (CountCourseInDb == 5)
+                                {
+                                    v.RoleId = 7;
+                                }
+                                dc.SaveChanges();
+                                Session["NewCourse"] = 1;
+                                
+                            }
+                        }
+
                         if (v.RoleId == 7)
                         {
                             MvcHtmlString str = new MvcHtmlString("<script>alert('Вы отчислены из университета. Доступ закрыт')</script>");
                             ViewBag.Message = str;
                             return View(user);
+                        }
+                        if (v.RoleId == 4)
+                        {
+                            DateTime now = DateTime.Now;
+                            int numStud = 0;
+                            int numStudToBeRased = 0;
+                            foreach(Users student in dc.Users)
+                            { 
+                                //If there is October now or late, skip this function
+                                if (now.Month != 9)
+                                {
+                                    break;
+                                }
+                                if(student.RoleId == 1 || student.RoleId == 2)
+                                {
+                                    numStud++;
+                                    int CountCourseInDb = now.Year - (Convert.ToInt32(student.Login.ToString().Substring(0, 2)) + 2000);
+                                    int CourseValueDb = Convert.ToInt32(student.Course);
+
+                                    if (now.Month >= 9)
+                                    {
+                                        CountCourseInDb++;
+                                    }
+                                    if (CountCourseInDb != CourseValueDb)
+                                    {
+                                        numStudToBeRased++;
+                                    }
+                                }
+                            }
+                            Session["NumStudent"] = numStud;
+                            Session["NumStudentToRase"] = numStudToBeRased;
                         }
                         Session["LogedUserId"] = v.UserId.ToString();
                         Session["LogedUserName"] = v.Name.ToString();
@@ -95,8 +151,22 @@ namespace HtmlInputs.Controllers
                     ModelState.AddModelError("Captcha", "Текст с картинки введён не верно");
                     return View(FormRegUser);
                 }
+
+                DateTime now = DateTime.Now;
+                int RegUserCourse = now.Year - (Convert.ToInt32(FormRegUser.Login.ToString().Substring(0, 2)) + 2000);
+                foreach (Users student in dc.Users)
+                {
+                    int yearFromLogin = Convert.ToInt32(student.Login.ToString().Substring(0, 2));
+                    if ((yearFromLogin != RegUserCourse) && (FormRegUser.Course == student.Course))
+                    {
+                        ModelState.AddModelError("Login", "Ошибка системы. Для решения проблемы обратитесь к методисту");
+                        return View(FormRegUser);
+                    }
+                }
                 if(ModelState.IsValid == true)
                 {
+                    
+
                     MemoryStream memory = new MemoryStream();
                     if (Avatar == null)
                     {
@@ -120,7 +190,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
                     UserToSave.Avatar = memory.GetBuffer();
-                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    UserToSave.Birthday = FormRegUser.Birthday;
                         dc.Users.Add(UserToSave);
                         dc.SaveChanges();
                         ModelState.Clear();
@@ -180,7 +250,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
                     UserToSave.Avatar = memory.GetBuffer();
-                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    UserToSave.Birthday = FormRegUser.Birthday;
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
                     ModelState.Clear();
@@ -240,7 +310,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
                     UserToSave.Avatar = memory.GetBuffer();
-                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    UserToSave.Birthday = FormRegUser.Birthday;
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
                     ModelState.Clear();
@@ -300,7 +370,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
                     UserToSave.Avatar = memory.GetBuffer();
-                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    UserToSave.Birthday = FormRegUser.Birthday;
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
                     ModelState.Clear();
@@ -360,7 +430,7 @@ namespace HtmlInputs.Controllers
                     UserToSave.Course = FormRegUser.Course;
                     UserToSave.Email = FormRegUser.Email;
                     UserToSave.Avatar = memory.GetBuffer();
-                    UserToSave.Birthday = new DateTime(FormRegUser.YearOfBirth, FormRegUser.MonthOfBirth, FormRegUser.DayOfBirth);
+                    UserToSave.Birthday = FormRegUser.Birthday;
                     dc.Users.Add(UserToSave);
                     dc.SaveChanges();
                     ModelState.Clear();

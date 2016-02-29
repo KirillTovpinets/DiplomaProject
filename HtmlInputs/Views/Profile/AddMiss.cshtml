@@ -4,47 +4,55 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<SelectListItem> StudentList = new List<SelectListItem>();
     List<SelectListItem> IsValidList = new List<SelectListItem>();
-    List<SelectListItem> listOfDays = new List<SelectListItem>();
     List<SelectListItem> listOfForms = new List<SelectListItem>();
     List<SelectListItem> listOfDiss = new List<SelectListItem>();
     
-    for (int i = 0; i < 31; i++)
-    {
-        var newDay = new SelectListItem { Text = (i + 1).ToString(), Value = (i + 1).ToString() };
-        listOfDays.Add(newDay);
-    }
-
-    List<SelectListItem> listOfMonth = new List<SelectListItem>();
-    for (int i = 0; i < 12; i++)
-    {
-        var newMonth = new SelectListItem { Text = new DateTime(2000, i + 1, 1).ToString("MMMM"), Value = (i + 1).ToString() };
-        listOfMonth.Add(newMonth);
-    }
-
-    List<SelectListItem> listOfYear = new List<SelectListItem>();
     var isValid = new SelectListItem { Text = "Есть", Value = "1" };
     var isNotValid = new SelectListItem { Text = "Отсутствует", Value = "0" };
-
-    var prevYear = new SelectListItem { Text = (DateTime.Now.Year - 1).ToString(), Value = (DateTime.Now.Year - 1).ToString() };
-    var nowYear = new SelectListItem { Text = (DateTime.Now.Year).ToString(), Value = (DateTime.Now.Year).ToString() };
-    listOfYear.Add(prevYear);
-    listOfYear.Add(nowYear);
     
     IsValidList.Add(isValid);
     IsValidList.Add(isNotValid);
 
     HtmlInputs.Models.DiplomEntities5 dc1 = new HtmlInputs.Models.DiplomEntities5();
-    int group = Convert.ToInt32(Session["LogedUserGroup"].ToString());
+    int group = Convert.ToInt32(Session["LogedUserGroup"]);
+    int course = Convert.ToInt32(Session["LogedUserCourse"]);
     foreach (HtmlInputs.Models.Users item in dc1.Users.OrderBy(a => a.Sirname))
     {
-        if (item.Group.Equals(group) && item.RoleId.Equals(1))
+        if (item.Group.Equals(group) && 
+            item.RoleId.Equals(1) &&
+            item.Course.Equals(course))
         {
             var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
             StudentList.Add(newReceiver);
         }
     }
-}
 
+    var lecture = new SelectListItem { Text = "лекция", Value = "лекция" };
+    var seminar = new SelectListItem { Text = "семинар", Value = "семинар" };
+    var laboratory = new SelectListItem { Text = "лабораторная", Value = "лабораторная" };
+
+    listOfForms.Add(lecture);
+    listOfForms.Add(seminar);
+    listOfForms.Add(laboratory);
+
+    foreach (HtmlInputs.Models.Discipline item in dc1.Discipline.OrderBy(a => a.FullName))
+    {
+        var element = new SelectListItem { Text = item.FullName, Value = item.DisId.ToString() };
+        listOfDiss.Add(element);
+    }
+    ViewBag.ListOfStudent = StudentList;
+    ViewBag.ValidList = IsValidList;
+    ViewBag.ListOfForm = listOfForms;
+    ViewBag.ListOfDis = listOfDiss;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#inline").datepicker({
+            dateFormat: "dd.mm.yy",
+            altField: "#datep",
+        });
+    })
+</script>
     @using (Html.BeginForm("AddMiss", "Profile", FormMethod.Post, new { @id = "add-miss-form" }))
     {
         <div class="content">
@@ -62,7 +70,7 @@
                 }, 1500);
             </script>
             }
-            <table>
+            <table id="add-miss">
                 <tr>
                     <td><lable>Студент:</lable></td>
                     <td>@Html.DropDownListFor(a => a.StudentId, StudentList)</td>
@@ -70,12 +78,12 @@
                 </tr>
                 <tr>
                     <td><lable>Форма занятий:</lable></td>
-                    <td>@Html.TextBoxFor(a => a.Form)</td>
+                    <td>@Html.DropDownListFor(a => a.Form, listOfForms)</td>
                     <td style="color:red;">@Html.ValidationMessageFor(a => a.Form)</td>
                 </tr>
                 <tr>
                     <td><lable>Дисциплина:</lable></td>
-                    <td>@Html.TextBoxFor(a => a.Discipline)</td>
+                    <td>@Html.DropDownListFor(a => a.Discipline, listOfDiss)</td>
                     <td style="color:red;">@Html.ValidationMessageFor(a => a.Discipline)</td>
                 </tr>
                 <tr>
@@ -86,9 +94,11 @@
                 <tr>
                     <td>Дата:</td>
                     <td colspan="2">
-                        @Html.TextBoxFor(a => a.Date, new {@class = "datefield", type = "date" })
+                        <input id="datep" name="Date"/>
                     </td>
+                </tr>
             </table>
+            <div id="inline"></div>
         </div>
     <div class="miss-buttons">
         <input type="submit" value="Добавить"/>

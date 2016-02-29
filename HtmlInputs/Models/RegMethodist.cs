@@ -23,9 +23,7 @@ namespace HtmlInputs.Models
         public string Sirname { get; set; }
         [Required(ErrorMessage = "Введите отчество", AllowEmptyStrings = false)]
         public string Patername { get; set; }
-        public int DayOfBirth { get; set; }
-        public int MonthOfBirth { get; set; }
-        public int YearOfBirth { get; set; }
+        public DateTime Birthday { get; set; }
         public int RoleId { get; set; }
         [Required(ErrorMessage = "Введите email", AllowEmptyStrings = false)]
         [EmailAddress(ErrorMessage = "Введены не правильные данные")]

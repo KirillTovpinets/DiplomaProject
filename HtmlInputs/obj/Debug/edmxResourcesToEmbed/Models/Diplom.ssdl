@@ -13,6 +13,7 @@
     <Property Name="Head" Type="nvarchar(max)" Nullable="false" />
     <Property Name="isConfirmed" Type="int" />
     <Property Name="DateOfRead" Type="date" />
+    <Property Name="Reader" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="Changes">
     <Key>
@@ -23,6 +24,14 @@
     <Property Name="Content" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Date" Type="date" Nullable="false" />
     <Property Name="isRead" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Discipline">
+    <Key>
+      <PropertyRef Name="DisId" />
+    </Key>
+    <Property Name="DisId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FullName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="ShortName" Type="nvarchar" MaxLength="50" Nullable="false" />
   </EntityType>
   <EntityType Name="Messages">
     <Key>
@@ -43,10 +52,10 @@
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="StudentId" Type="int" Nullable="false" />
     <Property Name="Form" Type="nvarchar" MaxLength="50" Nullable="false" />
-    <Property Name="Discipline" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="IsValid" Type="int" Nullable="false" />
     <Property Name="IsRead" Type="int" />
     <Property Name="Date" Type="date" />
+    <Property Name="Discipline" Type="int" />
   </EntityType>
   <EntityType Name="News">
     <Key>
@@ -80,6 +89,14 @@
     <Property Name="Course" Type="int" />
     <Property Name="Birthday" Type="date" />
     <Property Name="Avatar" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Utility">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Parameter" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Limit" Type="int" Nullable="false" />
   </EntityType>
   <Association Name="FK_Applications_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -117,6 +134,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Missings_Discipline">
+    <End Role="Discipline" Type="Self.Discipline" Multiplicity="0..1" />
+    <End Role="Missings" Type="Self.Missings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Discipline">
+        <PropertyRef Name="DisId" />
+      </Principal>
+      <Dependent Role="Missings">
+        <PropertyRef Name="Discipline" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Missings_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="Missings" Type="Self.Missings" Multiplicity="*" />
@@ -144,11 +173,13 @@
   <EntityContainer Name="Хранилище DiplomModelContainer">
     <EntitySet Name="Applications" EntityType="Self.Applications" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Changes" EntityType="Self.Changes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Discipline" EntityType="Self.Discipline" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Missings" EntityType="Self.Missings" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="News" EntityType="Self.News" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Utility" EntityType="Self.Utility" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK_Applications_Users" Association="Self.FK_Applications_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="Applications" EntitySet="Applications" />
@@ -160,6 +191,10 @@
     <AssociationSet Name="FK_Messages_Users" Association="Self.FK_Messages_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="Messages" EntitySet="Messages" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Missings_Discipline" Association="Self.FK_Missings_Discipline">
+      <End Role="Discipline" EntitySet="Discipline" />
+      <End Role="Missings" EntitySet="Missings" />
     </AssociationSet>
     <AssociationSet Name="FK_Missings_Users" Association="Self.FK_Missings_Users">
       <End Role="Users" EntitySet="Users" />

@@ -27,10 +27,12 @@ namespace HtmlInputs.Models
     
         public virtual DbSet<Changes> Changes { get; set; }
         public virtual DbSet<Messages> Messages { get; set; }
-        public virtual DbSet<Missings> Missings { get; set; }
         public virtual DbSet<News> News { get; set; }
         public virtual DbSet<Roles> Roles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Applications> Applications { get; set; }
+        public virtual DbSet<Discipline> Discipline { get; set; }
+        public virtual DbSet<Missings> Missings { get; set; }
+        public virtual DbSet<Utility> Utility { get; set; }
     }
 }

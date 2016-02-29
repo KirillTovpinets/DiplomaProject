@@ -12,7 +12,7 @@ namespace HtmlInputs.Models
         [Required(ErrorMessage = "Введите форму занятий", AllowEmptyStrings = false)]
         public string Form { get; set; }
         [Required(ErrorMessage = "Введите название дисциплины", AllowEmptyStrings = false)]
-        public string Discipline { get; set; }
+        public int Discipline { get; set; }
         public int IsValid { get; set; }
         public int IsRead { get; set; }
         public DateTime Date { get; set; }

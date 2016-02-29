@@ -9,7 +9,7 @@
     int hasMiss = 0;
     <div class="content">
         <h1>Итоги недели</h1>
-        <table>
+        <table id="miss-table">
             <tr>
                 <td>№</td>
                 <td>Фамилия</td>
@@ -55,6 +55,11 @@
                 Dictionary<int, int>[] StudentsIsNotValidMiss = new Dictionary<int, int>[50];
                 foreach (HtmlInputs.Models.Users user in dc.Users)
                 {
+                    if (user.Group.ToString() != Session["LogedUserGroup"].ToString() ||
+                        user.Course.ToString() != Session["LogedUserCourse"].ToString())
+                    {
+                        continue;
+                    }
                     var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
                     if (student != null)
                     {
@@ -72,6 +77,11 @@
                 }
                 foreach (HtmlInputs.Models.Missings item in dc.Missings)
                 {
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString())
+                    {
+                        continue;
+                    }
                     startWeekItem = item.Date;
                     while (startWeekItem.DayOfWeek != System.DayOfWeek.Monday)
                     {
@@ -104,10 +114,15 @@
 
                     foreach (HtmlInputs.Models.Users user in dc.Users)
                     {
+                        if (user.Group.ToString() != Session["LogedUserGroup"].ToString() &&
+                            user.Course.ToString() != Session["LogedUserCourse"].ToString())
+                        {
+                            continue;
+                        }
                         int num = 0;
                         if (StudentsIsNotValidMiss[i].TryGetValue(user.UserId, out num))
                         {
-                            if(num == 0 && StudentsIsValidMiss[i][user.UserId] == 0)
+                            if (num == 0 && StudentsIsValidMiss[i][user.UserId] == 0)
                             {
                                 continue;
                             }
@@ -126,14 +141,18 @@
                 if (hasMiss == 0)
                 {
                     <tr>
-                        <td class="miss-week" colspan="6" >У вашей группы нет пропусков</td>
+                        <td class="miss-week" colspan="6">У вашей группы нет пропусков</td>
                     </tr>
                 }
-}
+            }
         </table>
         </div>
 }
     
 <div class="miss-buttons">
+    @if(hasMiss != 0)
+    {
+        <a href="~/Profile/WeekStatistics"><input type="button" value="Статистика" /></a>
+    }
     <a href="~/Profile/MissForPraepostor"><input type="button" value="Назад" /></a>
 </div>

@@ -19,8 +19,8 @@ namespace HtmlInputs.Models
         public int ReceiverId { get; set; }
         public string Content { get; set; }
         public int isRead { get; set; }
-        public System.DateTime Date { get; set; }
-        public System.TimeSpan Time { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public Nullable<System.TimeSpan> Time { get; set; }
     
         public virtual Users Users { get; set; }
     }

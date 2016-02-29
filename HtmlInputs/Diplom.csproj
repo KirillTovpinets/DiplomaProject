@@ -148,6 +148,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Diplom.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Discipline.cs">
+      <DependentUpon>Diplom.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\LogedUser.cs" />
     <Compile Include="Models\Messages.cs">
       <DependentUpon>Diplom.tt</DependentUpon>
@@ -169,6 +172,9 @@
     <Compile Include="Models\Users.cs">
       <DependentUpon>Diplom.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Utility.cs">
+      <DependentUpon>Diplom.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\CaptchaImage.cs" />
   </ItemGroup>
@@ -180,6 +186,28 @@
     <Content Include="App_Data\Diplom_log.ldf">
       <DependentUpon>Diplom.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\first_september.png" />
+    <Content Include="Content\Logo.ico" />
+    <Content Include="Content\StylesUi\images\ui-bg_diagonals-medium_20_d34d17_40x40.png" />
+    <Content Include="Content\StylesUi\images\ui-bg_gloss-wave_45_817865_500x100.png" />
+    <Content Include="Content\StylesUi\images\ui-bg_gloss-wave_60_fece2f_500x100.png" />
+    <Content Include="Content\StylesUi\images\ui-bg_gloss-wave_70_ffdd57_500x100.png" />
+    <Content Include="Content\StylesUi\images\ui-bg_gloss-wave_90_fff9e5_500x100.png" />
+    <Content Include="Content\StylesUi\images\ui-bg_highlight-soft_100_feeebd_1x100.png" />
+    <Content Include="Content\StylesUi\images\ui-bg_inset-soft_30_ffffff_1x100.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_3d3d3d_256x240.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_bd7b00_256x240.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_d19405_256x240.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_eb990f_256x240.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_ed9f26_256x240.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_fadc7a_256x240.png" />
+    <Content Include="Content\StylesUi\images\ui-icons_ffe180_256x240.png" />
+    <Content Include="Content\StylesUi\jquery-ui.css" />
+    <Content Include="Content\StylesUi\jquery-ui.min.css" />
+    <Content Include="Content\StylesUi\jquery-ui.structure.css" />
+    <Content Include="Content\StylesUi\jquery-ui.structure.min.css" />
+    <Content Include="Content\StylesUi\jquery-ui.theme.css" />
+    <Content Include="Content\StylesUi\jquery-ui.theme.min.css" />
     <Content Include="Content\Warning.gif" />
     <Content Include="Content\Avatars\Alex.jpg" />
     <Content Include="Content\Avatars\Alina.jpg" />
@@ -197,34 +225,13 @@
     <Content Include="Content\Style.css" />
     <Content Include="Content\wrapper.png" />
     <Content Include="Global.asax" />
-    <None Include="Scripts\jquery-1.4.4-vsdoc.js" />
-    <Content Include="Scripts\DatePickerReady.js" />
-    <Content Include="Scripts\jquery-1.4.4.js" />
-    <Content Include="Scripts\jquery-1.4.4.min.js" />
-    <Content Include="Scripts\jquery.ui.accordion.js" />
-    <Content Include="Scripts\jquery.ui.accordion.min.js" />
-    <Content Include="Scripts\jquery.ui.autocomplete.js" />
-    <Content Include="Scripts\jquery.ui.autocomplete.min.js" />
-    <Content Include="Scripts\jquery.ui.button.js" />
-    <Content Include="Scripts\jquery.ui.button.min.js" />
-    <Content Include="Scripts\jquery.ui.core.js" />
-    <Content Include="Scripts\jquery.ui.core.min.js" />
-    <Content Include="Scripts\jquery.ui.datepicker.js" />
-    <Content Include="Scripts\jquery.ui.datepicker.min.js" />
-    <Content Include="Scripts\jquery.ui.dialog.js" />
-    <Content Include="Scripts\jquery.ui.dialog.min.js" />
-    <Content Include="Scripts\jquery.ui.mouse.js" />
-    <Content Include="Scripts\jquery.ui.mouse.min.js" />
-    <Content Include="Scripts\jquery.ui.position.js" />
-    <Content Include="Scripts\jquery.ui.position.min.js" />
-    <Content Include="Scripts\jquery.ui.progressbar.js" />
-    <Content Include="Scripts\jquery.ui.progressbar.min.js" />
-    <Content Include="Scripts\jquery.ui.slider.js" />
-    <Content Include="Scripts\jquery.ui.slider.min.js" />
-    <Content Include="Scripts\jquery.ui.tabs.js" />
-    <Content Include="Scripts\jquery.ui.tabs.min.js" />
-    <Content Include="Scripts\jquery.ui.widget.js" />
-    <Content Include="Scripts\jquery.ui.widget.min.js" />
+    <None Include="Scripts\jquery-2.2.0.intellisense.js" />
+    <Content Include="Scripts\jquery-2.2.0.js" />
+    <Content Include="Scripts\jquery-2.2.0.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery-ui.min.js" />
+    <Content Include="Scripts\jquery.ui.datepicker-ru.js" />
+    <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -235,6 +242,9 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Profile\EditNews.cshtml" />
     <Content Include="Views\Profile\MonthStatistics.cshtml" />
+    <Content Include="Views\WeekStatistics.cshtml" />
+    <Content Include="Views\Profile\WeekStatistics.cshtml" />
+    <Content Include="Scripts\jquery-2.2.0.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

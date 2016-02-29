@@ -18,9 +18,9 @@ namespace HtmlInputs.Models
         public Users()
         {
             this.Changes = new HashSet<Changes>();
-            this.Missings = new HashSet<Missings>();
             this.Messages = new HashSet<Messages>();
             this.Applications = new HashSet<Applications>();
+            this.Missings = new HashSet<Missings>();
         }
     
         public int UserId { get; set; }
@@ -31,19 +31,19 @@ namespace HtmlInputs.Models
         public string Patername { get; set; }
         public int RoleId { get; set; }
         public string Email { get; set; }
-        public int Group { get; set; }
-        public int Course { get; set; }
-        public System.DateTime Birthday { get; set; }
+        public Nullable<int> Group { get; set; }
+        public Nullable<int> Course { get; set; }
+        public Nullable<System.DateTime> Birthday { get; set; }
         public byte[] Avatar { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Changes> Changes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Missings> Missings { get; set; }
         public virtual Roles Roles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Messages> Messages { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Applications> Applications { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Missings> Missings { get; set; }
     }
 }

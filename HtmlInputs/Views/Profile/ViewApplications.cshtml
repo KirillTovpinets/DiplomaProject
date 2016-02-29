@@ -14,7 +14,7 @@
     int isSaved = 0;
     int hasApp = 0;
     int hasUnreadApp = 0;
-    int WeekLimit = 5;
+    int WeekLimit = dc.Utility.Where(a => a.Id.Equals(2)).FirstOrDefault().Limit;
     int Overflow = 0;
     
     List<SelectListItem> ConfirmList = new List<SelectListItem>();
@@ -40,6 +40,8 @@
             </script>
         }
     @{
+        int numWeekToSave = 0;
+        int isNotTheFirst = 0;
         foreach (HtmlInputs.Models.Applications item in dc.Applications.OrderByDescending(a => a.DateOfCreation)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
         {
             if (item.Users.Group.ToString() != Session["GroupApp"].ToString() ||
@@ -80,30 +82,34 @@
             {
                 temp = temp.Date.AddDays(-1);
             }
-            int numWeekToSave = 0;
             foreach (DateTime savedWeeks in weeks)
             {
                 if (savedWeeks == temp)
                 {
-                    
                     isSaved = 1;
                     break;
                 }
-                numWeekToSave++;
             }
-            if(numWeekToSave == 50)
-            {
-                numWeekToSave = 0;
-            }
-                numAppInWeek[numWeekToSave]++;
+                
             if (isSaved == 0)
             {
+                if(isNotTheFirst == 0)
+                { 
+                    numAppInWeek[numWeekToSave]++;
+                    isNotTheFirst = 1;
+                }
+                else
+                {
+                    numAppInWeek[++numWeekToSave]++;
+                }
                 weeks[numWeeks++] = temp;
             }
             else
             {
+                numAppInWeek[numWeekToSave]++;
                 isSaved = 0;
             }
+            
         }
         
         for (int i = 0; i < numWeeks; i++)
@@ -111,7 +117,7 @@
             int numApp = 0;
             if(numAppInWeek[i] > WeekLimit)
             {
-                Overflow = numAppInWeek[i] - (WeekLimit +2);
+                Overflow = numAppInWeek[i] - WeekLimit;
             }
             <div class="week">
         @weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</div>
@@ -181,10 +187,11 @@
                                 }
                                 @if(app.isRead == 1)
                                 { 
-                                    @Session["LogedUserSname"]<span> </span> @(Session["LogedUserName"].ToString().First())<span>.</span> @(Session["LogedUserPname"].ToString().First())<span>.</span>
+                                    <span>@app.Reader</span>
                                     <br />@app.DateOfRead.ToShortDateString()
                                 }
                                 @Html.HiddenFor(a => a[numApp].Id)
+                                @Html.HiddenFor(a => a[numApp].isRead)
                                 @{
                                     numApp++;
                                 }
@@ -217,11 +224,22 @@
         }
     }
 </div>
+        <script>
+            function ShowForm() {
+                var element = document.getElementById("setLim-form");
+                element.style.display = "block";
+            }
+            function HideForm() {
+                var element = document.getElementById("form-message");
+                element.style.display = "none";
+            }
+        </script>
 <div class="miss-buttons">
     @if(hasUnreadApp == 1)
     { 
-    <a href="#"><input type="submit" value="Сохранить" /></a>
+        <input type="submit" value="Сохранить" />
     }
+    <input type="button" value="Установить лимит" onclick="ShowForm()"/>
     @if (Session["CourseApp"].ToString().Equals("1"))
     {
         <a href="~/Profile/CourseOneApp"><input type="button" value="Назад" /></a>
@@ -241,7 +259,12 @@
     
 </div>
     }
-
+@using (Html.BeginForm("SetLim", "Profile", FormMethod.Get, new { @id = "setLim-form" }))
+{
+    <button onclick="HideForm()" class="close-btn">X</button>
+    <input type="text" name="numApp" size="5" style="text-align:center;"/>
+    <input type="submit" value="Установить" />
+}
 
 
 

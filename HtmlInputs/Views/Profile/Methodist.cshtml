@@ -2,6 +2,14 @@
     ViewBag.Title = "Личный кабинет";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#cansel').click(function (e) {
+            $("#Rase-form").hide();
+            e.preventDefault();
+        });
+    });
+</script>
 <div class="content">
     @if (ViewBag.Message != null)
     {
@@ -29,3 +37,19 @@
     <a href="~/Profile/AddNews"><input type="button" value="Добавить" /></a>
     <a href="~/Profile/EditNews"><input type="button" value="Изменить" /></a>
 </div>
+@if (!Session["NumStudentToRase"].ToString().Equals("0"))
+{
+    using (Html.BeginForm("Rase", "Profile", FormMethod.Get, new { @id = "Rase-form" }))
+    {
+        <div class="container">
+            <img src="@Url.Content("~/Content/first_september.png")" id="new-year" />
+            <h1>Поздравляем с днём знаний!</h1>
+            <h2>Необходимо перевести @Session["NumStudentToRase"] студентов на следующий курс</h2>
+
+            <div class="rase-action">
+                <button id="Rase" type="submit">Перевести</button>
+                <button id="cansel">Оставить</button>
+            </div>
+        </div>
+    }
+}

@@ -2,6 +2,13 @@
     ViewBag.Title = "Личный кабинет";
     Layout = "/Views/Shared/_Layout.cshtml";
 }
+<script type="text/javascript">
+    $(document).ready(function () {
+        ("#thanks").click(function () {
+            $(this).parent().hide();
+        });
+    });
+</script>
 <div class="content">
     @foreach (HtmlInputs.Models.News item in ViewBag.news)
     {
@@ -12,3 +19,13 @@
         </div>
     }
 </div>
+@if (Session["NewCourse"] != null) { 
+<div id="congrat">
+    <div class="container">
+        <img src="@Url.Content("~/Content/first_september.png")" id="new-year" />
+        <h1>Поздравляем!</h1>
+        <h2>Вы переведены на @Session["LogedUserCourse"]-й курс</h2>
+    </div>
+    <button id="thanks">Спасибо</button>
+</div>
+}

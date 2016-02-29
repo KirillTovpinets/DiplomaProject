@@ -112,7 +112,7 @@ namespace HtmlInputs.Controllers
                 case "5":
                     return Redirect("~/Profile/MissForZDean");
                 case "6":
-                    return Redirect("~/Profile/MissForDean");
+                    return Redirect("~/Profile/MissForZDean");
 
             }
                 return Redirect("~/Home/Index");
@@ -127,6 +127,40 @@ namespace HtmlInputs.Controllers
             DiplomEntities5 dc = new DiplomEntities5();
             ViewBag.news = dc.News.OrderByDescending(a => a.Id);
             return View();
+        }
+        [HttpGet]
+        public ActionResult Rase()
+        {
+            DateTime now = DateTime.Now;
+            DiplomEntities5 dc = new DiplomEntities5();
+
+            foreach (Users student in dc.Users)
+            {
+                if (student.RoleId == 1 || student.RoleId == 2)
+                {
+                    int year = Convert.ToInt32(student.Login.ToString().Substring(0, 2));
+                    int CountCourseInDb = now.Year - (year + 2000);
+                    int CourseValueDb = Convert.ToInt32(student.Course);
+
+                    if (now.Month >= 9)
+                    {
+                        CountCourseInDb++;
+                    }
+                    if (CountCourseInDb != CourseValueDb)
+                    {
+                        if (CountCourseInDb == 5)
+                        {
+                            student.RoleId = 7;
+                        }
+                        else
+                        {
+                            student.Course = CountCourseInDb;
+                        }
+                    }
+                }
+            }
+            dc.SaveChanges();
+            return View("Methodist");
         }
         public ActionResult MethodistStudents()
         {
@@ -190,7 +224,6 @@ namespace HtmlInputs.Controllers
             foreach (Missings miss in getChanges)
             {
                 var DbMiss = dc.Missings.Where(a => a.Id.Equals(miss.Id)).FirstOrDefault();
-                //var element = 
                 if (!DbMiss.IsValid.Equals(miss.IsValid))
                 {
                     DbMiss.IsValid = miss.IsValid;
@@ -208,44 +241,117 @@ namespace HtmlInputs.Controllers
             }
             return View(MissingDb);
         }
-        [HttpGet]
+        
         public ActionResult SearchSirname()
         {
             DiplomEntities5 dc = new DiplomEntities5();
-            string sirname = Request["Sirname"].ToString();
-            var Db = dc.Missings.Where(a => a.Users.Sirname.Equals(sirname)).ToList();
-            return View("EditMiss",Db);
+            if(!Request["Sirname"].ToString().Equals(""))
+            { 
+                string sirname = Request["Sirname"].ToString();
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Sirname.Contains(sirname) &&
+                                                a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss",Db);
+            }
+            else
+            {
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
         }
         public ActionResult SearchName()
         {
+            
             DiplomEntities5 dc = new DiplomEntities5();
-            string name = Request["Name"].ToString();
-            var Db = dc.Missings.Where(a => a.Users.Name.Equals(name)).ToList();
-            return View("EditMiss", Db);
+            if (!Request["Name"].ToString().Equals(""))
+            {
+                string name = Request["Name"].ToString();
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Name.Contains(name) &&
+                                                a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
+            else
+            {
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
         }
         public ActionResult SearchDate()
         {
-            int year = Convert.ToInt32(Request["year"].ToString());
-            int month = Convert.ToInt32(Request["month"].ToString());
-            int day = Convert.ToInt32(Request["day"].ToString());
-            DateTime date = new DateTime(year, month, day);
             DiplomEntities5 dc = new DiplomEntities5();
-            var Db = dc.Missings.Where(a => a.Date.Equals(date)).ToList();
-            return View("EditMiss", Db);
+            if (!Request["Date"].ToString().Equals(""))
+            {
+                string date = Request["Date"].ToString();
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Date.ToString().Equals(date) &&
+                                                a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
+            else
+            {
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
         }
         public ActionResult SearchForm()
         {
             DiplomEntities5 dc = new DiplomEntities5();
-            string form = Request["Form"].ToString();
-            var Db = dc.Missings.Where(a => a.Form.Equals(form)).ToList();
-            return View("EditMiss", Db);
+            if (!Request["Form"].ToString().Equals(""))
+            {
+                string form = Request["Form"].ToString();
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Form.Equals(form) &&
+                                                a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
+            else
+            {
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
         }
         public ActionResult SearchDis()
         {
             DiplomEntities5 dc = new DiplomEntities5();
-            string dis = Request["Dis"].ToString();
-            var Db = dc.Missings.Where(a => a.Discipline.Equals(dis)).ToList();
-            return View("EditMiss", Db);
+            if (!Request["Dis"].ToString().Equals(""))
+            {
+                string dis = Request["Dis"].ToString();
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Discipline1.ShortName.Equals(dis) &&
+                                                a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
+            else
+            {
+                int group = Convert.ToInt32(Session["LogedUserGroup"]);
+                int course = Convert.ToInt32(Session["LogedUserCourse"]);
+                var Db = dc.Missings.Where(a => a.Users.Group.Equals(group) &&
+                                                a.Users.Course.Equals(course)).ToList();
+                return View("EditMiss", Db);
+            }
         }
         public ActionResult CourseOne()
         {
@@ -357,7 +463,8 @@ namespace HtmlInputs.Controllers
             {
                 return Redirect("~/Profile/ShowOrWriteApp");
             }
-            else if(Session["LogedUserRole"].ToString().Equals("5"))
+            else if(Session["LogedUserRole"].ToString().Equals("5") ||
+                    Session["LogedUserRole"].ToString().Equals("6"))
             {
                 return Redirect("~/Profile/ApplianceForZDean");
             }
@@ -371,39 +478,47 @@ namespace HtmlInputs.Controllers
         {
             return View();
         }
-        public ActionResult Appliance()
+        public int NumAllowedApp()
         {
             DiplomEntities5 dc = new DiplomEntities5();
+            var AppLimit = dc.Utility.Where(a => a.Id.Equals(2)).FirstOrDefault().Limit;
             DateTime date = DateTime.Now;
             DateTime startWeek = date;
             DateTime endWeek = date;
             int numApp = 0;
             int AllowAmountApp = 0;
-            while(startWeek.DayOfWeek != System.DayOfWeek.Monday)
+            while (startWeek.DayOfWeek != System.DayOfWeek.Monday)
             {
                 startWeek = startWeek.AddDays(-1);
             }
-            foreach(Applications item in dc.Applications)
+            foreach (Applications item in dc.Applications)
             {
                 DateTime temp = item.DateOfCreation;
-                while(temp.DayOfWeek != System.DayOfWeek.Monday)
+                while (temp.DayOfWeek != System.DayOfWeek.Monday)
                 {
                     temp = temp.AddDays(-1);
                 }
-                if(temp == startWeek)
+                if (temp.Date == startWeek.Date &&
+                   item.Users.Group.Equals(Convert.ToInt32(Session["LogedUserGroup"])) &&
+                   item.Users.Course.Equals(Convert.ToInt32(Session["LogedUserCourse"])))
                 {
                     numApp++;
                 }
             }
-            AllowAmountApp = 5 - numApp;
-            if(AllowAmountApp < 0)
+            AllowAmountApp = AppLimit - numApp;
+            if (AllowAmountApp < 0)
             {
-                ViewBag.NumAllowApp = 0;
+                return 0;
             }
             else
             {
-                ViewBag.NumAllowApp = numApp;
+                return AllowAmountApp;
             }
+
+        }
+        public ActionResult Appliance()
+        {
+                ViewBag.NumAllowApp = NumAllowedApp();
             return View();
         }
         [HttpPost]
@@ -432,6 +547,7 @@ namespace HtmlInputs.Controllers
             dc.Applications.Add(newApp);
             dc.SaveChanges();
             ViewBag.Message = "Заявление успешно отправлено.";
+            ViewBag.NumAllowApp = NumAllowedApp();
             return View();
         }
         public ActionResult ApplianceForZDean()
@@ -458,32 +574,31 @@ namespace HtmlInputs.Controllers
             Session["CourseApp"] = 4;
             return View("GroupListApp");
         }
+        public List<Applications> GetAppOfGroup(int numGroup)
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            int course = Convert.ToInt32(Session["CourseApp"]);
+            var Group = dc.Applications.Where(a => a.Users.Group == numGroup &&
+                                                   a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
+            return Group;
+        }
         public ActionResult GroupOneApp()
         {
             Session["GroupApp"] = 1;
-            DiplomEntities5 dc = new DiplomEntities5();
-            int course = Convert.ToInt32(Session["CourseApp"]);
-            var GroupOne = dc.Applications.Where(a => a.Users.Group == 1 &&
-                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
-            return View("ViewApplications",GroupOne);
+        
+            return View("ViewApplications",GetAppOfGroup(1));
         }
         public ActionResult GroupTwoApp()
         {
             Session["GroupApp"] = 2;
-            DiplomEntities5 dc = new DiplomEntities5();
-            int course = Convert.ToInt32(Session["CourseApp"]);
-            var GroupTwo = dc.Applications.Where(a => a.Users.Group == 2 &&
-                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
-            return View("ViewApplications", GroupTwo);
+            
+            return View("ViewApplications", GetAppOfGroup(2));
         }
         public ActionResult GroupThreeApp()
         {
             Session["GroupApp"] = 3;
-            DiplomEntities5 dc = new DiplomEntities5();
-            int course = Convert.ToInt32(Session["CourseApp"]);
-            var GroupThree = dc.Applications.Where(a => a.Users.Group == 3 &&
-                                                a.Users.Course == course).OrderByDescending(a => a.Id).ToList<Applications>();
-            return View("ViewApplications", GroupThree);
+            
+            return View("ViewApplications", GetAppOfGroup(3));
         }
         [HttpPost]
         public ActionResult SaveChangesApp(List<Applications> getChanges)
@@ -497,6 +612,7 @@ namespace HtmlInputs.Controllers
                     appToChange.isConfirmed = app.isConfirmed;
                     appToChange.DateOfRead = DateTime.Now;
                     appToChange.isRead = 1;
+                    appToChange.Reader = Session["LogedUserSname"].ToString() + " " + Session["LogedUserName"].ToString().First() + ". " + Session["LogedUserPname"].ToString().First(); 
                     dc.SaveChanges();
                 }
             }
@@ -575,6 +691,23 @@ namespace HtmlInputs.Controllers
                 {
                     dc.Messages.Add(newMessage);
                     dc.SaveChanges();
+                    ModelState.Clear();
+                    newMessage = null;
+                }
+            }
+            return View(newMessage);
+        }
+
+        [HttpPost]
+        public ActionResult MessagesStaff(Messages newMessage)
+        {
+            using (DiplomEntities5 dc = new DiplomEntities5())
+            {
+                if (ModelState.IsValid == true)
+                {
+                    dc.Messages.Add(newMessage);
+                    dc.SaveChanges();
+                    ModelState.Clear();
                     newMessage = null;
                 }
             }
@@ -583,6 +716,45 @@ namespace HtmlInputs.Controllers
 
         public ActionResult AddMiss()
         {
+            List<SelectListItem> StudentList = new List<SelectListItem>();
+            List<SelectListItem> IsValidList = new List<SelectListItem>();
+            List<SelectListItem> listOfForms = new List<SelectListItem>();
+            List<SelectListItem> listOfDiss = new List<SelectListItem>();
+
+            var isValid = new SelectListItem { Text = "Есть", Value = "1" };
+            var isNotValid = new SelectListItem { Text = "Отсутствует", Value = "0" };
+
+            IsValidList.Add(isValid);
+            IsValidList.Add(isNotValid);
+
+            HtmlInputs.Models.DiplomEntities5 dc1 = new HtmlInputs.Models.DiplomEntities5();
+            int group = Convert.ToInt32(Session["LogedUserGroup"].ToString());
+            foreach (HtmlInputs.Models.Users item in dc1.Users.OrderBy(a => a.Sirname))
+            {
+                if (item.Group.Equals(group) && item.RoleId.Equals(1))
+                {
+                    var newReceiver = new SelectListItem { Text = item.Sirname + " " + item.Name + " " + item.Patername, Value = item.UserId.ToString() };
+                    StudentList.Add(newReceiver);
+                }
+            }
+
+            var lecture = new SelectListItem { Text = "лекция", Value = "лекция" };
+            var seminar = new SelectListItem { Text = "семинар", Value = "семинар" };
+            var laboratory = new SelectListItem { Text = "лабораторная", Value = "лабораторная" };
+
+            listOfForms.Add(lecture);
+            listOfForms.Add(seminar);
+            listOfForms.Add(laboratory);
+
+            foreach(Discipline item in dc1.Discipline)
+            {
+                var element = new SelectListItem { Text = item.FullName, Value = item.DisId.ToString() };
+                listOfDiss.Add(element);
+            }
+            ViewBag.ListOfStudent = StudentList;
+            ViewBag.ValidList = IsValidList;
+            ViewBag.ListOfForm = listOfForms;
+            ViewBag.ListOfDis = listOfDiss;
             return View();
         }
 
@@ -697,12 +869,152 @@ namespace HtmlInputs.Controllers
         {
             return View();
         }
+        public ActionResult WeekStatistics()
+        {
+            return View();
+        }
         public FileContentResult getPersonalMonthStatistics()
         {
             var getFile = getMonthStatistics(1);
             return getFile;
         }
-        public FileContentResult getMonthStatistics(int isStudent = 0)
+        public FileContentResult getlMonthStatisticsForDean()
+        {
+            var getFile = getMonthStatistics(0, 1);
+            return getFile;
+        }
+        public FileContentResult getPersonalWeekStatistics()
+        {
+            var getFile = getWeekStatistics(1, 0);
+            return getFile;
+        }
+        public FileContentResult getWeekStatisticsForDean()
+        {
+            var getFile = getWeekStatistics(0, 1);
+            return getFile;
+        }
+        public FileContentResult getWeekStatistics(int isStudent = 0, int isDean = 0)
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            DateTime[] weeks = new DateTime[52];
+            int isSaved = 0;
+            int numWeeks = 0;
+            foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
+            {
+                if (isStudent == 0 && isDean == 0)
+                {
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString())
+                    {
+                        continue;
+                    }
+                }
+                else if(isDean == 1 && isStudent == 0)
+                {
+                    if (item.Users.Group.ToString() != Session["NumGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["NumCourse"].ToString())
+                    {
+                        continue;
+                    }
+                }
+                else if(isStudent == 1 && isDean == 0)
+                {
+                    int student = Convert.ToInt32(Session["LogedUserId"]);
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString() ||
+                        item.Users.UserId != student)
+                    {
+                        continue;
+                    }
+                }
+                DateTime temp;
+                temp = item.Date;
+
+                while(temp.DayOfWeek != System.DayOfWeek.Monday)
+                {
+                    temp = temp.AddDays(-1);
+                }
+                foreach (DateTime savedWeeks in weeks)
+                {
+                    if (savedWeeks == temp)
+                    {
+                        isSaved = 1;
+                        break;
+                    }
+                }
+                if (isSaved == 0)
+                {
+                    weeks[numWeeks++] = temp;
+                }
+                else
+                {
+                    isSaved = 0;
+                }
+            }
+            int[] IsValidGroupMiss = new int[50]; //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
+            int[] IsNotValidGroupMiss = new int[50];
+            List<DateTime> ListWeeks = new List<DateTime>();
+            int group;
+            int course;
+            int StudentId = 0;
+            if(Session["LogedUserGroup"].ToString().Equals("0") &&
+               Session["LogedUserCourse"].ToString().Equals("0"))
+            {
+                group = Convert.ToInt32(Session["NumGroup"]);
+                course = Convert.ToInt32(Session["NumCourse"]);
+            }
+            else
+            {
+                group = Convert.ToInt32(Session["LogedUserGroup"]);
+                course = Convert.ToInt32(Session["LogedUserCourse"]);
+            }
+            if(isStudent == 1)
+            {
+                 StudentId = Convert.ToInt32(Session["LogedUserId"]);
+            }
+            
+            foreach (HtmlInputs.Models.Missings item in dc.Missings)
+            {
+                if (item.Users.Course.Equals(course) &&
+                    item.Users.Group.Equals(group))
+                {
+                    if (isStudent == 1 && item.Users.UserId != StudentId)
+                    {
+                        continue;
+                    }
+                    DateTime recWeek = item.Date;
+
+                    while(recWeek.DayOfWeek != System.DayOfWeek.Monday)
+                    {
+                        recWeek = recWeek.AddDays(-1);
+                    }
+
+                    for (int i = 0; i < numWeeks; i++)
+                    {
+                        if (recWeek == weeks[i])
+                        {
+                            if (item.IsValid == 1)
+                            {
+                                IsValidGroupMiss[i] += 2;
+                                break;
+                            }
+                            else
+                            {
+                                IsNotValidGroupMiss[i] += 2;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < numWeeks; i++)
+            {
+                ListWeeks.Add(weeks[i]);
+            }
+            FileContentResult chart = CreateChart(IsValidGroupMiss, IsNotValidGroupMiss, ListWeeks);
+            return chart;
+        }
+        public FileContentResult getMonthStatistics(int isStudent = 0, int isDean = 0)
         {
             DiplomEntities5 dc = new DiplomEntities5();
             int[] months = new int[12];
@@ -710,19 +1022,27 @@ namespace HtmlInputs.Controllers
             int numMonths = 0;
             foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
             {
-                if(isStudent == 0)
+                if(isStudent == 0 && isDean == 0)
                 { 
-                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() &&
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
                         item.Users.Course.ToString() != Session["LogedUserCourse"].ToString())
                     {
                         continue;
                     }
                 }
-                else
+                else if (isDean == 1 && isStudent == 0)
+                {
+                    if (item.Users.Group.ToString() != Session["NumGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["NumCourse"].ToString())
+                    {
+                        continue;
+                    }
+                }
+                else if (isStudent == 1 && isDean == 0)
                 {
                     int student = Convert.ToInt32(Session["LogedUserId"]);
-                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() &&
-                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString() &&
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["LogedUserCourse"].ToString() ||
                         item.Users.UserId != student)
                     {
                         continue;
@@ -751,9 +1071,24 @@ namespace HtmlInputs.Controllers
                 int[] IsValidGroupMiss = new int[50]; //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
                 int[] IsNotValidGroupMiss = new int[50];
                 List<string> ListMonth = new List<string>();
-                int group = Convert.ToInt32(Session["LogedUserGroup"]);
-                int course = Convert.ToInt32(Session["LogedUserCourse"]);
-                int StudentId = Convert.ToInt32(Session["LogedUserId"]);
+                int group;
+                int course;
+                int StudentId = 0;
+                if (Session["LogedUserGroup"].ToString().Equals("0") &&
+                   Session["LogedUserCourse"].ToString().Equals("0"))
+                {
+                    group = Convert.ToInt32(Session["NumGroup"]);
+                    course = Convert.ToInt32(Session["NumCourse"]);
+                }
+                else
+                {
+                    group = Convert.ToInt32(Session["LogedUserGroup"]);
+                    course = Convert.ToInt32(Session["LogedUserCourse"]);
+                }
+                if (isStudent == 1)
+                {
+                    StudentId = Convert.ToInt32(Session["LogedUserId"]);
+                }
                 foreach (HtmlInputs.Models.Missings item in dc.Missings)
                 {
                     if(item.Users.Course.Equals(course) &&
@@ -790,6 +1125,35 @@ namespace HtmlInputs.Controllers
                 }
                 FileContentResult chart = CreateChart(IsValidGroupMiss, IsNotValidGroupMiss, ListMonth);
                 return chart;
+        }
+        public FileContentResult CreateChart(int[] isValid, int[] isNotValid, List<DateTime> Weeks)
+        {
+            SeriesChartType chartType = SeriesChartType.Column;
+            List<Users> student = new List<Users>();
+            Chart statistic = new Chart();
+            statistic.Width = 650;
+            statistic.Height = 300;
+            statistic.BackColor = Color.FromArgb(211, 223, 240);
+            statistic.BorderlineDashStyle = ChartDashStyle.Solid;
+            statistic.BackSecondaryColor = Color.White;
+            statistic.BackGradientStyle = GradientStyle.TopBottom;
+            statistic.BorderlineWidth = 1;
+            statistic.Palette = ChartColorPalette.BrightPastel;
+            statistic.BorderlineColor = Color.FromArgb(26, 59, 105);
+            statistic.RenderType = RenderType.BinaryStreaming;
+            statistic.BorderSkin.SkinStyle = BorderSkinStyle.Emboss;
+            statistic.AntiAliasing = AntiAliasingStyles.All;
+            statistic.TextAntiAliasingQuality = TextAntiAliasingQuality.Normal;
+            statistic.Titles.Add(CreateTitle());
+            statistic.Legends.Add(CreateLegend());
+            statistic.Series.Add(CreateSeries(0, isNotValid, Weeks, chartType));
+            statistic.Series.Add(CreateSeries(1, isValid, Weeks, chartType));
+            statistic.ChartAreas.Add(CreateChartArea());
+
+
+            MemoryStream ms = new MemoryStream();
+            statistic.SaveImage(ms);
+            return File(ms.GetBuffer(), @"image/png");
         }
         public FileContentResult CreateChart(int[] isValid, int[] isNotValid, List<string> Months)
         {
@@ -872,6 +1236,39 @@ namespace HtmlInputs.Controllers
             seriesDetail.ChartArea = "Result";
             return seriesDetail;
         }
+        public Series CreateSeries(int isValid, int[] numMiss, List<DateTime> weeks, SeriesChartType chartType)
+        {
+            Series seriesDetail = new Series();
+            if (isValid == 1)
+            {
+                seriesDetail.Name = "Уважительные";
+                seriesDetail.Color = Color.LightGreen;
+            }
+            else
+            {
+                seriesDetail.Name = "Неуважительные";
+                seriesDetail.Color = Color.OrangeRed;
+            }
+            seriesDetail.IsValueShownAsLabel = false;
+            seriesDetail.ChartType = chartType;
+            seriesDetail.BorderWidth = 2;
+            seriesDetail["DrawingStyle"] = "Cylinder";
+            seriesDetail["PieDrawingStyle"] = "SoftEdge";
+            DataPoint IsValidPoint;
+            int numOfWeeks = 0;
+            foreach (DateTime item in weeks)
+            {
+                DateTime endWeek = item;
+                endWeek = endWeek.AddDays(5);
+                IsValidPoint = new DataPoint();
+                IsValidPoint.AxisLabel = item.ToShortDateString() + " - " + endWeek.ToShortDateString();
+                IsValidPoint.YValues = new double[] { numMiss[numOfWeeks] };
+                numOfWeeks++;
+                seriesDetail.Points.Add(IsValidPoint);
+            }
+            seriesDetail.ChartArea = "Result";
+            return seriesDetail;
+        }
         public ChartArea CreateChartArea()
         {
             ChartArea chartArea = new ChartArea();
@@ -905,6 +1302,50 @@ namespace HtmlInputs.Controllers
                 dc.SaveChanges();
             }
             return Redirect("~/Profile/Index");
+        }
+        public ActionResult SetLim()
+        {
+            try
+            {
+                int numAppInWeek = Convert.ToInt32(Request["numApp"]);
+                DiplomEntities5 dc = new DiplomEntities5();
+                var Row = dc.Utility.Where(a => a.Id.Equals(2)).FirstOrDefault();
+                Row.Limit = numAppInWeek;
+                dc.SaveChanges();
+            }
+            catch
+            {
+                goto metka;
+            }
+            metka:
+            string num = Session["GroupApp"].ToString();
+            if (Session["GroupApp"].ToString().Equals("1"))
+            {
+                return View("ViewApplications",GetAppOfGroup(1));
+            }
+            else if (Session["GroupApp"].ToString().Equals("2"))
+            {
+                return View("ViewApplications", GetAppOfGroup(2));
+            }
+            else if (Session["GroupApp"].ToString().Equals("3"))
+            {
+                return View("ViewApplications", GetAppOfGroup(3));
+            }
+            return null;
+        }
+        public ActionResult SetLimMiss()
+        {
+            try { 
+            int numMissInMonth = Convert.ToInt32(Request["numMiss"]);
+            DiplomEntities5 dc = new DiplomEntities5();
+            var Row = dc.Utility.Where(a => a.Id.Equals(1)).FirstOrDefault();
+            Row.Limit = numMissInMonth;
+            dc.SaveChanges();
+            }
+            catch { 
+                return Redirect("MonthReportForZDean");
+            }
+            return Redirect("MonthReportForZDean");
         }
     }
 }

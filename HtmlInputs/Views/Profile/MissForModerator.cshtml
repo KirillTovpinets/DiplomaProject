@@ -5,7 +5,7 @@
 
 <div class="content">
     <h1>Пропуски группы</h1>
-    <table>
+    <table id="miss-table">
         <tr>
             <td>№</td>
             <td>Фамилия</td>
@@ -50,7 +50,7 @@
                         <td>@item.Users.Name</td>
                         <td>@item.Date.ToShortDateString()</td>
                         <td>@item.Form</td>
-                        <td>@item.Discipline</td>
+                        <td>@item.Discipline1.ShortName</td>
                         @{
                     if (item.IsValid == 1)
                     {

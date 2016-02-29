@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Статистика";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content">
+    <h1>Статистика по неделям</h1>
+    @{
+        if (Session["LogedUserRole"].ToString().Equals("2") ||
+            Session["LogedUserRole"].ToString().Equals("3"))
+        {
+            <img src="@Url.Action("getWeekStatistics")" />
+        }
+        else if (Session["LogedUserRole"].ToString().Equals("1"))
+        {
+            <img src="@Url.Action("getPersonalWeekStatistics")" />
+        }
+        else if (Session["LogedUserRole"].ToString().Equals("5") ||
+                Session["LogedUserRole"].ToString().Equals("6"))
+        {
+            <img src="@Url.Action("getWeekStatisticsForDean")" />
+        }
+}
+
+</div>
+<div class="miss-buttons">
+    @if (Session["LogedUserRole"].ToString().Equals("1"))
+    {
+        <a href="~/Profile/WeekReportForStudent">
+            <input type="button" value="Назад" />
+        </a>
+    }
+    @if (Session["LogedUserRole"].ToString().Equals("2"))
+    {
+        <a href="~/Profile/WeekReport">
+            <input type="button" value="Назад" />
+        </a>
+    }
+    @if (Session["LogedUserRole"].ToString().Equals("3"))
+    {
+        <a href="~/Profile/WeekReportForModerator">
+            <input type="button" value="Назад" />
+        </a>
+    }
+    @if (Session["LogedUserRole"].ToString().Equals("5"))
+    {
+        <a href="~/Profile/WeekReportForZDean">
+            <input type="button" value="Назад" />
+        </a>
+    }
+</div>

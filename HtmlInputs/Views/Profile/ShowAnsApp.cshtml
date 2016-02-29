@@ -4,7 +4,6 @@
     DateTime temp = new DateTime();
     HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
     int StudId = Convert.ToInt32(Session["LogedUserId"]);
-    var zDean = dc.Users.Where(a => a.RoleId.Equals(5)).FirstOrDefault();
     List<HtmlInputs.Models.Applications> myApp = dc.Applications.Where(a => a.StudentId
                                                                         .Equals(StudId)).OrderByDescending(a => a.Id)
                                                                         .ToList<HtmlInputs.Models.Applications>();
@@ -72,7 +71,8 @@
                                 <div class="wrapp">
                                     <div class="app-confirm">
                                         @ans <br />
-                                        @zDean.Sirname @(zDean.Name.First()). @(zDean.Patername.First()).
+                                        <span>@item.Reader</span><br />
+                                        <span>@item.DateOfRead.ToShortDateString()</span>
                                     </div>
                                     <div class="app-head">
                                         @item.Head <br />

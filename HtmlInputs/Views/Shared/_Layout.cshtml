@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="@Url.Content("~/Content/Style.css")" type="text/css" />
     <link rel="stylesheet" href="http://webfonts.ru/import/kobzarks.css" type="text/css" />
-    <script src="@Url.Content("~/Scripts/jquery.ui.core.min.js")" type="text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/jquery.ui.datepicker.min.js")" type="=text/javascript"></script>
-    <script src="@Url.Content("~/Scripts/DatePickerReady.js")" type="text/javascript"></script>
+    <link type="text/css" href="@Url.Content("~/Content/StylesUi/jquery-ui.css")" rel="stylesheet" />
+    <link rel="shortcut icon" href="@Url.Content("~/Content/Logo.ico")" type="image/x-icon" />
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-2.2.0.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-2.2.0.min.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery.validate.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Scripts/jquery-ui.js")"></script>
     <title>@ViewBag.Title</title>
 </head>
 <body>
@@ -107,9 +110,12 @@
     </nav>
     <div class="main">
         <ul class="menu">
-            <li><a href="~/Profile/Index">Главная</a></li>
+            <li>
+                <a href="~/Profile/Index">Главная</a>
+            </li>
             @if (Session["LogedUserId"].ToString().Equals("4"))
             {
+                
                 <li>
                     <a href="~/Profile/MethodistStudents">Студенты</a>
                 </li>
@@ -121,7 +127,7 @@
                         Пропуски
                         @if (ViewBag.numMis != null)
                         {
-                            <span>(@ViewBag.numMis)</span>
+                            <span>(<b>@ViewBag.numMis</b>)</span>
                         }
                     </a>
                 </li>
@@ -134,7 +140,7 @@
                         Сообщения
                         @if (ViewBag.numMes != null)
                         {
-                            <span>(@ViewBag.numMes)</span>
+                            <span>(<b>@ViewBag.numMes</b>)</span>
                         }
                     </a>
                 }
@@ -144,7 +150,7 @@
                         Сообщения
                         @if (ViewBag.numMes != null)
                         {
-                            <span>(@ViewBag.numMes)</span>
+                            <span>(<b>@ViewBag.numMes</b>)</span>
                         }
                     </a>
                 }
@@ -156,29 +162,32 @@
             
             <li>
                 <a href="~/Profile/Changes">
-                    Изменения
+                    Оповещения
                     @if (ViewBag.numChan != null)
                     {
-                        <span>(@ViewBag.numChan)</span>
+                        <span>(<b>@ViewBag.numChan</b>)</span>
                     }
                 </a>
             </li>
             }
             @if (Session["LogedUserRole"].ToString().Equals("1") || 
                  Session["LogedUserRole"].ToString().Equals("2") || 
-                 Session["LogedUserRole"].ToString().Equals("5"))
+                 Session["LogedUserRole"].ToString().Equals("5") ||
+                 Session["LogedUserRole"].ToString().Equals("6"))
             {
                 <li>
                     <a href="~/Profile/WhoIsUserApp">Заявление
-                    @if(Session["LogedUserRole"].ToString().Equals("5") && ViewBag.numApp != null)
+                    @if((Session["LogedUserRole"].ToString().Equals("5") ||
+                         Session["LogedUserRole"].ToString().Equals("6")) && 
+                         ViewBag.numApp != null)
                     {
-                        <span>(@ViewBag.numApp)</span>   
+                        <span>(<b>@ViewBag.numApp</b>)</span>
                     }
                     @if ((Session["LogedUserRole"].ToString().Equals("1") || 
                           Session["LogedUserRole"].ToString().Equals("2")) &&
                           ViewBag.numAnsApp != null)
                     {
-                        <span>(@ViewBag.numAnsApp)</span>
+                        <span>(<b>@ViewBag.numAnsApp</b>)</span>
                     }
                     </a>
                 </li>

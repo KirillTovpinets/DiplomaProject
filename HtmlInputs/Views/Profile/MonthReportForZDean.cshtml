@@ -3,13 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int temp;
     HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    var MissLim = dc.Utility.Where(a => a.Id.Equals(1)).FirstOrDefault();
     int numMonths = 0;
     int[] months = new int[50];
     int isSaved = 0;
     int hasMiss = 0;
     <div class="content">
         <h1>Итоги месяца</h1>
-        <table>
+        <table id="miss-table">
             <tr>
                 <td>№</td>
                 <td>Фамилия</td>
@@ -20,7 +21,7 @@
             </tr>
             @foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
             {
-                if (item.Users.Group.ToString() != Session["NumGroup"].ToString() &&
+                if (item.Users.Group.ToString() != Session["NumGroup"].ToString() ||
                     item.Users.Course.ToString() != Session["NumCourse"].ToString())
                 {
                     continue;
@@ -51,8 +52,14 @@
                 foreach (HtmlInputs.Models.Users user in dc.Users)
                 {
                     var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
+
                     if (student != null)
                     {
+                        if (student.Users.Group.ToString() != Session["NumGroup"].ToString() ||
+                        student.Users.Course.ToString() != Session["NumCourse"].ToString())
+                        {
+                            continue;
+                        }
                         for (int i = 0; i < numMonths; i++)
                         {
                             if (StudentsIsNotValidMiss[i] == null)
@@ -67,6 +74,11 @@
                 }
                 foreach (HtmlInputs.Models.Missings item in dc.Missings)
                 {
+                    if (item.Users.Group.ToString() != Session["NumGroup"].ToString() ||
+                        item.Users.Course.ToString() != Session["NumCourse"].ToString())
+                    {
+                        continue;
+                    }
                     int recMonth = item.Date.Month;
 
                     for (int i = 0; i < numMonths; i++)
@@ -89,7 +101,7 @@
                 int numRows = 0;
                 for (int i = 0; i < numMonths; i++)
                 {
-                    string month = new DateTime(2000, i + 1, 1).ToString("MMMM");
+                    string month = new DateTime(2000, months[i], 1).ToString("MMMM");
                     <tr>
                         <td colspan="6" class="miss-month">@month</td>
                     </tr>
@@ -104,7 +116,13 @@
                                 continue;
                             }
                             <tr>
-                                <td>@(++numRows)</td>
+                                <td class="war-container">
+                                    @if (StudentsIsNotValidMiss[i][user.UserId] >= MissLim.Limit)
+                                    {
+                                        <img class="overflow-miss" src="~/Content/Warning.gif" width="30" height="30" />
+                                    }
+                                    @(++numRows)
+                                </td>
                                 <td>@user.Sirname</td>
                                 <td>@user.Name</td>
                                 <td>@user.Patername</td>
@@ -123,12 +141,29 @@
                 }
             }
         </table>
+
     </div>
 }
+<script>
+    function ShowForm() {
+        var element = document.getElementById("setLimMiss-form");
+        element.style.display = "block";
+    }
+    function HideForm() {
+        var element = document.getElementById("form-message");
+        element.style.display = "none";
+    }
+</script>
+
 <div class="miss-buttons">
+    <input type="button" value="Установить лимит" onclick="ShowForm()" />
     @{
-        if (Session["NumGroup"].ToString().Equals("1"))
+        if (hasMiss != 0)
         {
+            <a href="~/Profile/MonthStatistics"><input type="button" value="Статистика" /></a>
+        }
+    if (Session["NumGroup"].ToString().Equals("1"))
+    {
             <a href="~/Profile/GroupOne"><input type="button" value="Назад" /></a>
         }
         else if (Session["NumGroup"].ToString().Equals("2"))
@@ -141,3 +176,9 @@
         }
 }
 </div>
+@using (Html.BeginForm("SetLimMiss", "Profile", FormMethod.Get, new { @id = "setLimMiss-form" }))
+{
+    <button onclick="HideForm()" class="close-btn">X</button>
+    <input type="text" name="numMiss" size="5" style="text-align:center;" />
+    <input type="submit" value="Установить" />
+}

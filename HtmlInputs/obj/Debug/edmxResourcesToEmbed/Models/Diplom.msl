@@ -25,19 +25,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Missings">
-      <EntityTypeMapping TypeName="DiplomModel.Missings">
-        <MappingFragment StoreEntitySet="Missings">
-          <ScalarProperty Name="Date" ColumnName="Date" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
-          <ScalarProperty Name="Form" ColumnName="Form" />
-          <ScalarProperty Name="Discipline" ColumnName="Discipline" />
-          <ScalarProperty Name="IsValid" ColumnName="IsValid" />
-          <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="News">
       <EntityTypeMapping TypeName="DiplomModel.News">
         <MappingFragment StoreEntitySet="News">
@@ -77,6 +64,7 @@
     <EntitySetMapping Name="Applications">
       <EntityTypeMapping TypeName="DiplomModel.Applications">
         <MappingFragment StoreEntitySet="Applications">
+          <ScalarProperty Name="Reader" ColumnName="Reader" />
           <ScalarProperty Name="DateOfRead" ColumnName="DateOfRead" />
           <ScalarProperty Name="isConfirmed" ColumnName="isConfirmed" />
           <ScalarProperty Name="Head" ColumnName="Head" />
@@ -85,6 +73,37 @@
           <ScalarProperty Name="DateOfMiss" ColumnName="DateOfMiss" />
           <ScalarProperty Name="Reason" ColumnName="Reason" />
           <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Discipline">
+      <EntityTypeMapping TypeName="DiplomModel.Discipline">
+        <MappingFragment StoreEntitySet="Discipline">
+          <ScalarProperty Name="ShortName" ColumnName="ShortName" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="DisId" ColumnName="DisId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Missings">
+      <EntityTypeMapping TypeName="DiplomModel.Missings">
+        <MappingFragment StoreEntitySet="Missings">
+          <ScalarProperty Name="Discipline" ColumnName="Discipline" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+          <ScalarProperty Name="IsValid" ColumnName="IsValid" />
+          <ScalarProperty Name="Form" ColumnName="Form" />
+          <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Utility">
+      <EntityTypeMapping TypeName="DiplomModel.Utility">
+        <MappingFragment StoreEntitySet="Utility">
+          <ScalarProperty Name="Limit" ColumnName="Limit" />
+          <ScalarProperty Name="Parameter" ColumnName="Parameter" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

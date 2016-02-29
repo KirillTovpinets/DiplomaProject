@@ -9,7 +9,7 @@
     int hasMiss = 0;
     <div class="content">
         <h1>Итоги недели</h1>
-        <table>
+        <table id="miss-table">
             <tr>
                 <td>№</td>
                 <td>Фамилия</td>
@@ -20,7 +20,7 @@
             </tr>
             @foreach (HtmlInputs.Models.Missings item in dc.Missings.OrderByDescending(a => a.Id)) //Разбиваем записи таблицы на недели. В массив записываем дату понедельника
             {
-                if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() || 
+                if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
                     item.Users.Course.ToString() != Session["LogedUserCourse"].ToString() ||
                     item.Users.UserId.ToString() != Session["LogedUserId"].ToString())
                 {
@@ -55,17 +55,17 @@
                 Dictionary<int, int>[] StudentsIsValidMiss = new Dictionary<int, int>[50]; //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
                 Dictionary<int, int>[] StudentsIsNotValidMiss = new Dictionary<int, int>[50];
                 int UserId = Convert.ToInt32(Session["LogedUserId"]);
-                    var student = dc.Missings.Where(a => a.StudentId.Equals(UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
-                    if (student != null)
+                var student = dc.Missings.Where(a => a.StudentId.Equals(UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
+                if (student != null)
+                {
+                    for (int i = 0; i < numWeeks; i++)
                     {
-                        for (int i = 0; i < numWeeks; i++)
-                        {
-                            StudentsIsValidMiss[i] = new Dictionary<int, int>();
-                            StudentsIsNotValidMiss[i] = new Dictionary<int, int>();
-                            StudentsIsValidMiss[i].Add(Convert.ToInt32(Session["LogedUserId"]), 0);
-                            StudentsIsNotValidMiss[i].Add(Convert.ToInt32(Session["LogedUserId"]), 0);
-                        }
+                        StudentsIsValidMiss[i] = new Dictionary<int, int>();
+                        StudentsIsNotValidMiss[i] = new Dictionary<int, int>();
+                        StudentsIsValidMiss[i].Add(Convert.ToInt32(Session["LogedUserId"]), 0);
+                        StudentsIsNotValidMiss[i].Add(Convert.ToInt32(Session["LogedUserId"]), 0);
                     }
+                }
                 foreach (HtmlInputs.Models.Missings item in dc.Missings)
                 {
                     if (!(item.StudentId.ToString().Equals(Session["LogedUserId"].ToString())))
@@ -99,17 +99,17 @@
                 for (int i = 0; i < numWeeks; i++)
                 {
                     <tr>
-                        <td class="miss-week" colspan="6" >@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</td>
+                        <td class="miss-week" colspan="6">@weeks[i].Date.ToShortDateString() - @weeks[i].AddDays(5).Date.ToShortDateString()</td>
                     </tr>
 
-                            <tr>
-                                <td>@(++numRows)</td>
-                                <td>@Session["LogedUserSname"].ToString()</td>
-                                <td>@Session["LogedUserName"].ToString()</td>
-                                <td>@Session["LogedUserPname"].ToString()</td>
-                                <td>@StudentsIsValidMiss[i][Convert.ToInt32(Session["LogedUserId"])]</td>
-                                <td>@StudentsIsNotValidMiss[i][Convert.ToInt32(Session["LogedUserId"])]</td>
-                            </tr>
+                    <tr>
+                        <td>@(++numRows)</td>
+                        <td>@Session["LogedUserSname"].ToString()</td>
+                        <td>@Session["LogedUserName"].ToString()</td>
+                        <td>@Session["LogedUserPname"].ToString()</td>
+                        <td>@StudentsIsValidMiss[i][Convert.ToInt32(Session["LogedUserId"])]</td>
+                        <td>@StudentsIsNotValidMiss[i][Convert.ToInt32(Session["LogedUserId"])]</td>
+                    </tr>
                 }
                 if (hasMiss == 0)
                 {
@@ -117,11 +117,16 @@
                         <td colspan="6" style="text-align:center;">У вашей группы нет пропусков</td>
                     </tr>
                 }
-}
+            }
         </table>
+
     </div>
 }
 
 <div class="miss-buttons">
+    @if (hasMiss != 0)
+    {
+        <a href="~/Profile/WeekStatistics"><input type="button" value="Статистика" /></a>
+    }
     <a href="~/Profile/MissForStudents"><input type="button" value="Назад" /></a>
 </div>

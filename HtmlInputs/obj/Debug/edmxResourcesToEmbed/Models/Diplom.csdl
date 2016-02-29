@@ -24,19 +24,6 @@
     <Property Name="Date" Type="DateTime" Precision="0" />
     <Property Name="Time" Type="Time" Precision="7" />
   </EntityType>
-  <EntityType Name="Missings">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="StudentId" Type="Int32" Nullable="false" />
-    <Property Name="Form" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="Discipline" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="IsValid" Type="Int32" Nullable="false" />
-    <Property Name="IsRead" Type="Int32" />
-    <NavigationProperty Name="Users" Relationship="Self.FK_Missings_Users" FromRole="Missings" ToRole="Users" />
-    <Property Name="Date" Type="DateTime" Precision="0" />
-  </EntityType>
   <EntityType Name="News">
     <Key>
       <PropertyRef Name="Id" />
@@ -67,7 +54,6 @@
     <Property Name="RoleId" Type="Int32" Nullable="false" />
     <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Changes" Relationship="Self.FK_Changes_Users" FromRole="Users" ToRole="Changes" />
-    <NavigationProperty Name="Missings" Relationship="Self.FK_Missings_Users" FromRole="Users" ToRole="Missings" />
     <NavigationProperty Name="Roles" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
     <NavigationProperty Name="Messages" Relationship="DiplomModel.FK_Messages_Users" FromRole="Users" ToRole="Messages" />
     <Property Name="Group" Type="Int32" />
@@ -75,6 +61,7 @@
     <Property Name="Birthday" Type="DateTime" Precision="0" />
     <NavigationProperty Name="Applications" Relationship="DiplomModel.FK_Applications_Users" FromRole="Users" ToRole="Applications" />
     <Property Name="Avatar" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="Missings" Relationship="DiplomModel.FK_Missings_Users" FromRole="Users" ToRole="Missings" />
   </EntityType>
   <Association Name="FK_Changes_Users">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -85,18 +72,6 @@
       </Principal>
       <Dependent Role="Changes">
         <PropertyRef Name="UserId" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Missings_Users">
-    <End Role="Users" Type="Self.Users" Multiplicity="1" />
-    <End Role="Missings" Type="Self.Missings" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Missings">
-        <PropertyRef Name="StudentId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -115,17 +90,12 @@
   <EntityContainer Name="DiplomEntities5" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Changes" EntityType="Self.Changes" />
     <EntitySet Name="Messages" EntityType="Self.Messages" />
-    <EntitySet Name="Missings" EntityType="Self.Missings" />
     <EntitySet Name="News" EntityType="Self.News" />
     <EntitySet Name="Roles" EntityType="Self.Roles" />
     <EntitySet Name="Users" EntityType="Self.Users" />
     <AssociationSet Name="FK_Changes_Users" Association="Self.FK_Changes_Users">
       <End Role="Users" EntitySet="Users" />
       <End Role="Changes" EntitySet="Changes" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Missings_Users" Association="Self.FK_Missings_Users">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Missings" EntitySet="Missings" />
     </AssociationSet>
     <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
       <End Role="Roles" EntitySet="Roles" />
@@ -140,6 +110,17 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="Applications" EntitySet="Applications" />
     </AssociationSet>
+    <EntitySet Name="Discipline" EntityType="DiplomModel.Discipline" />
+    <EntitySet Name="Missings" EntityType="DiplomModel.Missings" />
+    <AssociationSet Name="FK_Missings_Discipline" Association="DiplomModel.FK_Missings_Discipline">
+      <End Role="Discipline" EntitySet="Discipline" />
+      <End Role="Missings" EntitySet="Missings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Missings_Users" Association="DiplomModel.FK_Missings_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Missings" EntitySet="Missings" />
+    </AssociationSet>
+    <EntitySet Name="Utility" EntityType="DiplomModel.Utility" />
   </EntityContainer>
   <Association Name="FK_Messages_Users">
     <End Type="DiplomModel.Users" Role="Users" Multiplicity="1" />
@@ -167,6 +148,7 @@
     <Property Name="Head" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="isConfirmed" Type="Int32" />
     <Property Name="DateOfRead" Type="DateTime" Precision="0" />
+    <Property Name="Reader" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
   <Association Name="FK_Applications_Users">
     <End Type="DiplomModel.Users" Role="Users" Multiplicity="1" />
@@ -180,4 +162,59 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="Discipline">
+    <Key>
+      <PropertyRef Name="DisId" />
+    </Key>
+    <Property Name="DisId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ShortName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Missings" Relationship="DiplomModel.FK_Missings_Discipline" FromRole="Discipline" ToRole="Missings" />
+  </EntityType>
+  <EntityType Name="Missings">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StudentId" Type="Int32" Nullable="false" />
+    <Property Name="Form" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsValid" Type="Int32" Nullable="false" />
+    <Property Name="IsRead" Type="Int32" />
+    <Property Name="Date" Type="DateTime" Precision="0" />
+    <Property Name="Discipline" Type="Int32" />
+    <NavigationProperty Name="Discipline1" Relationship="DiplomModel.FK_Missings_Discipline" FromRole="Missings" ToRole="Discipline" />
+    <NavigationProperty Name="Users" Relationship="DiplomModel.FK_Missings_Users" FromRole="Missings" ToRole="Users" />
+  </EntityType>
+  <Association Name="FK_Missings_Discipline">
+    <End Type="DiplomModel.Discipline" Role="Discipline" Multiplicity="0..1" />
+    <End Type="DiplomModel.Missings" Role="Missings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Discipline">
+        <PropertyRef Name="DisId" />
+      </Principal>
+      <Dependent Role="Missings">
+        <PropertyRef Name="Discipline" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Missings_Users">
+    <End Type="DiplomModel.Users" Role="Users" Multiplicity="1" />
+    <End Type="DiplomModel.Missings" Role="Missings" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Missings">
+        <PropertyRef Name="StudentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Utility">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Parameter" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Limit" Type="Int32" Nullable="false" />
+  </EntityType>
 </Schema>

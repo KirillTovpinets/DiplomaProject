@@ -5,18 +5,21 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="1d03c0898aee44daaafe8f6b5218fe69" Name="Diagram1">
-        <EntityTypeShape EntityType="DiplomModel.Changes" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="DiplomModel.Messages" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="DiplomModel.Missings" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
-        <EntityTypeShape EntityType="DiplomModel.News" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DiplomModel.Roles" Width="1.5" PointX="0.75" PointY="2.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DiplomModel.Users" Width="1.5" PointX="3" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiplomModel.Changes" Width="1.5" PointX="6.625" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiplomModel.Messages" Width="1.5" PointX="1.125" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiplomModel.News" Width="1.5" PointX="8.25" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiplomModel.Roles" Width="1.5" PointX="1.125" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DiplomModel.Users" Width="1.5" PointX="3" PointY="0.5" IsExpanded="true" />
         <AssociationConnector Association="DiplomModel.FK_Changes_Users" ManuallyRouted="false" />
-        <AssociationConnector Association="DiplomModel.FK_Missings_Users" ManuallyRouted="false" />
         <AssociationConnector Association="DiplomModel.FK_Users_Roles" ManuallyRouted="false" />
         <AssociationConnector Association="DiplomModel.FK_Messages_Users" />
-        <EntityTypeShape EntityType="DiplomModel.Applications" Width="1.5" PointX="5.25" PointY="7.75" />
+        <EntityTypeShape EntityType="DiplomModel.Applications" Width="1.5" PointX="4.875" PointY="3.75" />
         <AssociationConnector Association="DiplomModel.FK_Applications_Users" />
+        <EntityTypeShape EntityType="DiplomModel.Discipline" Width="1.5" PointX="8.25" PointY="2.625" />
+        <EntityTypeShape EntityType="DiplomModel.Missings" Width="1.5" PointX="4.875" PointY="0.875" />
+        <AssociationConnector Association="DiplomModel.FK_Missings_Discipline" />
+        <AssociationConnector Association="DiplomModel.FK_Missings_Users" />
+        <EntityTypeShape EntityType="DiplomModel.Utility" Width="1.5" PointX="6.625" PointY="3.375" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

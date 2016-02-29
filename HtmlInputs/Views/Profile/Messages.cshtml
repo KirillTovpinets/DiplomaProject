@@ -108,7 +108,7 @@
                     <span style="color:#ccc; font-size:12px;">@item.Date.ToShortDateString() @item.Time.ToString(@"hh\:mm")</span><br />
                 }
                     }
-                    <span style="color:#000;">@item.Content</span>
+                    <div class="content-message" style="color:#000;">@item.Content</div>
                     <div class="in-out">
                         <img src="@Url.Content("~/Content/red-arrow.png")" />
                     </div>
@@ -132,8 +132,32 @@
         }
     }
 </div>
+<script>
+    $(document).ready(function () {
+        $(".close-btn").click(function (e) {
+            $("#form-message").hide();
+            e.preventDefault();
+        });
+        $("#write").click(function (e) {
+            $("#form-message").show();
+            e.preventDefault();
+        });
+    })
+    function ShowForm() {
+        var element = document.getElementById("form-message");
+        element.style.display = "block";
+    }
+    function HideForm() {
+        var element = document.getElementById("form-message");
+        element.style.display = "none";
+    }
+</script>
+<div class="miss-buttons">
+    <input type="button" value="Написать" id="write"/>
+</div>
     @using (Html.BeginForm("Messages", "Profile", FormMethod.Post, new { @id = "form-message" }))
     {
+        <button class="close-btn">X</button>
         <input type="hidden" name="SenderId" value="@Session["LogedUserId"].ToString()">
         <input type="hidden" name="isRead" value="0" />
         <input type="hidden" name="Date" value="@DateTime.Now" />

@@ -1,16 +1,16 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Список группы";
 }
-
 <div class="content">
     <h1>Список группы</h1>
-    <table>
+    <table id="group-list">
         <tr>
             <td>№</td>
             <td>Фамилия</td>
             <td>Имя</td>
             <td>Отчество</td>
-            <td>Должность</td>
+            <td>Статус</td>
         </tr>
         @{
             int i = 1;
@@ -42,7 +42,13 @@
                     }
                     <tr style="background: @PraepostorStyle">
                         <td>@(i++)</td>
-                        <td>@item.Sirname</td>
+                        <td class="student-row">
+                            <span class="student-info">@item.Sirname</span>
+                            <div class="Meth-stud-info">
+                                Дата рождения: @item.Birthday.ToShortDateString()<br />
+                                email: @item.Email
+                            </div>
+                        </td>
                         <td>@item.Name</td>
                         <td>@item.Patername</td>
                         <td>@item.Roles.Name</td>

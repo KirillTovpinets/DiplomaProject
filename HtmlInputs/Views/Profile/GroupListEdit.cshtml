@@ -1,6 +1,6 @@
 ﻿@model List<HtmlInputs.Models.Users>
 @{
-    ViewBag.Title = "GroupListEdit";
+    ViewBag.Title = "Редактировать список";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     List<SelectListItem> RoleList = new List<SelectListItem>();
@@ -16,7 +16,7 @@
 {
     <div class="content">
         <h2>Редактировать</h2>
-        <table>
+        <table id="group-list">
             <tr>
                 <td>№</td>
                 <td>Фамилия</td>
@@ -26,46 +26,47 @@
                 <td></td>
             </tr>
             @{
-                int numStud = 1;
-                HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
-                for (int i = 0; i < Model.Count; i++ )
-                {
-                    if(Model[i].RoleId.Equals(1))
-                    {
-                        RoleList[0].Selected = true;
-                        RoleList[1].Selected = false;
-                        RoleList[2].Selected = false;
-                    }
-                    else if(Model[i].RoleId.Equals(2))
-                    {
-                        RoleList[1].Selected = true;
-                        RoleList[0].Selected = false;
-                        RoleList[2].Selected = false;
-                    }
-                    else if(Model[i].RoleId.Equals(7))
-                    {
-                        RoleList[2].Selected = true;
-                        RoleList[0].Selected = false;
-                        RoleList[1].Selected = false;
-                    }
-                    
-                        <tr>
-                            <td>@(numStud++)</td>
-                            <td>@Html.DisplayTextFor(a => a[i].Sirname)</td>
-                            <td>@Html.DisplayTextFor(a => a[i].Name)</td>
-                            <td>@Html.DisplayTextFor(a => a[i].Patername)</td>
-                            <td>@Html.DropDownListFor(a => a[i].RoleId, RoleList)</td>
-                            <td>@Html.HiddenFor(a => a[i].UserId)</td>
-                        </tr>
-                }
-                if(Model.Count == 0)
-                {
-                    <tr>
-                        <td colspan="6" style="text-align:center;">В этой группе нет студентов</td>
-                    </tr>
-                }
+    int numStud = 1;
+    HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    for (int i = 0; i < Model.Count; i++)
+    {
+        if (Model[i].RoleId.Equals(1))
+        {
+            RoleList[0].Selected = true;
+            RoleList[1].Selected = false;
+            RoleList[2].Selected = false;
+        }
+        else if (Model[i].RoleId.Equals(2))
+        {
+            RoleList[1].Selected = true;
+            RoleList[0].Selected = false;
+            RoleList[2].Selected = false;
+        }
+        else if (Model[i].RoleId.Equals(7))
+        {
+            RoleList[2].Selected = true;
+            RoleList[0].Selected = false;
+            RoleList[1].Selected = false;
+        }
+
+        <tr>
+            <td>@(numStud++)</td>
+            <td>@Html.DisplayTextFor(a => a[i].Sirname)</td>
+            <td>@Html.DisplayTextFor(a => a[i].Name)</td>
+            <td>@Html.DisplayTextFor(a => a[i].Patername)</td>
+            <td>@Html.DropDownListFor(a => a[i].RoleId, RoleList)</td>
+            <td>@Html.HiddenFor(a => a[i].UserId)</td>
+        </tr>
+    }
+    if (Model.Count == 0)
+    {
+        <tr>
+            <td colspan="6" style="text-align:center;">В этой группе нет студентов</td>
+        </tr>
+    }
             }
         </table>
+
     </div>
     <div class="miss-buttons">
         <input type="submit" value="Сохранить"/>

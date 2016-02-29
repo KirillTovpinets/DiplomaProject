@@ -3,13 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int temp;
     HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    var MissLim = dc.Utility.Where(a => a.Id.Equals(1)).FirstOrDefault();
     int numMonths = 0;
     int[] months = new int[50];
     int isSaved = 0;
     int hasMiss = 0;
     <div class="content">
         <h1>Итоги месяца</h1>
-        <table>
+        <table id="miss-table">
             <tr>
                 <td>№</td>
                 <td>Фамилия</td>
@@ -71,6 +72,11 @@
                 }
                 foreach (HtmlInputs.Models.Missings item in dc.Missings)
                 {
+                    if (item.Users.Group.ToString() != Session["LogedUserGroup"].ToString() ||
+                    item.Users.Course.ToString() != Session["LogedUserCourse"].ToString())
+                    {
+                        continue;
+                    }
                     int recMonth = item.Date.Month;
 
                     for (int i = 0; i < numMonths; i++)
@@ -100,6 +106,7 @@
 
                     foreach (HtmlInputs.Models.Users user in dc.Users)
                     {
+                        string style;
                         int num = 0;
                         if (StudentsIsNotValidMiss[i].TryGetValue(user.UserId, out num))
                         {
@@ -107,7 +114,15 @@
                             {
                                 continue;
                             }
-                            <tr>
+                            if (StudentsIsNotValidMiss[i][user.UserId] >= MissLim.Limit)
+                            {
+                                style = "red-row";
+                            }
+                            else
+                            {
+                                style = "normal";
+                            }
+                            <tr class="@style">
                                 <td>@(++numRows)</td>
                                 <td>@user.Sirname</td>
                                 <td>@user.Name</td>
@@ -125,7 +140,7 @@
                         <td colspan="6" style="text-align:center;">У вашей группы нет пропусков</td>
                     </tr>
                 }
-}
+            }
         </table>
     </div>
 }

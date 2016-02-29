@@ -45,6 +45,18 @@
         CourseList.Add(newCourse);
     }
 }
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#datep").datepicker({
+            changeYear: true,
+            changeMonth: true,
+            yearRange: "-50:0",
+            dateFormat: "dd.mm.yy"
+        })
+    });
+</script>
+
 @using (Html.BeginForm("RegisterZDean", "Home", FormMethod.Post, new { id = "register-form", enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary(true)
@@ -103,11 +115,7 @@
     </table>
     <div>
         <lable>Дата рождения:</lable>
-        @Html.DropDownListFor(a => a.DayOfBirth, listOfDays)
-        /
-        @Html.DropDownListFor(a => a.MonthOfBirth, listOfMonth)
-        /
-        @Html.DropDownListFor(a => a.YearOfBirth, listOfYear)
+        @Html.TextBoxFor(a => a.Birthday, new { @id = "datep" })
     </div>
     <label>Выберите аватар</label><input type="file" name="Avatar" /><br />
     <div style="margin-top:10px;">
