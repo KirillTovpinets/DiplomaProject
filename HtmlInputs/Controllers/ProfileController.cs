@@ -9,6 +9,8 @@ using System.Web.UI.DataVisualization.Charting;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
+using System.Web.UI.WebControls;
+using System.Web.UI;
 namespace HtmlInputs.Controllers
 {
     public class ProfileController : Controller
@@ -160,6 +162,36 @@ namespace HtmlInputs.Controllers
                 }
             }
             dc.SaveChanges();
+            return View("Methodist");
+        }
+        [HttpGet]
+        public ActionResult Erase()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+
+            foreach (Missings item in dc.Missings)
+            {
+                dc.Missings.Remove(item);
+            }
+
+            foreach (Applications item in dc.Applications)
+            {
+                dc.Applications.Remove(item);
+            }
+
+            foreach (News item in dc.News)
+            {
+                dc.News.Remove(item);
+            }
+
+            foreach (Changes item in dc.Changes)
+            {
+                dc.Changes.Remove(item);
+            }
+
+            dc.Utility.Where(a => a.Id.Equals(3)).FirstOrDefault().Limit = 1;
+            dc.SaveChanges();
+            
             return View("Methodist");
         }
         public ActionResult MethodistStudents()
@@ -1347,5 +1379,115 @@ namespace HtmlInputs.Controllers
             }
             return Redirect("MonthReportForZDean");
         }
-    }
+
+        public ActionResult ExportToWord()
+        {
+            DiplomEntities5 dc = new DiplomEntities5();
+            var MissLim = dc.Utility.Where(a => a.Id.Equals(1)).FirstOrDefault();
+            int numMonth = Convert.ToInt32(Request.QueryString["month"]);
+            Dictionary<int, int> StudentsIsValidMiss = new Dictionary<int, int>(); //Массив определяет количество недель, ключ - ИД стдуента, значение - кол-во пропусков
+            Dictionary<int, int> StudentsIsNotValidMiss = new Dictionary<int, int>();
+            foreach (Users user in dc.Users.OrderBy(a => a.Sirname))
+            {
+                  var student = dc.Missings.Where(a => a.StudentId.Equals(user.UserId)).FirstOrDefault(); //Ищем студента, у которого есть пропуски
+
+                  if (student != null)
+                  {
+                        if (student.Users.Group.ToString() != Session["NumGroup"].ToString() ||
+                            student.Users.Course.ToString() != Session["NumCourse"].ToString())
+                        {
+                            continue;
+                        }
+                        StudentsIsValidMiss.Add(user.UserId, 0);
+                        StudentsIsNotValidMiss.Add(user.UserId, 0);
+                  }
+            }
+            foreach (HtmlInputs.Models.Missings item in dc.Missings)
+            {
+                   if (item.Users.Group.ToString() != Session["NumGroup"].ToString() ||
+                       item.Users.Course.ToString() != Session["NumCourse"].ToString())
+                   {
+                        continue;
+                   }
+                   int recMonth = item.Date.Month;
+                   if (recMonth == numMonth)
+                   {
+                          if (item.IsValid == 1)
+                          {
+                                StudentsIsValidMiss[item.StudentId] += 2;
+                                break;
+                          }
+                          else
+                          {
+                                StudentsIsNotValidMiss[item.StudentId] += 2;
+                                break;
+                          }
+                   }
+            }
+            Table data = new Table();
+            int numRow = 1; 
+            
+            foreach (Users user in dc.Users)
+            {
+                int num = 0;
+                if (StudentsIsNotValidMiss.TryGetValue(user.UserId, out num))
+                {
+                    if (num == 0 && StudentsIsValidMiss[user.UserId] == 0)
+                    {
+                        continue;
+                    }
+                    TableRow tr = new TableRow();
+                    TableCell number = new TableCell();
+                    TableCell sirname = new TableCell();
+                    TableCell name = new TableCell();
+                    TableCell patername = new TableCell();
+                    TableCell isValid = new TableCell();
+                    TableCell isNotValid = new TableCell();
+                    number.Controls.Add(new LiteralControl(numRow.ToString()));
+                    sirname.Controls.Add(new LiteralControl(user.Sirname));
+                    name.Controls.Add(new LiteralControl(user.Name));
+                    patername.Controls.Add(new LiteralControl(user.Patername));
+                    isValid.Controls.Add(new LiteralControl(StudentsIsValidMiss[user.UserId].ToString()));
+                    isNotValid.Controls.Add(new LiteralControl(StudentsIsNotValidMiss[user.UserId].ToString()));
+                    tr.Cells.Add(number);
+                    tr.Cells.Add(sirname);
+                    tr.Cells.Add(name);
+                    tr.Cells.Add(patername);
+                    tr.Cells.Add(isValid);
+                    tr.Cells.Add(isNotValid);
+                    data.Rows.Add(tr);
+                }
+            }
+           
+            // get the data from database
+            // instantiate the GridView control from System.Web.UI.WebControls namespace
+            // set the data source
+            GridView gridview = new GridView();
+            gridview.DataSource = data;
+            gridview.DataBind();
+
+            // Clear all the content from the current response
+            Response.ClearContent();
+            Response.Buffer = true;
+            // set the header
+            Response.AddHeader("content-disposition", "attachment;filename=\"itfunda.doc\"");
+            Response.ContentType = "application/ms-word";
+            Response.Charset = "";
+            // create HtmlTextWriter object with StringWriter
+            using (StringWriter sw = new StringWriter())
+            {
+                 using (System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw))
+                 {
+                     // render the GridView to the HtmlTextWriter
+                     gridview.RenderControl(htw);
+                     // Output the GridView content saved into StringWriter
+                     Response.Output.Write(sw.ToString());
+                     Response.Flush();
+                     Response.End();
+                 }
+            }
+            return Redirect("MonthReportForZDean");
+     }
+  }
 }
+

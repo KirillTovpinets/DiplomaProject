@@ -225,13 +225,15 @@
     }
 </div>
         <script>
+            $(document).ready(function () {
+                $('.close-btn').click(function (e) {
+                    $(this).parent().hide();
+                    e.preventDefault();
+                })
+            })
             function ShowForm() {
                 var element = document.getElementById("setLim-form");
                 element.style.display = "block";
-            }
-            function HideForm() {
-                var element = document.getElementById("form-message");
-                element.style.display = "none";
             }
         </script>
 <div class="miss-buttons">
@@ -261,7 +263,7 @@
     }
 @using (Html.BeginForm("SetLim", "Profile", FormMethod.Get, new { @id = "setLim-form" }))
 {
-    <button onclick="HideForm()" class="close-btn">X</button>
+    <button class="close-btn">X</button>
     <input type="text" name="numApp" size="5" style="text-align:center;"/>
     <input type="submit" value="Установить" />
 }

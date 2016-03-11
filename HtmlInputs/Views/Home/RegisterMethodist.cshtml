@@ -37,7 +37,17 @@
             changeMonth: true,
             yearRange: "-50:0",
             dateFormat: "dd.mm.yy"
-        })
+        });
+
+        $("#dial-reg").dialog({
+            resizable: false,
+            modal: true,
+            buttons: {
+                text: "ОК", click: function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
     });
 </script>
 
@@ -46,16 +56,10 @@
     @Html.ValidationSummary(true)
     if (ViewBag.Message != null)
     {
-        <div style="color:green;" id="ToHide">
+        <div id="dial-reg" title="Регистрация">
             @ViewBag.Message
         </div>
-        <script type="text/javascript">
-            var timer = setTimeout(function () {
-                    var element = document.getElementById("ToHide");
-                    element.classList.add("Hidden");
-                    clearTimeout(timer);
-                }, 1500);
-        </script>
+
     }
     <input type="hidden" name="RoleId" value="4" />
     <input type="hidden" name="Group" value="0" />

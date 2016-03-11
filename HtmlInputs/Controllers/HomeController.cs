@@ -68,8 +68,7 @@ namespace HtmlInputs.Controllers
 
                         if (v.RoleId == 7)
                         {
-                            MvcHtmlString str = new MvcHtmlString("<script>alert('Вы отчислены из университета. Доступ закрыт')</script>");
-                            ViewBag.Message = str;
+                            ViewBag.Message = "Вы отчислены из университета. Доступ закрыт";
                             return View(user);
                         }
                         if (v.RoleId == 4)
@@ -82,6 +81,7 @@ namespace HtmlInputs.Controllers
                                 //If there is October now or late, skip this function
                                 if (now.Month != 9)
                                 {
+                                    dc.Utility.Where(a => a.Id.Equals(3)).FirstOrDefault().Limit = 0;
                                     break;
                                 }
                                 if(student.RoleId == 1 || student.RoleId == 2)
@@ -102,6 +102,12 @@ namespace HtmlInputs.Controllers
                             }
                             Session["NumStudent"] = numStud;
                             Session["NumStudentToRase"] = numStudToBeRased;
+                            int isNewYear = dc.Utility.Where(a => a.Id.Equals(3)).FirstOrDefault().Limit;
+                            if(isNewYear == 0 && now.Month == 9)
+                            {
+                                Session["NewStudYear"] = 1;
+                            }
+                            
                         }
                         Session["LogedUserId"] = v.UserId.ToString();
                         Session["LogedUserName"] = v.Name.ToString();

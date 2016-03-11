@@ -4,8 +4,8 @@
 }
 <script type="text/javascript">
     $(document).ready(function () {
-        ("#thanks").click(function () {
-            $(this).parent().hide();
+        $("#thanks").click(function (e) {
+            $(this).parent().parent().hide();
         });
     });
 </script>
@@ -25,7 +25,8 @@
         <img src="@Url.Content("~/Content/first_september.png")" id="new-year" />
         <h1>Поздравляем!</h1>
         <h2>Вы переведены на @Session["LogedUserCourse"]-й курс</h2>
+        <button id="thanks">Спасибо</button>
     </div>
-    <button id="thanks">Спасибо</button>
+    
 </div>
 }

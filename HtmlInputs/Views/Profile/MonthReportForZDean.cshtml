@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int temp;
     HtmlInputs.Models.DiplomEntities5 dc = new HtmlInputs.Models.DiplomEntities5();
+    List<string> monthList = new List<string>();
     var MissLim = dc.Utility.Where(a => a.Id.Equals(1)).FirstOrDefault();
     int numMonths = 0;
     int[] months = new int[50];
@@ -102,6 +103,7 @@
                 for (int i = 0; i < numMonths; i++)
                 {
                     string month = new DateTime(2000, months[i], 1).ToString("MMMM");
+                    monthList.Add(month);
                     <tr>
                         <td colspan="6" class="miss-month">@month</td>
                     </tr>
@@ -145,18 +147,25 @@
     </div>
 }
 <script>
-    function ShowForm() {
-        var element = document.getElementById("setLimMiss-form");
-        element.style.display = "block";
-    }
-    function HideForm() {
-        var element = document.getElementById("form-message");
-        element.style.display = "none";
-    }
+    $(document).ready(function () {
+        $("#limit-button").click(function () {
+            $('#setLimMiss-form').show();
+            $('#export-form').hide();
+        });
+        $('#export-word').click(function () {
+            $('#export-form').show();
+            $("#setLimMiss-form").hide();
+        })
+        $(".close-btn").click(function (e) {
+            $(this).parent().hide();
+            e.preventDefault();
+        });
+    });
 </script>
 
 <div class="miss-buttons">
-    <input type="button" value="Установить лимит" onclick="ShowForm()" />
+    <input type="button" value="Экспорт в Word" id="export-word"/>
+    <input type="button" id="limit-button" value="Установить лимит" />
     @{
         if (hasMiss != 0)
         {
@@ -178,7 +187,18 @@
 </div>
 @using (Html.BeginForm("SetLimMiss", "Profile", FormMethod.Get, new { @id = "setLimMiss-form" }))
 {
-    <button onclick="HideForm()" class="close-btn">X</button>
+    <button class="close-btn">X</button>
     <input type="text" name="numMiss" size="5" style="text-align:center;" />
     <input type="submit" value="Установить" />
+}
+@using (Html.BeginForm("ExportToWord", "Profile", FormMethod.Get, new { @id = "export-form" }))
+{
+    <button class="close-btn">X</button>
+    <select name="month">
+        @for (int i = 0; i < monthList.Count; i++)
+        {
+            <option value="@months[i]">@monthList[i]</option>
+        }
+    </select>
+    <input type="submit" value="Старт" />
 }

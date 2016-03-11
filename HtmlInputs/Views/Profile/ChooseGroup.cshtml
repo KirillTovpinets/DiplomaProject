@@ -6,7 +6,7 @@
 <div class="content">
     
     @{
-    if(Session["LogedUserRole"].ToString().Equals("5"))
+        if (Session["LogedUserRole"].ToString().Equals("5") || Session["LogedUserRole"].ToString().Equals("6"))
     { 
         <h2>Пропуски | @Session["NumCourse"].ToString()-й курс</h2>
         <a href="~/Profile/GroupOne" class="choose-buttons">1-я группа</a>
@@ -23,7 +23,7 @@
 }
 </div>
 <div class="miss-buttons">
-    @if(Session["LogedUserRole"].ToString().Equals("5"))
+    @if (Session["LogedUserRole"].ToString().Equals("5") || Session["LogedUserRole"].ToString().Equals("6"))
     { 
         <a href="~/Profile/MissForZDean"><input type="button" value="Назад" /></a>
     }

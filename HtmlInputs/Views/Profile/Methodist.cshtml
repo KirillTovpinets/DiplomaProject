@@ -8,6 +8,11 @@
             $("#Rase-form").hide();
             e.preventDefault();
         });
+
+        $('#erase-cansel').click(function (e) {
+            $("#Erase-form").hide();
+            e.preventDefault();
+        })
     });
 </script>
 <div class="content">
@@ -44,11 +49,26 @@
         <div class="container">
             <img src="@Url.Content("~/Content/first_september.png")" id="new-year" />
             <h1>Поздравляем с днём знаний!</h1>
-            <h2>Необходимо перевести @Session["NumStudentToRase"] студентов на следующий курс</h2>
+            <h2>Необходимо перевести @Session["NumStudentToRase"] из @Session["NumStudent"] студентов на следующий курс</h2>
 
             <div class="rase-action">
                 <button id="Rase" type="submit">Перевести</button>
                 <button id="cansel">Оставить</button>
+            </div>
+        </div>
+    }
+}
+
+@if (!(Session["NewStudYear"] != null))
+{
+    using (Html.BeginForm("Erase", "Profile", FormMethod.Get, new { @id = "Erase-form" }))
+    {
+        <div class="erase-container">
+            <h1>Поздравляем с днём знаний!</h1>
+            <h2>На начало учебного года рекомендуется удалить данные о пропусках и заявлениях за прошлый год</h2>
+            <div class="erase-action">
+                <button id="erase" type="submit">Удалить</button>
+                <button id="erase-cansel">Оставить</button>
             </div>
         </div>
     }

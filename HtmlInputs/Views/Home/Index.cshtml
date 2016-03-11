@@ -6,13 +6,39 @@
     <nav class="header">
         <div class="header-content"> Кабинет пользователя</div>
     </nav>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var canClose = false;
+        var delay = 15;
+        $("#dial-authorisation").dialog({
+            resizable: false,
+            modal: true,
+            autoOpen: true,
+            beforeClose: function(){
+                return canClose;
+            },
+            open: function(){
+                var count = delay;
+                var intID = setInterval(function(){
+                    count--;
+                    $('#time').text(count);
+                    if(count == 0){
+                        clearInterval(intID);
+                        canClose = true;
+                        $("#dial-authorisation").dialog("close");
+                    }
+                }, 1000);
+            }
+        })
+    });
+</script>
     @using (Html.BeginForm("Index","Home",FormMethod.Post, new {id = "login-form"}))
     {
         @Html.ValidationSummary(true)
         if (ViewBag.Message != null)
         {
-            <div style="color: red">
-                @ViewBag.Message
+            <div id="dial-authorisation" title="Ошибка" style="display:none">
+                @ViewBag.Message. Повторите, пожалуйста, попытку через <span id="time">15</span> секунд
             </div>
         }
         <table>
